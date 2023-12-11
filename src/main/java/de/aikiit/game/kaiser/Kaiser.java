@@ -14,7 +14,7 @@ public class Kaiser {
     private Long deathToll;
     private Long deathTollSum; // d1 in original
     private Long percentDeathToll;
-    private Long increase; // birthRate
+    private Long increase; // birthRate?
 
     /// Missing:
     // q - disaster quote
