@@ -20,7 +20,7 @@ public class Kaiser {
     // q - disaster quote
 
     /**
-     * @return area per capita, called <b>L</b> in original.
+     * @return area per capita, called <b>L</b> in original. Land ownership?
      */
     public Long getAreaPerCapita() {
         return Long.divideUnsigned(area, population);
