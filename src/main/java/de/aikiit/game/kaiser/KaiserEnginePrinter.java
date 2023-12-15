@@ -42,7 +42,6 @@ public class KaiserEnginePrinter {
         return result.toString();
     }
 
-
     public String evaluateRegency() {
         StringBuilder result = new StringBuilder();
         result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(System.lineSeparator());
