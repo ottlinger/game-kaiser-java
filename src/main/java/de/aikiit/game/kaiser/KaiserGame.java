@@ -33,7 +33,13 @@ public class KaiserGame {
     }
 
     public void actions() {
-
+        System.out.println();
+        // TODO implement actions with error handling and act on engine variable
+        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "#+#+#+#+ Was möchten Sie tun?" + KaiserEnginePrinter.ANSI_RESET);
+        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie kaufen?" + KaiserEnginePrinter.ANSI_RESET);
+        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie verkaufen?" + KaiserEnginePrinter.ANSI_RESET);
+        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel DZ wollen Sie an Ihr Volk verteilen?" + KaiserEnginePrinter.ANSI_RESET);
+        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie bebauen?" + KaiserEnginePrinter.ANSI_RESET);
     }
 
     public void finish() {
