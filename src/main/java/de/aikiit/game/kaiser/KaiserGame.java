@@ -3,9 +3,9 @@ package de.aikiit.game.kaiser;
 public class KaiserGame {
 
     private static final int MAX_ROUNDS = 10;
-    private int round = 0;
     private final KaiserEngine engine;
     private final KaiserEnginePrinter printer;
+    private int round = 0;
 
     public KaiserGame() {
         this.engine = new KaiserEngine();
@@ -13,7 +13,12 @@ public class KaiserGame {
     }
 
     public void start() {
-        while(round <= MAX_ROUNDS) {
+        System.out.println("Versuchen Sie die antike Stadt >SUMERIA< zu regieren!");
+        System.out.println("Ihre Regierungszeit beträgt " + MAX_ROUNDS + " Jahre.");
+        System.out.println("Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.");
+        System.out.println("Dann werden wir weitersehen .......");
+
+        while (round <= MAX_ROUNDS) {
             System.out.println("Starte in Runde " + ++round + "....");
             status();
         }
