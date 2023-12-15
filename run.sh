@@ -1,4 +1,5 @@
 #!/bin/bash
+clear
 echo "Building the game ...."
 ./mvnw &> /dev/null
 echo "Starting the game ...."

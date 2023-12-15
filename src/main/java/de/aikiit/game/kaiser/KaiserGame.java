@@ -2,14 +2,14 @@ package de.aikiit.game.kaiser;
 
 public class KaiserGame {
 
-    private static final int MAX_ROUNDS = 10;
+    public static final int MAX_ROUNDS = 10;
     private final KaiserEngine engine;
     private final KaiserEnginePrinter printer;
     private int round = 0;
 
     public KaiserGame() {
         this.engine = new KaiserEngine();
-        this.printer = new KaiserEnginePrinter();
+        this.printer = new KaiserEnginePrinter(this.engine);
     }
 
     public void start() {
@@ -23,12 +23,22 @@ public class KaiserGame {
         while (round <= MAX_ROUNDS) {
             System.out.println(KaiserEnginePrinter.ANSI_BLUE + "### Starte in Runde " + ++round + "...." + KaiserEnginePrinter.ANSI_RESET);
             status();
+            actions();
         }
+
+        finish();
     }
 
     public void status() {
-        System.out.println("Status nach Runde " + round);
-        System.out.println(printer.getStatus(this.engine));
+        System.out.println(printer.getStatus(round));
+    }
+
+    public void actions() {
+
+    }
+
+    public void finish() {
+        System.out.println(printer.getResults());
     }
 
 

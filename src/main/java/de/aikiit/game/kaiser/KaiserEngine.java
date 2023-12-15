@@ -1,5 +1,8 @@
 package de.aikiit.game.kaiser;
 
+import lombok.Getter;
+
+@Getter
 public class KaiserEngine {
     private Long population = 0L;
     private Long area = 0L;
@@ -13,7 +16,7 @@ public class KaiserEngine {
     private final Integer zYear; // why z in original?
     private final Long deathToll;
     private Long deathTollSum; // d1 in original
-    private Long percentDeathToll;
+    private Long percentDeathToll; // p1 in original
     private final Long increase; // birthRate?
 
     /// Missing:
@@ -35,6 +38,7 @@ public class KaiserEngine {
         this.area = Long.divideUnsigned(this.humans, this.supplies);
         this.increase = 5L;
         this.deathToll = 0L;
+        this.percentDeathToll = 0L;
     }
 
 }
