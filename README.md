@@ -9,4 +9,4 @@ An adaption of the old Kaiser/Sumeria game
 ## Introduction
 
 The game basically starts with a fixed population and land size.
-Each round generates a hravest and you will be prompted to sell/buy/transform the harvest and the next round is about to begin.
+Each round generates a harvest and you will be prompted to sell/buy/transform the harvest and the next round is about to begin.
