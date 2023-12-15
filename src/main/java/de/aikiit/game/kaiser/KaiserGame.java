@@ -21,7 +21,6 @@ public class KaiserGame {
         System.out.println();
 
         while (round < MAX_ROUNDS) {
-            System.out.println(KaiserEnginePrinter.ANSI_BLUE + "### Starte in Runde " + ++round + "...." + KaiserEnginePrinter.ANSI_RESET);
             status();
             actions();
         }
@@ -30,7 +29,7 @@ public class KaiserGame {
     }
 
     public void status() {
-        System.out.println(printer.getStatus(round));
+        System.out.println(printer.getStatus(++round));
     }
 
     public void actions() {

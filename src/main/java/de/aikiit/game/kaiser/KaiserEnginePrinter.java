@@ -20,7 +20,7 @@ public class KaiserEnginePrinter {
     public String getStatus(int round) {
         StringBuilder status = new StringBuilder();
 
-        status.append(ANSI_GREEN).append("STATUS nach Runde ").append(round).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_GREEN).append("### STATUS nach Runde ").append(round).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Einwohnerzahl ist jetzt ").append(this.engine.getPopulation()).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Stadt besitzt an Land ").append(this.engine.getArea()).append(" Hektar").append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Ernte betrug ").append(this.engine.getYield()).append(" DZ/Hektar").append(ANSI_RESET).append(System.lineSeparator());
