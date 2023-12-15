@@ -43,4 +43,29 @@ public class KaiserEnginePrinter {
     }
 
 
+    public String evaluateRegency() {
+        StringBuilder result = new StringBuilder();
+        result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(ANSI_RESET).append(System.lineSeparator());
+
+        // line 900
+        result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
+        result.append(System.lineSeparator());
+
+        // line 940
+        result.append("Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.");
+        result.append(System.lineSeparator());
+        result.append("Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!");
+        result.append(System.lineSeparator());
+
+        // line 960
+        result.append("Sie hätten glücklicher agieren können, aber es war nicht übel.");
+        result.append(System.lineSeparator());
+        result.append(this.engine.getPopulation() * .8).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
+        result.append(System.lineSeparator());
+
+        result.append(System.lineSeparator());
+        result.append("Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie ").append(this.engine.getAreaPerCapita()).append(" Hektar/Einwohner.").append(System.lineSeparator());
+
+        return result.toString();
+    }
 }

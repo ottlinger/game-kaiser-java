@@ -48,6 +48,7 @@ public class KaiserGame {
 
     public void finish() {
         System.out.println(printer.getResults());
+        System.out.println(printer.evaluateRegency());
     }
 
 
