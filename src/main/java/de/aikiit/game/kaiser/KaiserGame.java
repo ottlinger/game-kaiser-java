@@ -14,7 +14,7 @@ public class KaiserGame {
 
     public void start() {
         System.out.println(KaiserEnginePrinter.ANSI_RED + "*** KAISER ***" + KaiserEnginePrinter.ANSI_RESET);
-        System.out.println("Versuchen Sie die antike Stadt " + KaiserEnginePrinter.ANSI_YELLOW + ">SUMERIA<" + KaiserEnginePrinter.ANSI_RESET" zu regieren!");
+        System.out.println("Versuchen Sie die antike Stadt " + KaiserEnginePrinter.ANSI_YELLOW + ">SUMERIA<" + KaiserEnginePrinter.ANSI_RESET + " zu regieren!");
         System.out.println("Ihre Regierungszeit beträgt " + MAX_ROUNDS + " Jahre.");
         System.out.println("Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.");
         System.out.println("Dann werden wir weitersehen .......");
