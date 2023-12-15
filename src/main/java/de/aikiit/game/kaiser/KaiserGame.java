@@ -18,9 +18,10 @@ public class KaiserGame {
         System.out.println("Ihre Regierungszeit beträgt " + MAX_ROUNDS + " Jahre.");
         System.out.println("Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.");
         System.out.println("Dann werden wir weitersehen .......");
+        System.out.println();
 
         while (round <= MAX_ROUNDS) {
-            System.out.println("Starte in Runde " + ++round + "....");
+            System.out.println(KaiserEnginePrinter.ANSI_BLUE + "### Starte in Runde " + ++round + "...." + KaiserEnginePrinter.ANSI_RESET);
             status();
         }
     }
