@@ -13,19 +13,22 @@ public class KaiserGame {
     }
 
     public void start() {
-        System.out.println(KaiserEnginePrinter.ANSI_RED + "*** KAISER ***" + KaiserEnginePrinter.ANSI_RESET);
-        System.out.println("Versuchen Sie die antike Stadt " + KaiserEnginePrinter.ANSI_YELLOW + ">SUMERIA<" + KaiserEnginePrinter.ANSI_RESET + " zu regieren!");
-        System.out.println("Ihre Regierungszeit beträgt " + MAX_ROUNDS + " Jahre.");
-        System.out.println("Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.");
-        System.out.println("Dann werden wir weitersehen .......");
-        System.out.println();
-
+        intro();
         while (round < MAX_ROUNDS) {
             status();
             actions();
         }
 
         finish();
+    }
+
+    public void intro() {
+        System.out.println(KaiserEnginePrinter.ANSI_RED + "*** KAISER ***" + KaiserEnginePrinter.ANSI_RESET);
+        System.out.println("Versuchen Sie die antike Stadt " + KaiserEnginePrinter.ANSI_YELLOW + ">SUMERIA<" + KaiserEnginePrinter.ANSI_RESET + " zu regieren!");
+        System.out.println("Ihre Regierungszeit beträgt " + MAX_ROUNDS + " Jahre.");
+        System.out.println("Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.");
+        System.out.println("Dann werden wir weitersehen .......");
+        System.out.println();
     }
 
     public void status() {
@@ -40,6 +43,7 @@ public class KaiserGame {
         System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie verkaufen?" + KaiserEnginePrinter.ANSI_RESET);
         System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel DZ wollen Sie an Ihr Volk verteilen?" + KaiserEnginePrinter.ANSI_RESET);
         System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie bebauen?" + KaiserEnginePrinter.ANSI_RESET);
+        System.out.println();
     }
 
     public void finish() {
