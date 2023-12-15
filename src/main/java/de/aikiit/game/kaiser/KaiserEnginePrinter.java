@@ -45,7 +45,7 @@ public class KaiserEnginePrinter {
 
     public String evaluateRegency() {
         StringBuilder result = new StringBuilder();
-        result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(ANSI_RESET).append(System.lineSeparator());
+        result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(System.lineSeparator());
 
         // line 900
         result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
@@ -66,6 +66,7 @@ public class KaiserEnginePrinter {
         result.append(System.lineSeparator());
         result.append("Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie ").append(this.engine.getAreaPerCapita()).append(" Hektar/Einwohner.").append(System.lineSeparator());
 
+        result.append(ANSI_RESET);
         return result.toString();
     }
 }
