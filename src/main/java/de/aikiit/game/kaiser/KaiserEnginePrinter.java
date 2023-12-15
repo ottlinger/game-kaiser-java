@@ -11,7 +11,11 @@ public class KaiserEnginePrinter {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
     public String getStatus(KaiserEngine engine) {
-        return ANSI_GREEN + "STATUS" + ANSI_RESET;
+        StringBuilder status = new StringBuilder();
+
+        status.append(ANSI_GREEN).append("STATUS").append(ANSI_RESET);
+
+        return  status.toString();
     }
 
 }
