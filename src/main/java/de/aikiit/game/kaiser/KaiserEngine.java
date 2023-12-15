@@ -30,6 +30,7 @@ public class KaiserEngine {
         this.increase = 5L;
         this.deathToll = 0L;
         this.percentDeathToll = 0L;
+        this.deathTollSum = 0L;
     }
 
     /**

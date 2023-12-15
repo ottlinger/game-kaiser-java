@@ -32,11 +32,14 @@ public class KaiserEnginePrinter {
     public String getResults() {
         StringBuilder result = new StringBuilder();
 
-        result.append("In Ihrer ").append(KaiserGame.MAX_ROUNDS).append("-jährigen Amtszeit sind ");
-        result.append(this.engine.getPercentDeathToll()).append(System.lineSeparator());
+        result.append("In Ihrer ").append(KaiserGame.MAX_ROUNDS).append("-jährigen Amtszeit sind durchschnittlich ");
+        result.append(this.engine.getPercentDeathToll()).append(" % im Jahr verstorben.").append(System.lineSeparator());
+        result.append("Insgesamt sind damit ").append(this.engine.getDeathTollSum()).append(" Einwohner verstorben.").append(System.lineSeparator());
+
+        result.append(System.lineSeparator());
+        result.append("Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie ").append(this.engine.getAreaPerCapita()).append(" Hektar/Einwohner.").append(System.lineSeparator());
 
         return result.toString();
-
     }
 
 
