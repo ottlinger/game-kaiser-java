@@ -12,7 +12,7 @@ public class KaiserGame {
         this.printer = new KaiserEnginePrinter(this.engine);
     }
 
-    public void start() {
+    public void run() {
         intro();
         while (round < MAX_ROUNDS) {
             status();
