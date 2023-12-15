@@ -3,11 +3,12 @@ package de.aikiit.game.kaiser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+//@SpringBootApplication
 public class GameKaiserJavaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GameKaiserJavaApplication.class, args);
+		//SpringApplication.run(GameKaiserJavaApplication.class, args);
+		new KaiserGame().start();
 	}
 
 }
