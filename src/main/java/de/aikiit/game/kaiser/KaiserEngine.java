@@ -1,6 +1,6 @@
 package de.aikiit.game.kaiser;
 
-public class Kaiser {
+public class KaiserEngine {
     private Long population = 0L;
     private Long area = 0L;
     private Long yield = 0L;
@@ -26,7 +26,7 @@ public class Kaiser {
         return Long.divideUnsigned(area, population);
     }
 
-    public Kaiser() {
+    public KaiserEngine() {
         this.population = 95L;
         this.zYear = 0;
         this.yield = 3L;

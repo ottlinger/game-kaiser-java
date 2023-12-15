@@ -3,13 +3,12 @@ package de.aikiit.game.kaiser;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-class KaiserTest {
+class KaiserEngineTest {
 
     @Test
     void getAreaPerCapita() {
-        Kaiser k = new Kaiser();
+        KaiserEngine k = new KaiserEngine();
         assertThat(k.getAreaPerCapita()).isZero();
     }
 }
