@@ -20,7 +20,7 @@ public class KaiserGame {
         System.out.println("Dann werden wir weitersehen .......");
         System.out.println();
 
-        while (round <= MAX_ROUNDS) {
+        while (round < MAX_ROUNDS) {
             System.out.println(KaiserEnginePrinter.ANSI_BLUE + "### Starte in Runde " + ++round + "...." + KaiserEnginePrinter.ANSI_RESET);
             status();
             actions();
