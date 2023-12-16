@@ -19,6 +19,14 @@ class KaiserEngineTest {
         KaiserEngine k = new KaiserEngine();
         k.setQ(new BigDecimal("0.5"));
         k.processFamine();
+        assertThat(k.getPopulation()).isEqualTo(new BigDecimal("48"));
+    }
+
+    @Test
+    void noPopulationReductionIfScaleFactorIsTooBig() {
+        KaiserEngine k = new KaiserEngine();
+        k.setQ(new BigDecimal("-1.2"));
+        k.processFamine();
         assertThat(k.getPopulation()).isEqualTo(new BigDecimal("95"));
     }
 }

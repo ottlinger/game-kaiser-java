@@ -55,7 +55,7 @@ public class KaiserEngine {
     }
 
     public void processFamine() {
-        if (q.compareTo(BigDecimal.ZERO) < 0) {
+        if (BigDecimal.ZERO.compareTo(q) <= 0) {
             this.population = this.population.divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP);
             System.out.println("\u001B[38;5;202m");
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
