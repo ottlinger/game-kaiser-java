@@ -39,7 +39,7 @@ public class KaiserEngine {
         this.externalDamage = this.humans.subtract(this.supplies);
     }
 
-    public void play() {
+    public void startNewRound() {
         this.area = this.humans.divide(this.yield, RoundingMode.HALF_UP);
         this.externalDamage = this.humans.subtract(this.supplies);
         this.zYear++;
@@ -117,7 +117,7 @@ public class KaiserEngine {
         System.out.println("TODO: Würde versuchen " + cultivate + " anzubauen.");
     }
 
-    public void applyActions() {
+    public void finishRoundAfterActions() {
 //        this.increase =
 //        this.c =
     }

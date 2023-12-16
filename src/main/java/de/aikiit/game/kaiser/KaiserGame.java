@@ -21,10 +21,10 @@ public class KaiserGame {
         status();
         while (round < MAX_ROUNDS) {
             incrementRoundCounter();
-            engine.play();
+            engine.startNewRound();
             status();
             actions();
-            engine.applyActions();
+            engine.finishRoundAfterActions();
         }
 
         finish();
