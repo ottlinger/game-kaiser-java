@@ -23,12 +23,30 @@ public class KaiserGame {
     }
 
     public void intro() {
-        System.out.println(KaiserEnginePrinter.ANSI_RED + "*** KAISER ***" + KaiserEnginePrinter.ANSI_RESET);
+        banner();
         System.out.println("Versuchen Sie die antike Stadt " + KaiserEnginePrinter.ANSI_YELLOW + ">SUMERIA<" + KaiserEnginePrinter.ANSI_RESET + " zu regieren!");
         System.out.println("Ihre Regierungszeit beträgt " + MAX_ROUNDS + " Jahre.");
         System.out.println("Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.");
         System.out.println("Dann werden wir weitersehen .......");
         System.out.println();
+    }
+
+    public void banner() {
+        // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
+        // font: banner
+        System.out.println(KaiserEnginePrinter.ANSI_RED);
+        System.out.println(
+                """
+                        #    #                              \s
+                        #   #    ##   #  ####  ###### ##### \s
+                        #  #    #  #  # #      #      #    #\s
+                        ###    #    # #  ####  #####  #    #\s
+                        #  #   ###### #      # #      ##### \s
+                        #   #  #    # # #    # #      #   # \s
+                        #    # #    # #  ####  ###### #    #\s
+                                                            \s
+                                                                            """);
+        System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
     public void status() {
