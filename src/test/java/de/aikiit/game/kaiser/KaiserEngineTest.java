@@ -38,7 +38,11 @@ class KaiserEngineTest {
     }
 
     @Test
-    void buyLandIgnoresNegativeInput() {
-// TBD
+    void buyLandIgnoresNegativeInputAndChangesNothing() {
+        BigDecimal areaB4 = engine.getArea();
+        BigDecimal supplyB4 = engine.getSupplies();
+        engine.buyLand(-123L);
+        assertThat(engine.getArea()).isEqualTo(areaB4);
+        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
     }
 }
