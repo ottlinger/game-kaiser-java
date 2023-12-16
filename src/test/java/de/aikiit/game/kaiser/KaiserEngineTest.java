@@ -25,7 +25,9 @@ class KaiserEngineTest {
     @Test
     void famineReducesPopulationDependingOnScaleFactorBeingBelowZero() {
         engine.setQ(new BigDecimal("-0.5"));
+
         engine.processFamine();
+
         assertThat(engine.getPopulation()).isEqualTo(new BigDecimal("48"));
         assertThat(engine.getQ()).isNotEqualByComparingTo(BigDecimal.ONE);
     }
@@ -33,7 +35,9 @@ class KaiserEngineTest {
     @Test
     void noPopulationReductionIfScaleFactorIsTooBig() {
         engine.setQ(new BigDecimal("12.34"));
+
         engine.processFamine();
+
         assertThat(engine.getPopulation()).isEqualTo(new BigDecimal("95"));
         assertThat(engine.getQ()).isNotEqualByComparingTo(BigDecimal.ONE);
     }
@@ -43,7 +47,9 @@ class KaiserEngineTest {
         int costB4 = engine.getCost();
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
+
         engine.buyLand(-123L);
+
         assertThat(engine.getArea()).isEqualTo(areaB4);
         assertThat(engine.getSupplies()).isEqualTo(supplyB4);
         assertThat(engine.getCost()).isEqualTo(costB4);
@@ -54,7 +60,9 @@ class KaiserEngineTest {
         int costB4 = engine.getCost();
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
+
         engine.buyLand(0L);
+
         assertThat(engine.getArea()).isEqualTo(areaB4);
         assertThat(engine.getSupplies()).isEqualTo(supplyB4);
         assertThat(engine.getCost()).isEqualTo(costB4);
@@ -72,22 +80,20 @@ class KaiserEngineTest {
 
         String expectedMessage = "Not Enough Supplies";
         assertThat(exception.getMessage()).contains(expectedMessage);
-
         assertThat(engine.getArea()).isEqualTo(areaB4);
         assertThat(engine.getSupplies()).isEqualTo(supplyB4);
         assertThat(engine.getCost()).isEqualTo(costB4);
     }
 
     @Test
-    void buyLandRegularUseCase() {
-        // TBD
-        int costB4 = engine.getCost();
+    void buyLandRegularUseCaseAndSetPriceToZeroAfterwards() {
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
-        engine.buyLand(0L);
-        assertThat(engine.getArea()).isEqualTo(areaB4);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+        engine.buyLand(4L);
+
+        assertThat(engine.getArea()).isEqualTo(areaB4.add(BigDecimal.valueOf(4L)));
+        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(engine.getYield().multiply(BigDecimal.valueOf(4L))));
+        assertThat(engine.getCost()).isEqualTo(0);
     }
 
 
