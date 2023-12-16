@@ -78,16 +78,19 @@ public class KaiserEngine {
     }
 
     public void buyLand(Long buy) {
+        this.cost = 0; // price is recalculated per action
+
         if (buy < 0) {
             System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
             return;
         }
 
-        if (this.yield.multiply(BigDecimal.valueOf(buy)).compareTo(this.supplies) == 0) {
-
+        if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies) && buy > 0) {
+            this.area = this.area.add(BigDecimal.valueOf(buy));
+            this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));
+        } else {
+            throw new IllegalArgumentException("Not Enough Supplies");
         }
-
-        System.out.println("TODO: Würde versuchen " + buy + " zu kaufen.");
     }
 
     public void sellLand(Long sell) {
