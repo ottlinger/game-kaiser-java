@@ -14,7 +14,7 @@ public class KaiserActions {
     public static boolean buy(KaiserEngine engine) {
         while (true) {
             try {
-                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie kaufen?" + KaiserEnginePrinter.ANSI_RESET);
+                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie kaufen? 0 = nichts" + KaiserEnginePrinter.ANSI_RESET);
                 Long buy = new Scanner(System.in).nextLong();
                 return engine.buyLand(buy) > 0;
 
