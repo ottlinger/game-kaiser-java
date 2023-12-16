@@ -23,9 +23,9 @@ public class KaiserEnginePrinter {
         status.append(ANSI_GREEN).append("### STATUS nach Runde ").append(round).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Einwohnerzahl ist jetzt ").append(this.engine.getPopulation()).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Stadt besitzt an Land ").append(this.engine.getArea()).append(" Hektar").append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_CYAN).append("Die Ernte betrug ").append(this.engine.getYield()).append(" DZ/Hektar").append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_RED).append("Ratten haben gefressen ").append(this.engine.getYield()).append(" DZ").append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_RED).append("Die Vorräte betragen ").append(this.engine.getSupplies()).append(" DZ").append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_CYAN).append("Die Ernte betrug ").append(this.engine.getYield()).append(" dzt/Hektar").append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Ratten haben gefressen ").append(this.engine.getYield()).append(" dzt").append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Die Vorräte betragen ").append(this.engine.getSupplies()).append(" dzt").append(ANSI_RESET).append(System.lineSeparator());
         return status.toString();
     }
 
