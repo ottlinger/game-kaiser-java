@@ -47,4 +47,17 @@ public class KaiserActions {
         }
     }
 
+    public static void cultivate(KaiserEngine engine) {
+        while (true) {
+            try {
+                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie bebauen?" + KaiserEnginePrinter.ANSI_RESET);
+                Long cultivate = new Scanner(System.in).nextLong();
+                engine.cultivate(cultivate);
+                return;
+
+            } catch (InputMismatchException e) {
+                System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
+            }
+        }
+    }
 }

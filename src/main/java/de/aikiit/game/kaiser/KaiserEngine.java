@@ -51,4 +51,8 @@ public class KaiserEngine {
     public void feedToPopulation(Long feed) {
         System.out.println("TODO: Würde versuchen " + feed + " an Bevölkerung zu geben.");
     }
+
+    public void cultivate(Long cultivate) {
+        System.out.println("TODO: Würde versuchen " + cultivate + " anzubauen.");
+    }
 }
