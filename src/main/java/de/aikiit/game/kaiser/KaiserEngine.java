@@ -40,4 +40,7 @@ public class KaiserEngine {
         return Long.divideUnsigned(area, population);
     }
 
+    public void buyLand(Long buy) {
+        System.out.println("TODO: Würde versuchen " + buy + " zu kaufen.");
+    }
 }
