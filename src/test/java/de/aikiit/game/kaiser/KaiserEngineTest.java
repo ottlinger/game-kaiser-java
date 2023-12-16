@@ -56,7 +56,7 @@ class KaiserEngineTest {
         engine.buyLand(0L);
         assertThat(engine.getArea()).isEqualTo(areaB4);
         assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(0);
+        assertThat(engine.getCost()).isEqualTo(costB4);
     }
 
 }
