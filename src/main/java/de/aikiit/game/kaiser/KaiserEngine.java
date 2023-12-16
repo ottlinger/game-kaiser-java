@@ -77,10 +77,9 @@ public class KaiserEngine {
         return area.divide(population, RoundingMode.HALF_UP);
     }
 
-    public void buyLand(Long buy) {
+    public long buyLand(Long buy) {
         if (buy < 0) {
             System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
-            return;
         }
 
         if (buy > 0) {
@@ -92,6 +91,7 @@ public class KaiserEngine {
                 throw new IllegalArgumentException("Not Enough Supplies");
             }
         }
+        return buy;
     }
 
     public void sellLand(Long sell) {

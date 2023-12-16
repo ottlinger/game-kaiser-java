@@ -5,16 +5,22 @@ import java.util.Scanner;
 
 public class KaiserActions {
 
-    public static void buy(KaiserEngine engine) {
+    /**
+     * Try to buy land in the current game.
+     *
+     * @param engine the current game engine
+     * @return {@code true} if the buy action succeeded, {@code false} otherwise.
+     */
+    public static boolean buy(KaiserEngine engine) {
         while (true) {
             try {
                 System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie kaufen?" + KaiserEnginePrinter.ANSI_RESET);
                 Long buy = new Scanner(System.in).nextLong();
-                engine.buyLand(buy);
-                return;
+                return engine.buyLand(buy) > 0;
 
             } catch (InputMismatchException e) {
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
+                System.out.println("Überleg doch mal, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn.");
             }
         }
     }

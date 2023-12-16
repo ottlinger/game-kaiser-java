@@ -81,8 +81,11 @@ public class KaiserGame {
         System.out.println();
         System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "#+#+#+#+ Was möchten Sie tun?" + KaiserEnginePrinter.ANSI_RESET);
 
-        KaiserActions.buy(this.engine);
-        KaiserActions.sell(this.engine);
+        // only buy or sell is allowed
+        if (!KaiserActions.buy(this.engine)) {
+            KaiserActions.sell(this.engine);
+        }
+
         KaiserActions.feed(this.engine);
 
         System.out.println();
