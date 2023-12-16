@@ -86,7 +86,7 @@ public class KaiserEngine {
             if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies)) {
                 this.area = this.area.add(BigDecimal.valueOf(buy));
                 this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));
-                this.cost = 0; // price is recalculated per action
+                this.cost = 0; // price is recalculated per round
             } else {
                 throw new IllegalArgumentException("Not Enough Supplies");
             }
@@ -95,7 +95,18 @@ public class KaiserEngine {
     }
 
     public void sellLand(Long sell) {
-        System.out.println("TODO: Würde versuchen " + sell + " zu verkaufen.");
+        if (sell < 0) {
+            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
+            return;
+        }
+
+        if (is(BigDecimal.valueOf(sell)).lessThan(this.area)) {
+            this.area = this.area.subtract(BigDecimal.valueOf(sell));
+            this.supplies = this.supplies.add(this.yield.multiply(BigDecimal.valueOf(sell)));
+            this.cost = 0; // price is recalculated per round
+        } else {
+            throw new IllegalArgumentException("Not Enough Land");
+        }
     }
 
     public void feedToPopulation(Long feed) {
