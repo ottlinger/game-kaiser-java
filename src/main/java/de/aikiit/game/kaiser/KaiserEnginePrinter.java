@@ -2,6 +2,8 @@ package de.aikiit.game.kaiser;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
+
 public class KaiserEnginePrinter {
 
     // inspired by https://talyian.github.io/ansicolors/
@@ -65,7 +67,7 @@ public class KaiserEnginePrinter {
         // line 960
         result.append("Sie hätten glücklicher agieren können, aber es war nicht übel.");
         result.append(System.lineSeparator());
-        result.append(this.engine.getPopulation() * .8).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
+        result.append(this.engine.getPopulation().multiply(new BigDecimal("0.8"))).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
         result.append(System.lineSeparator());
         result.append(System.lineSeparator());
 
