@@ -24,6 +24,7 @@ public class KaiserGame {
             engine.play();
             status();
             actions();
+            engine.applyActions();
         }
 
         finish();

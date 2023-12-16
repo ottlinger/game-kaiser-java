@@ -89,4 +89,9 @@ public class KaiserEngine {
     public void cultivate(Long cultivate) {
         System.out.println("TODO: Würde versuchen " + cultivate + " anzubauen.");
     }
+
+    public void applyActions() {
+//        this.increase =
+//        this.c =
+    }
 }
