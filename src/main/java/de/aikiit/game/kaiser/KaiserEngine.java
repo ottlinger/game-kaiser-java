@@ -38,8 +38,8 @@ public class KaiserEngine {
     }
 
     public void play() {
-        this.area = this.humans.divide(this.supplies, RoundingMode.HALF_UP);
-        this.externalDamage = this.population.subtract(this.supplies);
+        this.area = this.humans.divide(this.yield, RoundingMode.HALF_UP);
+        this.externalDamage = this.humans.subtract(this.supplies);
         this.zYear++;
         this.population = this.population.add(this.increase);
 
