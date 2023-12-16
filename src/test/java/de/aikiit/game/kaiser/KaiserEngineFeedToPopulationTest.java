@@ -43,14 +43,12 @@ public class KaiserEngineFeedToPopulationTest {
     }
 
     @Test
-    void sellLandRegularUseCaseAndSetPriceToZeroAfterwards() {
-        BigDecimal areaB4 = engine.getArea();
+    void feedToPopulationRegularUseCaseAndSetPriceToOneAfterwards() {
         BigDecimal supplyB4 = engine.getSupplies();
-        engine.sellLand(4L);
+        engine.feedToPopulation(4L);
 
-        assertThat(engine.getArea()).isEqualTo(areaB4.subtract(BigDecimal.valueOf(4L)));
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4.add(engine.getYield().multiply(BigDecimal.valueOf(4L))));
-        assertThat(engine.getCost()).isEqualTo(0);
+        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(BigDecimal.valueOf(4L)));
+        assertThat(engine.getCost()).isEqualTo(1);
     }
 
 
