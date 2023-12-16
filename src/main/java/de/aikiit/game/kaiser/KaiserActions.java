@@ -53,7 +53,10 @@ public class KaiserActions {
                 return;
 
             } catch (InputMismatchException e) {
+                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
+                System.out.println("Überleg doch mal, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn.");
+                System.out.print(KaiserEnginePrinter.ANSI_RESET);
             }
         }
     }
