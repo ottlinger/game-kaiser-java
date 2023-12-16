@@ -22,7 +22,7 @@ public class KaiserEngine {
     private BigDecimal deathTollSum; // d1 in original
     private BigDecimal percentDeathToll; // p1 in original
     private BigDecimal e = BigDecimal.ZERO;
-    private BigDecimal q = BigDecimal.ZERO;
+    private BigDecimal q = BigDecimal.ONE; // famineQuotient
     private Integer c = 0;
 
     /// Missing:
@@ -39,8 +39,6 @@ public class KaiserEngine {
         this.deathToll = BigDecimal.ZERO;
         this.percentDeathToll = BigDecimal.ZERO;
         this.deathTollSum = BigDecimal.ZERO;
-        // base values
-        this.q = BigDecimal.ONE;
     }
 
     public void play() {
@@ -50,8 +48,12 @@ public class KaiserEngine {
         this.population = this.population.add(this.increase);
 
         processFamine();
-        this.c = new Random().nextInt(11) + 1;
+        this.c = getRandomNumberUntil(10);
         this.yield = BigDecimal.valueOf(Long.valueOf(c) + 17L);
+    }
+
+    int getRandomNumberUntil(int threshold) {
+        return new Random().nextInt(threshold + 1) + 1;
     }
 
     public void processFamine() {
@@ -61,6 +63,7 @@ public class KaiserEngine {
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
         }
+        this.q = new BigDecimal(10L * getRandomNumberUntil(2)).subtract(new BigDecimal("0.3"));
     }
 
     @VisibleForTesting
