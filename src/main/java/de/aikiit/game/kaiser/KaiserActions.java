@@ -17,7 +17,20 @@ public class KaiserActions {
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
             }
         }
-
-
     }
+
+    public static void sell(KaiserEngine engine) {
+        while (true) {
+            try {
+                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie verkaufen?" + KaiserEnginePrinter.ANSI_RESET);
+                Long sell = new Scanner(System.in).nextLong();
+                engine.sellLand(sell);
+                return;
+
+            } catch (InputMismatchException e) {
+                System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
+            }
+        }
+    }
+
 }

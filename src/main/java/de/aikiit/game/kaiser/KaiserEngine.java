@@ -43,4 +43,8 @@ public class KaiserEngine {
     public void buyLand(Long buy) {
         System.out.println("TODO: Würde versuchen " + buy + " zu kaufen.");
     }
+
+    public void sellLand(Long sell) {
+        System.out.println("TODO: Würde versuchen " + sell + " zu verkaufen.");
+    }
 }
