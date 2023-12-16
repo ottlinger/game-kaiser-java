@@ -20,6 +20,7 @@ public class KaiserGame {
         }
 
         finish();
+        byeByeBanner();
     }
 
     public void intro() {
@@ -35,17 +36,32 @@ public class KaiserGame {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
         System.out.println(KaiserEnginePrinter.ANSI_RED);
-        System.out.println(
-                """
-                        #    #                              \s
-                        #   #    ##   #  ####  ###### ##### \s
-                        #  #    #  #  # #      #      #    #\s
-                        ###    #    # #  ####  #####  #    #\s
-                        #  #   ###### #      # #      ##### \s
-                        #   #  #    # # #    # #      #   # \s
-                        #    # #    # #  ####  ###### #    #\s
-                                                            \s
-                                                                            """);
+        System.out.println("""
+                #    #                              \s
+                #   #    ##   #  ####  ###### ##### \s
+                #  #    #  #  # #      #      #    #\s
+                ###    #    # #  ####  #####  #    #\s
+                #  #   ###### #      # #      ##### \s
+                #   #  #    # # #    # #      #   # \s
+                #    # #    # #  ####  ###### #    #\s
+                                                    \s
+                                                                    """);
+        System.out.println(KaiserEnginePrinter.ANSI_RESET);
+    }
+
+    public void byeByeBanner() {
+        // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
+        // font: banner
+        System.out.println(KaiserEnginePrinter.ANSI_RED);
+        System.out.println("""
+                ######                  ######                  #    #                              \s
+                #     # #   # ######    #     # #   # ######    #   #    ##   #  ####  ###### ##### \s
+                #     #  # #  #         #     #  # #  #         #  #    #  #  # #      #      #    #\s
+                ######    #   #####     ######    #   #####     ###    #    # #  ####  #####  #    #\s
+                #     #   #   #         #     #   #   #         #  #   ###### #      # #      ##### \s
+                #     #   #   #         #     #   #   #         #   #  #    # # #    # #      #   # \s
+                ######    #   ######    ######    #   ######    #    # #    # #  ####  ###### #    #\s
+                                                                                                    \s                                                                            """);
         System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
@@ -68,6 +84,4 @@ public class KaiserGame {
         System.out.println(printer.getResults());
         System.out.println(printer.evaluateRegency());
     }
-
-
 }
