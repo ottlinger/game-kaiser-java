@@ -78,12 +78,12 @@ public class KaiserEngine {
     }
 
     public void buyLand(Long buy) {
-        this.cost = 0; // price is recalculated per action
-
         if (buy < 0) {
             System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
             return;
         }
+
+        this.cost = 0; // price is recalculated per action
 
         if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies) && buy > 0) {
             this.area = this.area.add(BigDecimal.valueOf(buy));
