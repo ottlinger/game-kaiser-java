@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class KaiserEngine_BuyLandTest {
+public class KaiserEngineBuyLandTest {
     private KaiserEngine engine;
 
     @BeforeEach
