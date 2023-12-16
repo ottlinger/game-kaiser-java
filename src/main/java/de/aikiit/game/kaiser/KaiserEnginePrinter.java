@@ -17,6 +17,8 @@ public class KaiserEnginePrinter {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
+    public static final String ORANGE = "\u001B[38;5;202m";
+
     private final KaiserEngine engine;
 
     public KaiserEnginePrinter(KaiserEngine engine) {

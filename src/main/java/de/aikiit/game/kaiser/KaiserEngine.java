@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
+
 @Getter
 public class KaiserEngine {
     private BigDecimal externalDamage = BigDecimal.ZERO; // e
@@ -53,9 +55,9 @@ public class KaiserEngine {
     }
 
     public void processFamine() {
-        if (BigDecimal.ZERO.compareTo(q) <= 0) {
+        if (is(q).lessThan(BigDecimal.ZERO)) {
             this.population = this.population.divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP);
-            System.out.println("\u001B[38;5;202m");
+            System.out.println(KaiserEnginePrinter.ORANGE);
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
         }
@@ -75,6 +77,15 @@ public class KaiserEngine {
     }
 
     public void buyLand(Long buy) {
+        if (buy < 0) {
+            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
+            return;
+        }
+
+        if (this.yield.multiply(BigDecimal.valueOf(buy)).compareTo(this.supplies) == 0) {
+
+        }
+
         System.out.println("TODO: Würde versuchen " + buy + " zu kaufen.");
     }
 
