@@ -32,6 +32,7 @@ public class KaiserEnginePrinter {
         status.append(ANSI_CYAN).append("Die Ernte betrug (dzt/Hektar)     ").append(StringUtils.leftPad(String.valueOf(this.engine.getYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_RED).append("Ratten haben gefressen (dzt)      ").append(StringUtils.leftPad(String.valueOf(this.engine.getYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_RED).append("Eure Vorräte betragen (dzt)       ").append(StringUtils.leftPad(String.valueOf(this.engine.getSupplies()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Famine quotient beträgt (dzt)     ").append(StringUtils.leftPad(String.valueOf(this.engine.getQ()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         return status.toString();
     }
 

@@ -11,7 +11,7 @@ class KaiserEngineTest {
     @Test
     void getAreaPerCapita() {
         KaiserEngine k = new KaiserEngine();
-        assertThat(k.getAreaPerCapita()).isZero();
+        assertThat(k.getAreaPerCapita()).isEqualTo(new BigDecimal("11"));
     }
 
     @Test

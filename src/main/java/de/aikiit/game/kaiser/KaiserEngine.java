@@ -9,10 +9,9 @@ import java.util.Random;
 
 @Getter
 public class KaiserEngine {
-    private final BigDecimal externalDamage = BigDecimal.ZERO;
-    private final BigDecimal deathToll;
-    private final BigDecimal increase; // i in original-  birthRate?
-    ///
+    private BigDecimal externalDamage = BigDecimal.ZERO; // e
+    private BigDecimal deathToll; // d
+    private BigDecimal increase; // i in original-  birthRate?
     private Integer zYear; // why z in original?
     private BigDecimal population = BigDecimal.ZERO; // h in original
     private BigDecimal area = BigDecimal.ZERO;
@@ -21,12 +20,8 @@ public class KaiserEngine {
     private BigDecimal humans = BigDecimal.ZERO;
     private BigDecimal deathTollSum; // d1 in original
     private BigDecimal percentDeathToll; // p1 in original
-    private BigDecimal e = BigDecimal.ZERO;
-    private BigDecimal q = BigDecimal.ONE; // famineQuotient
+    private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient
     private Integer c = 0;
-
-    /// Missing:
-    // q - disaster quote
 
     public KaiserEngine() {
         this.population = BigDecimal.valueOf(95L);
@@ -34,16 +29,17 @@ public class KaiserEngine {
         this.yield = BigDecimal.valueOf(3L);
         this.supplies = BigDecimal.valueOf(2800L);
         this.humans = BigDecimal.valueOf(3000L);
-        this.area = this.humans.divide(this.supplies, RoundingMode.HALF_UP);
+        this.area = this.humans.divide(this.yield, RoundingMode.HALF_UP);
         this.increase = BigDecimal.valueOf(5L);
         this.deathToll = BigDecimal.ZERO;
         this.percentDeathToll = BigDecimal.ZERO;
         this.deathTollSum = BigDecimal.ZERO;
+        this.externalDamage = this.humans.subtract(this.supplies);
     }
 
     public void play() {
         this.area = this.humans.divide(this.supplies, RoundingMode.HALF_UP);
-        this.e = this.population.subtract(this.supplies);
+        this.externalDamage = this.population.subtract(this.supplies);
         this.zYear++;
         this.population = this.population.add(this.increase);
 
