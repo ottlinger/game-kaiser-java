@@ -12,21 +12,22 @@ public class KaiserGame {
         this.printer = new KaiserEnginePrinter(this.engine);
     }
 
+    private void incrementRoundCounter() {
+        round++;
+    }
+
     public void run() {
         intro();
+        status();
         while (round < MAX_ROUNDS) {
             incrementRoundCounter();
+            engine.play();
             status();
             actions();
-            engine.play();
         }
 
         finish();
         byeByeBanner();
-    }
-
-    private void incrementRoundCounter() {
-        round++;
     }
 
     public void intro() {

@@ -53,7 +53,7 @@ public class KaiserEngine {
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
         }
 
-        this.c = new Random().nextInt();
+        this.c = new Random().nextInt(11) + 1;
         this.yield = Long.valueOf(c) + 17;
     }
 
