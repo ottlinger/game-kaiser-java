@@ -110,7 +110,17 @@ public class KaiserEngine {
     }
 
     public void feedToPopulation(Long feed) {
-        System.out.println("TODO: Würde versuchen " + feed + " an Bevölkerung zu geben.");
+        if (feed < 0) {
+            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
+            return;
+        }
+
+        if (is(BigDecimal.valueOf(feed)).lessThanOrEqualTo(this.supplies)) {
+            this.supplies = this.supplies.subtract(BigDecimal.valueOf(feed));
+            this.cost = 1; // price is recalculated per round
+        } else {
+            throw new IllegalArgumentException("Not Enough in Stock");
+        }
     }
 
     public void cultivate(Long cultivate) {
@@ -118,7 +128,6 @@ public class KaiserEngine {
     }
 
     public void finishRoundAfterActions() {
-//        this.increase =
-//        this.c =
+        // TBD
     }
 }
