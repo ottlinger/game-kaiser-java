@@ -26,7 +26,7 @@ public class KaiserEngine {
         this.yield = 3L;
         this.supplies = 2800L;
         this.humans = 3000L;
-        this.area = Long.divideUnsigned(this.humans, this.supplies);
+        this.area = this.humans / this.supplies;
         this.increase = 5L;
         this.deathToll = 0L;
         this.percentDeathToll = 0L;
