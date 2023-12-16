@@ -28,18 +28,16 @@ public class KaiserEngineFeedToPopulationTest {
     }
 
     @Test
-    void sellLandWithNotEnoughLandAsArgumentInducesNoChanges() {
+    void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
         int costB4 = engine.getCost();
-        BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.sellLand(Long.MAX_VALUE);
+            engine.feedToPopulation(Long.MAX_VALUE);
         });
 
-        String expectedMessage = "Not Enough Land";
+        String expectedMessage = "Not Enough in Stock";
         assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getArea()).isEqualTo(areaB4);
         assertThat(engine.getSupplies()).isEqualTo(supplyB4);
         assertThat(engine.getCost()).isEqualTo(costB4);
     }
