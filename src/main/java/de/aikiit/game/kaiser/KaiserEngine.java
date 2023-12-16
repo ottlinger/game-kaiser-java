@@ -115,11 +115,13 @@ public class KaiserEngine {
             return;
         }
 
-        if (is(BigDecimal.valueOf(feed)).lessThanOrEqualTo(this.supplies)) {
-            this.supplies = this.supplies.subtract(BigDecimal.valueOf(feed));
-            this.cost = 1; // price is recalculated per round
-        } else {
-            throw new IllegalArgumentException("Not Enough in Stock");
+        if (feed != 0) {
+            if (is(BigDecimal.valueOf(feed)).lessThanOrEqualTo(this.supplies)) {
+                this.supplies = this.supplies.subtract(BigDecimal.valueOf(feed));
+                this.cost = 1; // price is recalculated per round
+            } else {
+                throw new IllegalArgumentException("Not Enough in Stock");
+            }
         }
     }
 
