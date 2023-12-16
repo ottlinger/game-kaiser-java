@@ -18,6 +18,7 @@ public class KaiserGame {
             incrementRoundCounter();
             status();
             actions();
+            engine.play();
         }
 
         finish();

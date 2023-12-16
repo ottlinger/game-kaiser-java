@@ -2,20 +2,25 @@ package de.aikiit.game.kaiser;
 
 import lombok.Getter;
 
+import java.util.Random;
+
 @Getter
 public class KaiserEngine {
     private final Long externalDamage = 0L;
-    ///
-    private final Integer zYear; // why z in original?
     private final Long deathToll;
-    private final Long increase; // birthRate?
-    private Long population = 0L;
+    private final Long increase; // i in original-  birthRate?
+    ///
+    private Integer zYear; // why z in original?
+    private Long population = 0L; // h in original
     private Long area = 0L;
     private Long yield = 0L;
     private Long supplies = 0L;
     private Long humans = 0L;
     private Long deathTollSum; // d1 in original
     private Long percentDeathToll; // p1 in original
+    private Long e = 0L;
+    private Long q = 0L;
+    private Integer c = 0;
 
     /// Missing:
     // q - disaster quote
@@ -31,6 +36,25 @@ public class KaiserEngine {
         this.deathToll = 0L;
         this.percentDeathToll = 0L;
         this.deathTollSum = 0L;
+        // base values
+        this.q = 1L;
+    }
+
+    public void play() {
+        this.area = this.humans / this.supplies;
+        this.e = this.population - this.supplies;
+        this.zYear++;
+        this.population += this.increase;
+
+        if (q < 0) {
+            this.population /= 2;
+            System.out.println("\u001B[38;5;202m");
+            System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
+            System.out.println(KaiserEnginePrinter.ANSI_RESET);
+        }
+
+        this.c = new Random().nextInt();
+        this.yield = Long.valueOf(c) + 17;
     }
 
     /**
