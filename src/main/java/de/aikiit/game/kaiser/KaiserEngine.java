@@ -21,7 +21,7 @@ public class KaiserEngine {
     private BigDecimal deathTollSum; // d1 in original
     private BigDecimal percentDeathToll; // p1 in original
     private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient
-    private Integer c = 0;
+    private Integer cost = 0;
 
     public KaiserEngine() {
         this.population = BigDecimal.valueOf(95L);
@@ -44,8 +44,8 @@ public class KaiserEngine {
         this.population = this.population.add(this.increase);
 
         processFamine();
-        this.c = getRandomNumberUntil(10);
-        this.yield = BigDecimal.valueOf(Long.valueOf(c) + 17L);
+        this.cost = getRandomNumberUntil(10);
+        this.yield = BigDecimal.valueOf(Long.valueOf(cost) + 17L);
     }
 
     int getRandomNumberUntil(int threshold) {
