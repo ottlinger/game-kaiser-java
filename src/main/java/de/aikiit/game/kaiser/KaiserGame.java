@@ -75,7 +75,8 @@ public class KaiserGame {
 
         KaiserActions.buy(this.engine);
         KaiserActions.sell(this.engine);
-        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel dzt wollen Sie an Ihr Volk verteilen?" + KaiserEnginePrinter.ANSI_RESET);
+        KaiserActions.feed(this.engine);
+
         System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie bebauen?" + KaiserEnginePrinter.ANSI_RESET);
         System.out.println();
     }

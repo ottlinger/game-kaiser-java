@@ -47,4 +47,8 @@ public class KaiserEngine {
     public void sellLand(Long sell) {
         System.out.println("TODO: Würde versuchen " + sell + " zu verkaufen.");
     }
+
+    public void feedToPopulation(Long feed) {
+        System.out.println("TODO: Würde versuchen " + feed + " an Bevölkerung zu geben.");
+    }
 }

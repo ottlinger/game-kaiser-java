@@ -33,4 +33,18 @@ public class KaiserActions {
         }
     }
 
+    public static void feed(KaiserEngine engine) {
+        while (true) {
+            try {
+                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel dzt wollen Sie an Ihr Volk verteilen?" + KaiserEnginePrinter.ANSI_RESET);
+                Long feed = new Scanner(System.in).nextLong();
+                engine.feedToPopulation(feed);
+                return;
+
+            } catch (InputMismatchException e) {
+                System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
+            }
+        }
+    }
+
 }
