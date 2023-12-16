@@ -21,6 +21,10 @@ Have fun :)
 
 # DevHints
 
+## Old basic interpreter
+
+* https://repl.endbasic.dev/
+
 ## BigDecimal
 
 ```java
