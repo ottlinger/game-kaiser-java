@@ -20,6 +20,7 @@ class KaiserEngineTest {
         k.setQ(new BigDecimal("0.5"));
         k.processFamine();
         assertThat(k.getPopulation()).isEqualTo(new BigDecimal("48"));
+        assertThat(k.getQ()).isNotEqualByComparingTo(BigDecimal.ONE);
     }
 
     @Test
@@ -28,5 +29,6 @@ class KaiserEngineTest {
         k.setQ(new BigDecimal("-1.2"));
         k.processFamine();
         assertThat(k.getPopulation()).isEqualTo(new BigDecimal("95"));
+        assertThat(k.getQ()).isNotEqualByComparingTo(BigDecimal.ONE);
     }
 }
