@@ -28,4 +28,14 @@ firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
 firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
 firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
 firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="   
+
+or
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
+
+var areEqual = is(first).equalTo(second);
+var isGreater = is(first).greaterThan(second);
+var isLess = is(first).lessThan(second);
+var isBetween = is(first).between(second, third);
+// etc.
+
 ```
