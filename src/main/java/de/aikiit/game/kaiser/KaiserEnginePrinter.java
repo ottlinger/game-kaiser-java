@@ -49,11 +49,13 @@ public class KaiserEnginePrinter {
         // line 900
         result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
         result.append(System.lineSeparator());
+        result.append(System.lineSeparator());
 
         // line 940
         result.append("Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.");
         result.append(System.lineSeparator());
         result.append("Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!");
+        result.append(System.lineSeparator());
         result.append(System.lineSeparator());
 
         // line 960
@@ -61,9 +63,7 @@ public class KaiserEnginePrinter {
         result.append(System.lineSeparator());
         result.append(this.engine.getPopulation() * .8).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
         result.append(System.lineSeparator());
-
         result.append(System.lineSeparator());
-        result.append("Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie ").append(this.engine.getAreaPerCapita()).append(" Hektar/Einwohner.").append(System.lineSeparator());
 
         result.append(ANSI_RESET);
         return result.toString();
