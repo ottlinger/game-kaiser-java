@@ -87,6 +87,7 @@ public class KaiserGame {
         }
 
         KaiserActions.feed(this.engine);
+        KaiserActions.cultivate(this.engine);
 
         System.out.println();
     }
