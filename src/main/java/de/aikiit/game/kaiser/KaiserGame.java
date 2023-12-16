@@ -15,12 +15,17 @@ public class KaiserGame {
     public void run() {
         intro();
         while (round < MAX_ROUNDS) {
+            incrementRoundCounter();
             status();
             actions();
         }
 
         finish();
         byeByeBanner();
+    }
+
+    private void incrementRoundCounter() {
+        round++;
     }
 
     public void intro() {
@@ -66,7 +71,7 @@ public class KaiserGame {
     }
 
     public void status() {
-        System.out.println(printer.getStatus(++round));
+        System.out.println(printer.getStatus(round));
     }
 
     public void actions() {
