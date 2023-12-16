@@ -83,13 +83,14 @@ public class KaiserEngine {
             return;
         }
 
-        this.cost = 0; // price is recalculated per action
-
-        if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies) && buy > 0) {
-            this.area = this.area.add(BigDecimal.valueOf(buy));
-            this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));
-        } else {
-            throw new IllegalArgumentException("Not Enough Supplies");
+        if (buy > 0) {
+            if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies)) {
+                this.area = this.area.add(BigDecimal.valueOf(buy));
+                this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));
+                this.cost = 0; // price is recalculated per action
+            } else {
+                throw new IllegalArgumentException("Not Enough Supplies");
+            }
         }
     }
 
