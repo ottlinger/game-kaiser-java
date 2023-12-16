@@ -18,3 +18,14 @@ $ ./run.sh
 ```
 
 Have fun :)
+
+# DevHints
+
+## BigDecimal
+
+```java
+firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
+firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
+firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
+firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="   
+```
