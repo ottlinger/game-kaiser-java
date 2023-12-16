@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class KaiserEngineTest {
 
@@ -58,5 +59,24 @@ class KaiserEngineTest {
         assertThat(engine.getSupplies()).isEqualTo(supplyB4);
         assertThat(engine.getCost()).isEqualTo(costB4);
     }
+
+    @Test
+    void buyLandWithMoreThanCashAsArgumentInducesNoChanges() {
+        int costB4 = engine.getCost();
+        BigDecimal areaB4 = engine.getArea();
+        BigDecimal supplyB4 = engine.getSupplies();
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            engine.buyLand(Long.MAX_VALUE);
+        });
+
+        String expectedMessage = "Not Enough Supplies";
+        assertThat(exception.getMessage()).contains(expectedMessage);
+
+        assertThat(engine.getArea()).isEqualTo(areaB4);
+        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
+        assertThat(engine.getCost()).isEqualTo(costB4);
+    }
+
 
 }
