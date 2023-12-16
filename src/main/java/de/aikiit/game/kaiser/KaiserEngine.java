@@ -61,7 +61,8 @@ public class KaiserEngine {
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
         }
-        this.q = new BigDecimal(10L * getRandomNumberUntil(2)).subtract(new BigDecimal("0.3"));
+        this.q = new BigDecimal(getRandomNumberUntil(10)).divide(new BigDecimal("10"), RoundingMode.HALF_UP).
+                subtract(new BigDecimal("0.3"));
     }
 
     @VisibleForTesting
