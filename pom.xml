@@ -41,12 +41,45 @@
     </dependency>
   </dependencies>
   <build>
-    <defaultGoal>clean install</defaultGoal>
+    <defaultGoal>clean install org.pitest:pitest-maven:mutationCoverage</defaultGoal>
     <plugins>
       <!-- used to create a shaded JAR that is executable -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>1.15.3</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.1</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <timeoutConstant>8000</timeoutConstant>
+          <threads>8</threads>
+          <coverageThreshold>33</coverageThreshold>
+          <failWhenNoMutations>false</failWhenNoMutations>
+          <verbose>false</verbose>
+          <targetClasses>
+            <param>de.aikiit.game*</param>
+          </targetClasses>
+          <targetTests>
+            <param>de.aikiit.game*</param>
+          </targetTests>
+        </configuration>
+        <executions>
+          <execution>
+            <id>mutationcoverage</id>
+            <goals>
+              <goal>mutationCoverage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
