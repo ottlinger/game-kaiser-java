@@ -43,3 +43,7 @@ var isBetween = is(first).between(second, third);
 // etc.
 
 ```
+
+## Site reports
+
+A Maven-generated site report is also available [here](https://ottlinger.github.io/game-kaiser-java/).
