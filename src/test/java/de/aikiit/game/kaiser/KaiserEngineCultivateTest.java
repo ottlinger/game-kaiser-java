@@ -84,28 +84,12 @@ public class KaiserEngineCultivateTest {
     }
 
     @Test
-    void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
+    void cultivateRegularUseCaseAndSetPriceToOneAfterwards() {
+        BigDecimal supplyB4 = engine.getSupplies();
         int costB4 = engine.getCost();
-        BigDecimal supplyB4 = engine.getSupplies();
+        engine.cultivate(4L);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.feedToPopulation(Long.MAX_VALUE);
-        });
-
-        String expectedMessage = "Not Enough in Stock";
-        assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(BigDecimal.valueOf(2L)));
+        assertThat(engine.getCost()).isNotEqualTo(costB4);
     }
-
-    @Test
-    void feedToPopulationRegularUseCaseAndSetPriceToOneAfterwards() {
-        BigDecimal supplyB4 = engine.getSupplies();
-        engine.feedToPopulation(4L);
-
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(BigDecimal.valueOf(4L)));
-        assertThat(engine.getCost()).isEqualTo(1);
-    }
-
-
 }
