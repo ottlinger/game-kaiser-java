@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
+import static java.lang.Math.round;
 import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 @Getter
@@ -61,8 +62,7 @@ public class KaiserEngine {
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
         }
-        this.q = new BigDecimal(getRandomNumberUntil(10)).divide(new BigDecimal("10"), RoundingMode.HALF_UP).
-                subtract(new BigDecimal("0.3"));
+        this.q = new BigDecimal(getRandomNumberUntil(10)).divide(new BigDecimal("10"), RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
     }
 
     @VisibleForTesting
@@ -160,14 +160,24 @@ public class KaiserEngine {
             throw new IllegalArgumentException("Not enough workers available.");
         }
 
+        // perform seeding
         this.supplies = this.supplies.subtract(halfCultivate);
         calculateNewPrice();
 
+        // yields after cultivation and population increase
         this.yield = BigDecimal.valueOf(this.cost);
         this.humans = this.yield.multiply(BigDecimal.valueOf(cultivate));
+
+        // cultivation kills rats ;)
         this.externalDamage = BigDecimal.ZERO;
         calculateNewPrice();
 
+        // but add some external damage in some cases
+        if (round(this.cost / 2) == this.cost / 2) {
+            this.externalDamage = this.supplies.divide(BigDecimal.valueOf(this.cost), RoundingMode.HALF_UP);
+        }
+        this.supplies = this.supplies.subtract(this.externalDamage).add(this.humans);
+        calculateNewPrice();
     }
 
     @VisibleForTesting
@@ -180,6 +190,7 @@ public class KaiserEngine {
     }
 
     public void finishRoundAfterActions() {
-// tbd
+//this.increase = this.cost.
+
     }
 }

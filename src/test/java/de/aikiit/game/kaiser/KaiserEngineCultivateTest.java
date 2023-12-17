@@ -89,7 +89,7 @@ public class KaiserEngineCultivateTest {
         int costB4 = engine.getCost();
         engine.cultivate(4L);
 
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(BigDecimal.valueOf(2L)));
+        assertThat(engine.getSupplies()).isNotEqualTo(supplyB4);
         assertThat(engine.getCost()).isNotEqualTo(costB4);
     }
 }
