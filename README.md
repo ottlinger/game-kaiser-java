@@ -25,6 +25,10 @@ Have fun :)
 
 * https://repl.endbasic.dev/
 
+## Console Colours
+
+* https://talyian.github.io/ansicolors/
+
 ## BigDecimal
 
 ```java
