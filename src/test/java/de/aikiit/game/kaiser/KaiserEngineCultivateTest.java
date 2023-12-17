@@ -50,15 +50,18 @@ public class KaiserEngineCultivateTest {
 
     @Test
     void youNeedToHaveEnoughSupplies() {
-        engine.setArea(BigDecimal.valueOf(Long.MAX_VALUE).divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP));
+        engine.setArea(BigDecimal.valueOf(Long.MAX_VALUE));
+        engine.setSupplies(BigDecimal.valueOf(Long.MAX_VALUE).divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP));
+        BigDecimal suppliesB4 = engine.getSupplies();
         BigDecimal areaB4 = engine.getArea();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             engine.cultivate(Long.MAX_VALUE);
         });
 
-        String expectedMessage = "You cannot cultivate more area than you have.";
+        String expectedMessage = "You cannot cultivate more than you have.";
         assertThat(exception.getMessage()).contains(expectedMessage);
+        assertThat(engine.getSupplies()).isEqualTo(suppliesB4);
         assertThat(engine.getArea()).isEqualTo(areaB4);
     }
 

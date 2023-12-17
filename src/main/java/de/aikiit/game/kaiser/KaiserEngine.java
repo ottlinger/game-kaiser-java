@@ -71,6 +71,12 @@ public class KaiserEngine {
     }
 
     @VisibleForTesting
+    void setSupplies(BigDecimal supplies) {
+        this.supplies = supplies;
+    }
+
+
+    @VisibleForTesting
     void setArea(BigDecimal area) {
         this.area = area;
     }
