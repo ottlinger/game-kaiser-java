@@ -35,6 +35,19 @@ public class KaiserEngineCultivateTest {
     }
 
     @Test
+    void youCanNotCultivateMoreThanYourArea() {
+        BigDecimal areaB4 = engine.getArea();
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            engine.cultivate(Long.MAX_VALUE);
+        });
+
+        String expectedMessage = "You cannot cultivate more area than you have.";
+        assertThat(exception.getMessage()).contains(expectedMessage);
+        assertThat(engine.getArea()).isEqualTo(areaB4);
+    }
+
+    @Test
     void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
         int costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();

@@ -136,11 +136,14 @@ public class KaiserEngine {
             return;
         }
 
-        if (is(this.area).greaterThanOrEqualTo(BigDecimal.valueOf(cultivate))) {
-            throw new IllegalArgumentException("Not Enough Land");
-        } else {
-// TBD
+        if (is(this.area).lessThan(BigDecimal.valueOf(cultivate))) {
+            throw new IllegalArgumentException("You cannot cultivate more area than you have.");
         }
+
+        if (is(this.deathToll.divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP)).greaterThan(this.supplies)) {
+            throw new IllegalArgumentException("Not Enough Supply");
+        }
+
     }
 
     public void finishRoundAfterActions() {
