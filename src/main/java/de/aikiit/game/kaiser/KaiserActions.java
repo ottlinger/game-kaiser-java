@@ -17,11 +17,13 @@ public class KaiserActions {
                 System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Wieviel Land wollen Sie kaufen? 0 = nichts" + KaiserEnginePrinter.ANSI_RESET);
                 Long buy = new Scanner(System.in).nextLong();
                 return engine.buyLand(buy) > 0;
-
             } catch (InputMismatchException e) {
                 System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
-                System.out.println("Überleg doch mal, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn.");
+                System.out.print(KaiserEnginePrinter.ANSI_RESET);
+            } catch (IllegalArgumentException e) {
+                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
+                System.out.println("Überleg doch mal, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn, versuch es nochmals.");
                 System.out.print(KaiserEnginePrinter.ANSI_RESET);
             }
         }
@@ -34,11 +36,13 @@ public class KaiserActions {
                 Long sell = new Scanner(System.in).nextLong();
                 engine.sellLand(sell);
                 return;
-
             } catch (InputMismatchException e) {
                 System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
-                System.out.println("Überleg doch mal, Du hast nur " + engine.getArea() + " Hektar Land.");
+                System.out.print(KaiserEnginePrinter.ANSI_RESET);
+            } catch (IllegalArgumentException e) {
+                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
+                System.out.println("Überleg doch mal, Du hast nur " + engine.getArea() + " Hektar Land. Probier es erneut.");
                 System.out.print(KaiserEnginePrinter.ANSI_RESET);
             }
         }
@@ -51,11 +55,13 @@ public class KaiserActions {
                 Long feed = new Scanner(System.in).nextLong();
                 engine.feedToPopulation(feed);
                 return;
-
             } catch (InputMismatchException e) {
                 System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
-                System.out.println("Überleg doch mal, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn.");
+                System.out.print(KaiserEnginePrinter.ANSI_RESET);
+            } catch (IllegalArgumentException e) {
+                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
+                System.out.println("Überleg doch mal, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn, probier es erneut.");
                 System.out.print(KaiserEnginePrinter.ANSI_RESET);
             }
         }
@@ -68,11 +74,13 @@ public class KaiserActions {
                 Long cultivate = new Scanner(System.in).nextLong();
                 engine.cultivate(cultivate);
                 return;
-
             } catch (InputMismatchException e) {
                 System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
                 System.out.println("Gib einen richtigen Wert ein, Du Knalltüte!");
-                System.out.println("Überleg doch mal, Du hast nur " + engine.getArea() + " Hektar Land.");
+                System.out.print(KaiserEnginePrinter.ANSI_RESET);
+            } catch (IllegalArgumentException e) {
+                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);
+                System.out.println("Überleg doch mal, Du hast nur " + engine.getArea() + " Hektar Land. Probier es nochmals.");
                 System.out.print(KaiserEnginePrinter.ANSI_RESET);
             }
         }
