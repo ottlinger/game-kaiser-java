@@ -138,7 +138,7 @@ public class KaiserEngine {
 
     public void cultivate(Long cultivate) {
         if (cultivate == 0) {
-            this.cost = getRandomNumberUntil(5);
+            calculateNewPrice();
             return;
         }
 
@@ -151,14 +151,21 @@ public class KaiserEngine {
             throw new IllegalArgumentException("You cannot cultivate more area than you have.");
         }
 
-        if (is(this.supplies).lessThan(BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP))) {
+        BigDecimal halfCultivate = BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP);
+        if (is(this.supplies).lessThan(halfCultivate)) {
             throw new IllegalArgumentException("You cannot cultivate more than you have.");
         }
 
-        if (is(this.supplies).lessThan(BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP))) {
+        if (is(this.supplies).lessThan(halfCultivate)) {
             throw new IllegalArgumentException("Not enough workers available.");
         }
-// TBD
+
+        this.supplies = this.supplies.subtract(halfCultivate);
+        calculateNewPrice();
+    }
+
+    private void calculateNewPrice() {
+        this.cost = getRandomNumberUntil(5); // change price for next round
     }
 
     public void finishRoundAfterActions() {
