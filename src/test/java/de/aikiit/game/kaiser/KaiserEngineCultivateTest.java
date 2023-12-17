@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,6 +37,20 @@ public class KaiserEngineCultivateTest {
 
     @Test
     void youCanNotCultivateMoreThanYourArea() {
+        BigDecimal areaB4 = engine.getArea();
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            engine.cultivate(Long.MAX_VALUE);
+        });
+
+        String expectedMessage = "You cannot cultivate more area than you have.";
+        assertThat(exception.getMessage()).contains(expectedMessage);
+        assertThat(engine.getArea()).isEqualTo(areaB4);
+    }
+
+    @Test
+    void youNeedToHaveEnoughSupplies() {
+        engine.setArea(BigDecimal.valueOf(Long.MAX_VALUE).divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP));
         BigDecimal areaB4 = engine.getArea();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {

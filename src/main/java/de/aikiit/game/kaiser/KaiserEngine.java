@@ -70,6 +70,11 @@ public class KaiserEngine {
         this.q = q;
     }
 
+    @VisibleForTesting
+    void setArea(BigDecimal area) {
+        this.area = area;
+    }
+
     /**
      * @return area per capita, called <b>L</b> in original. Land ownership?
      */
@@ -140,10 +145,10 @@ public class KaiserEngine {
             throw new IllegalArgumentException("You cannot cultivate more area than you have.");
         }
 
-        if (is(this.deathToll.divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP)).greaterThan(this.supplies)) {
-            throw new IllegalArgumentException("Not Enough Supply");
+        if (is(this.supplies).lessThan(BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP))) {
+            throw new IllegalArgumentException("You cannot cultivate more than you have.");
         }
-
+// TBD
     }
 
     public void finishRoundAfterActions() {
