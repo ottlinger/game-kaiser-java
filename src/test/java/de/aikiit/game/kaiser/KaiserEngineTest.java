@@ -43,7 +43,7 @@ class KaiserEngineTest {
 
     @Test
     void buyLandIgnoresNegativeInputAndChangesNothing() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
 
@@ -56,7 +56,7 @@ class KaiserEngineTest {
 
     @Test
     void calculateCostChangesPrice() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
 
         engine.calculateNewPrice();
 

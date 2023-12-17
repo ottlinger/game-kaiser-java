@@ -19,7 +19,7 @@ public class KaiserEngineCultivateTest {
 
     @Test
     void cultivateZeroChangesCostForNextRound() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
 
         engine.cultivate(0L);
 
@@ -28,7 +28,7 @@ public class KaiserEngineCultivateTest {
 
     @Test
     void cultivateNegativeInputDoesNotChangeCost() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
 
         engine.cultivate(-1234L);
 
@@ -86,7 +86,7 @@ public class KaiserEngineCultivateTest {
     @Test
     void cultivateRegularUseCaseAndSetPriceToOneAfterwards() {
         BigDecimal supplyB4 = engine.getSupplies();
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
         engine.cultivate(4L);
 
         assertThat(engine.getSupplies()).isNotEqualTo(supplyB4);

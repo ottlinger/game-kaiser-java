@@ -18,7 +18,7 @@ public class KaiserEngineFeedToPopulationTest {
 
     @Test
     void feedToPopulationDoesNothingIfZeroIsGiven() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();
 
         engine.feedToPopulation(0L);
@@ -29,7 +29,7 @@ public class KaiserEngineFeedToPopulationTest {
 
     @Test
     void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -48,7 +48,7 @@ public class KaiserEngineFeedToPopulationTest {
         engine.feedToPopulation(4L);
 
         assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(BigDecimal.valueOf(4L)));
-        assertThat(engine.getCost()).isEqualTo(1);
+        assertThat(engine.getCost()).isEqualTo(BigDecimal.ONE);
     }
 
 

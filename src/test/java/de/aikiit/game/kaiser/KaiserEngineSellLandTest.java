@@ -18,7 +18,7 @@ public class KaiserEngineSellLandTest {
 
     @Test
     void sellLandDoesNothingIfZeroIsGiven() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
 
@@ -31,7 +31,7 @@ public class KaiserEngineSellLandTest {
 
     @Test
     void sellLandWithNotEnoughLandAsArgumentInducesNoChanges() {
-        int costB4 = engine.getCost();
+        BigDecimal costB4 = engine.getCost();
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
 
@@ -54,7 +54,7 @@ public class KaiserEngineSellLandTest {
 
         assertThat(engine.getArea()).isEqualTo(areaB4.subtract(BigDecimal.valueOf(4L)));
         assertThat(engine.getSupplies()).isEqualTo(supplyB4.add(engine.getYield().multiply(BigDecimal.valueOf(4L))));
-        assertThat(engine.getCost()).isEqualTo(0);
+        assertThat(engine.getCost()).isEqualTo(BigDecimal.ZERO);
     }
 
 

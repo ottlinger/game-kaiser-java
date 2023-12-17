@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
-import static java.lang.Math.round;
 import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 @Getter
@@ -24,7 +23,7 @@ public class KaiserEngine {
     private BigDecimal deathTollSum; // d1 in original
     private BigDecimal percentDeathToll; // p1 in original
     private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient
-    private Integer cost = 0;
+    private BigDecimal cost = BigDecimal.ZERO;
 
     public KaiserEngine() {
         this.population = BigDecimal.valueOf(95L);
@@ -48,11 +47,11 @@ public class KaiserEngine {
 
         processFamine();
         this.cost = getRandomNumberUntil(10);
-        this.yield = BigDecimal.valueOf(Long.valueOf(cost) + 17L);
+        this.yield = cost.add(BigDecimal.valueOf(17L));
     }
 
-    int getRandomNumberUntil(int threshold) {
-        return new Random().nextInt(threshold + 1) + 1;
+    BigDecimal getRandomNumberUntil(int threshold) {
+        return BigDecimal.valueOf(new Random().nextInt(threshold + 1) + 1);
     }
 
     public void processFamine() {
@@ -62,7 +61,12 @@ public class KaiserEngine {
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
         }
-        this.q = new BigDecimal(getRandomNumberUntil(10)).divide(new BigDecimal("10"), RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
+        refreshFamineQuotient();
+    }
+
+    void refreshFamineQuotient() {
+        this.q = getRandomNumberUntil(10).divide(new BigDecimal("10"), RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
+
     }
 
     @VisibleForTesting
@@ -97,7 +101,7 @@ public class KaiserEngine {
             if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies)) {
                 this.area = this.area.add(BigDecimal.valueOf(buy));
                 this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));
-                this.cost = 0; // price is recalculated per round
+                this.cost = BigDecimal.ZERO; // price is recalculated per round
             } else {
                 throw new IllegalArgumentException("Not Enough Supplies");
             }
@@ -114,7 +118,7 @@ public class KaiserEngine {
         if (is(BigDecimal.valueOf(sell)).lessThan(this.area)) {
             this.area = this.area.subtract(BigDecimal.valueOf(sell));
             this.supplies = this.supplies.add(this.yield.multiply(BigDecimal.valueOf(sell)));
-            this.cost = 0; // price is recalculated per round
+            this.cost = BigDecimal.ZERO; // price is recalculated per round
         } else {
             throw new IllegalArgumentException("Not Enough Land");
         }
@@ -129,7 +133,7 @@ public class KaiserEngine {
         if (feed != 0) {
             if (is(BigDecimal.valueOf(feed)).lessThanOrEqualTo(this.supplies)) {
                 this.supplies = this.supplies.subtract(BigDecimal.valueOf(feed));
-                this.cost = 1; // price is recalculated per round
+                this.cost = BigDecimal.ONE; // price is recalculated per round
             } else {
                 throw new IllegalArgumentException("Not Enough in Stock");
             }
@@ -165,16 +169,17 @@ public class KaiserEngine {
         calculateNewPrice();
 
         // yields after cultivation and population increase
-        this.yield = BigDecimal.valueOf(this.cost);
+        this.yield = this.cost;
         this.humans = this.yield.multiply(BigDecimal.valueOf(cultivate));
 
         // cultivation kills rats ;)
         this.externalDamage = BigDecimal.ZERO;
         calculateNewPrice();
 
-        // but add some external damage in some cases
-        if (round(this.cost / 2) == this.cost / 2) {
-            this.externalDamage = this.supplies.divide(BigDecimal.valueOf(this.cost), RoundingMode.HALF_UP);
+        // but add some external damage in some cases in a naiive manner
+        // original condition stated: if int(c/2) <> c/2
+        if (this.cost.divide(BigDecimal.valueOf(2L), RoundingMode.DOWN).intValue() == this.cost.divide(BigDecimal.valueOf(2L), RoundingMode.UP).intValue()) {
+            this.externalDamage = this.supplies.divide(this.cost, RoundingMode.HALF_UP);
         }
         this.supplies = this.supplies.subtract(this.externalDamage).add(this.humans);
         calculateNewPrice();
@@ -190,7 +195,11 @@ public class KaiserEngine {
     }
 
     public void finishRoundAfterActions() {
-//this.increase = this.cost.
+        BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);
+        this.increase = cost.multiply(factor).divide(this.population, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100L).add(BigDecimal.ONE));
 
+        this.cost = this.q.divide(BigDecimal.valueOf(20L));
+
+        // TBD
     }
 }
