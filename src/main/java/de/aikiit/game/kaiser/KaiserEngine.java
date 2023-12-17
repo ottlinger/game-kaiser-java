@@ -126,6 +126,12 @@ public class KaiserEngine {
     }
 
     public void cultivate(Long cultivate) {
+        if (cultivate == 0) {
+            this.cost = getRandomNumberUntil(5);
+            return;
+        }
+
+
         System.out.println("TODO: Würde versuchen " + cultivate + " anzubauen.");
     }
 
