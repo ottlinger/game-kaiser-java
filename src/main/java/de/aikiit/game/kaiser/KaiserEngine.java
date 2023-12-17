@@ -136,8 +136,11 @@ public class KaiserEngine {
             return;
         }
 
-
-        System.out.println("TODO: Würde versuchen " + cultivate + " anzubauen.");
+        if (is(this.area).greaterThanOrEqualTo(BigDecimal.valueOf(cultivate))) {
+            throw new IllegalArgumentException("Not Enough Land");
+        } else {
+// TBD
+        }
     }
 
     public void finishRoundAfterActions() {
