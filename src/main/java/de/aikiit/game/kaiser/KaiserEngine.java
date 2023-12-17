@@ -156,7 +156,7 @@ public class KaiserEngine {
             throw new IllegalArgumentException("You cannot cultivate more than you have.");
         }
 
-        if (is(this.supplies).lessThan(halfCultivate)) {
+        if (is(BigDecimal.valueOf(cultivate)).greaterThan(getPopulation().multiply(BigDecimal.TEN))) {
             throw new IllegalArgumentException("Not enough workers available.");
         }
 
