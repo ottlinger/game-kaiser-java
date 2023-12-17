@@ -131,6 +131,11 @@ public class KaiserEngine {
             return;
         }
 
+        if (cultivate < 0) {
+            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
+            return;
+        }
+
 
         System.out.println("TODO: Würde versuchen " + cultivate + " anzubauen.");
     }

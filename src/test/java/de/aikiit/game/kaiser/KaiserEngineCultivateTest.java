@@ -26,6 +26,15 @@ public class KaiserEngineCultivateTest {
     }
 
     @Test
+    void cultivateNegativeInputDoesNotChangeCost() {
+        int costB4 = engine.getCost();
+
+        engine.cultivate(-1234L);
+
+        assertThat(engine.getCost()).isEqualTo(costB4);
+    }
+
+    @Test
     void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
         int costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();
