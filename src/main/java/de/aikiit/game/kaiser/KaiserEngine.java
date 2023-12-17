@@ -165,8 +165,12 @@ public class KaiserEngine {
     }
 
     @VisibleForTesting
+    /**
+     * Change price for next round.
+     * @see #cost
+     */
     void calculateNewPrice() {
-        this.cost = getRandomNumberUntil(5); // change price for next round
+        this.cost = getRandomNumberUntil(5);
     }
 
     public void finishRoundAfterActions() {
