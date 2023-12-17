@@ -162,6 +162,12 @@ public class KaiserEngine {
 
         this.supplies = this.supplies.subtract(halfCultivate);
         calculateNewPrice();
+
+        this.yield = BigDecimal.valueOf(this.cost);
+        this.humans = this.yield.multiply(BigDecimal.valueOf(cultivate));
+        this.externalDamage = BigDecimal.ZERO;
+        calculateNewPrice();
+
     }
 
     @VisibleForTesting
@@ -174,6 +180,6 @@ public class KaiserEngine {
     }
 
     public void finishRoundAfterActions() {
-        // TBD
+// tbd
     }
 }
