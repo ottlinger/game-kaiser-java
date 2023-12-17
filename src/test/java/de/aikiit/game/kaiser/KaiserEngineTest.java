@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class KaiserEngineTest {
 
@@ -55,4 +54,12 @@ class KaiserEngineTest {
         assertThat(engine.getCost()).isEqualTo(costB4);
     }
 
+    @Test
+    void calculateCostChangesPrice() {
+        int costB4 = engine.getCost();
+
+        engine.calculateNewPrice();
+
+        assertThat(engine.getCost()).isNotEqualTo(costB4);
+    }
 }
