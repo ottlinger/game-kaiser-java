@@ -66,6 +66,24 @@ public class KaiserEngineCultivateTest {
     }
 
     @Test
+    void youNeedWorkersForCultivation() {
+        engine.setArea(BigDecimal.valueOf(Long.MAX_VALUE));
+        engine.setSupplies(BigDecimal.valueOf(Long.MAX_VALUE).divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP));
+        BigDecimal suppliesB4 = engine.getSupplies();
+        BigDecimal areaB4 = engine.getArea();
+
+        assertThat(engine.getPopulation()).isEqualTo(BigDecimal.valueOf(95L)); // is default value
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            engine.cultivate(BigDecimal.valueOf(1000L).longValue()); // is 10 times more than population
+        });
+
+        String expectedMessage = "Not enough workers available.";
+        assertThat(exception.getMessage()).contains(expectedMessage);
+        assertThat(engine.getSupplies()).isEqualTo(suppliesB4);
+        assertThat(engine.getArea()).isEqualTo(areaB4);
+    }
+
+    @Test
     void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
         int costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();
