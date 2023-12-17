@@ -154,6 +154,10 @@ public class KaiserEngine {
         if (is(this.supplies).lessThan(BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP))) {
             throw new IllegalArgumentException("You cannot cultivate more than you have.");
         }
+
+        if (is(this.supplies).lessThan(BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP))) {
+            throw new IllegalArgumentException("Not enough workers available.");
+        }
 // TBD
     }
 
