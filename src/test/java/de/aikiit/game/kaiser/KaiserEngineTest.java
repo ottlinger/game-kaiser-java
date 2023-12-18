@@ -62,4 +62,12 @@ class KaiserEngineTest {
 
         assertThat(engine.getCost()).isNotEqualTo(costB4);
     }
+
+    @Test
+    void verifyThingsHappenUponRoundRestart() {
+        engine.startNewRound();
+
+        assertThat(engine.getPopulation()).isEqualTo("100");
+        assertThat(engine.getCost()).isPositive(); // randomNumber
+    }
 }
