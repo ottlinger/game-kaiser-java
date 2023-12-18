@@ -56,7 +56,7 @@ public class KaiserEngine {
 
     public void processFamine() {
         if (is(q).lessThan(BigDecimal.ZERO)) {
-            this.population = this.population.divide(BigDecimal.valueOf(2L), 3, RoundingMode.HALF_UP);
+            this.population = this.population.divide(BigDecimal.valueOf(2L), 0, RoundingMode.HALF_UP);
             System.out.println(KaiserEnginePrinter.ORANGE);
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
@@ -89,7 +89,7 @@ public class KaiserEngine {
      * @return area per capita, called <b>L</b> in original. Land ownership?
      */
     public BigDecimal getAreaPerCapita() {
-        return area.divide(population, 3, RoundingMode.HALF_UP);
+        return area.divide(population, 0, RoundingMode.HALF_UP);
     }
 
     public long buyLand(Long buy) {

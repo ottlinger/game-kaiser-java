@@ -70,7 +70,7 @@ class KaiserEngineTest {
 
         assertThat(engine.getPopulation()).isEqualTo("100");
         assertThat(engine.getCost()).isPositive(); // randomNumber
-        assertThat(engine.getArea()).isEqualTo("1000");
+        assertThat(engine.getArea()).isEqualTo("1000.000");
         assertThat(engine.getExternalDamage()).isEqualTo("200");
         assertThat(engine.getZYear()).isEqualTo(1);
         assertThat(engine.getYield()).isEqualTo(engine.getCost().add(BigDecimal.valueOf(17)));
@@ -78,6 +78,6 @@ class KaiserEngineTest {
 
     @Test
     void verifyPostRoundActionsDoNotProduceErrors() {
-        assertDoesNotThrow(() ->  engine.finishRoundAfterActions());
+        assertDoesNotThrow(() -> engine.finishRoundAfterActions());
     }
 }
