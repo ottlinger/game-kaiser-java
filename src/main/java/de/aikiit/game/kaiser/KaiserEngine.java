@@ -40,7 +40,7 @@ public class KaiserEngine {
     }
 
     public void startNewRound() {
-        this.area = this.humans.divide(this.yield, RoundingMode.HALF_UP);
+        this.area = this.humans.divide(this.yield, 3, RoundingMode.HALF_UP);
         this.externalDamage = this.humans.subtract(this.supplies);
         this.zYear++;
         this.population = this.population.add(this.increase);
@@ -56,7 +56,7 @@ public class KaiserEngine {
 
     public void processFamine() {
         if (is(q).lessThan(BigDecimal.ZERO)) {
-            this.population = this.population.divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP);
+            this.population = this.population.divide(BigDecimal.valueOf(2L), 3, RoundingMode.HALF_UP);
             System.out.println(KaiserEnginePrinter.ORANGE);
             System.out.println("Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
@@ -65,7 +65,7 @@ public class KaiserEngine {
     }
 
     void refreshFamineQuotient() {
-        this.q = getRandomNumberUntil(10).divide(new BigDecimal("10"), RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
+        this.q = getRandomNumberUntil(10).divide(new BigDecimal("10"), 3, RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
 
     }
 
@@ -89,7 +89,7 @@ public class KaiserEngine {
      * @return area per capita, called <b>L</b> in original. Land ownership?
      */
     public BigDecimal getAreaPerCapita() {
-        return area.divide(population, RoundingMode.HALF_UP);
+        return area.divide(population, 3, RoundingMode.HALF_UP);
     }
 
     public long buyLand(Long buy) {
@@ -155,7 +155,7 @@ public class KaiserEngine {
             throw new IllegalArgumentException("You cannot cultivate more area than you have.");
         }
 
-        BigDecimal halfCultivate = BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), RoundingMode.HALF_UP);
+        BigDecimal halfCultivate = BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), 3, RoundingMode.HALF_UP);
         if (is(this.supplies).lessThan(halfCultivate)) {
             throw new IllegalArgumentException("You cannot cultivate more than you have.");
         }
@@ -178,8 +178,8 @@ public class KaiserEngine {
 
         // but add some external damage in some cases in a naiive manner
         // original condition stated: if int(c/2) <> c/2
-        if (this.cost.divide(BigDecimal.valueOf(2L), RoundingMode.DOWN).intValue() == this.cost.divide(BigDecimal.valueOf(2L), RoundingMode.UP).intValue()) {
-            this.externalDamage = this.supplies.divide(this.cost, RoundingMode.HALF_UP);
+        if (this.cost.divide(BigDecimal.valueOf(2L), 3, RoundingMode.DOWN).intValue() == this.cost.divide(BigDecimal.valueOf(2L), 3, RoundingMode.UP).intValue()) {
+            this.externalDamage = this.supplies.divide(this.cost, 3, RoundingMode.HALF_UP);
         }
         this.supplies = this.supplies.subtract(this.externalDamage).add(this.humans);
         calculateNewPrice();
@@ -196,9 +196,9 @@ public class KaiserEngine {
 
     public void finishRoundAfterActions() {
         BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);
-        this.increase = cost.multiply(factor).divide(this.population, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100).add(BigDecimal.ONE));
+        this.increase = cost.multiply(factor).divide(this.population, 3, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100).add(BigDecimal.ONE), 3, RoundingMode.HALF_UP);
 
-        this.cost = this.q.divide(BigDecimal.valueOf(20L));
+        this.cost = this.q.divide(BigDecimal.valueOf(20L), 3, RoundingMode.HALF_UP);
         refreshFamineQuotient();
 
         if (is(this.population).lessThan(this.cost)) {
@@ -219,8 +219,8 @@ public class KaiserEngine {
 
         // calc death statistics
         // p1 = ((z-1)*p1+D*100/p)/z
-        BigDecimal tempQuotient = this.percentDeathToll.multiply(BigDecimal.valueOf(this.zYear - 1)).add(this.deathToll.multiply(BigDecimal.valueOf(100)).divide(this.population, RoundingMode.HALF_UP)); // tbd
-        this.percentDeathToll = tempQuotient.divide(BigDecimal.valueOf(this.zYear), RoundingMode.HALF_UP);
+        BigDecimal tempQuotient = this.percentDeathToll.multiply(BigDecimal.valueOf(this.zYear - 1)).add(this.deathToll.multiply(BigDecimal.valueOf(100)).divide(this.population, 3, RoundingMode.HALF_UP));
+        this.percentDeathToll = tempQuotient.divide(BigDecimal.valueOf(this.zYear), 3, RoundingMode.HALF_UP);
 
         this.population = this.cost; // TODO why? shouldn't this somehow be added up?
         this.deathTollSum = this.deathTollSum.add(this.deathToll);
