@@ -15,12 +15,12 @@ class KaiserEnginePrinterTest {
 
     @Test
     void getStatus() {
-        assertThat(printer.getStatus(4712)).contains("4712");
+        assertThat(printer.getStatus(4712)).contains("4712").contains(KaiserEnginePrinter.ANSI_RESET);
     }
 
     @Test
     void getYearResult() {
-        assertThat(printer.getYearResult(4711)).contains("4711");
+        assertThat(printer.getYearResult(4711)).contains("4711").contains(KaiserEnginePrinter.ANSI_RESET);
     }
 
     @Test
@@ -30,6 +30,6 @@ class KaiserEnginePrinterTest {
 
     @Test
     void evaluateRegency() {
-        assertThat(printer.evaluateRegency()).isNotEmpty();
+        assertThat(printer.evaluateRegency()).isNotEmpty().contains(KaiserEnginePrinter.ANSI_RESET);
     }
 }
