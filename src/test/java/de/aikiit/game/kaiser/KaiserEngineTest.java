@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class KaiserEngineTest {
 
@@ -73,5 +74,10 @@ class KaiserEngineTest {
         assertThat(engine.getExternalDamage()).isEqualTo("200");
         assertThat(engine.getZYear()).isEqualTo(1);
         assertThat(engine.getYield()).isEqualTo(engine.getCost().add(BigDecimal.valueOf(17)));
+    }
+
+    @Test
+    void verifyPostRoundActionsDoNotProduceErrors() {
+        assertDoesNotThrow(() ->  engine.finishRoundAfterActions());
     }
 }
