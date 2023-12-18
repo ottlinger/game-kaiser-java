@@ -3,6 +3,9 @@ package de.aikiit.game.kaiser;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 public class KaiserEnginePrinter {
 
@@ -64,26 +67,36 @@ public class KaiserEnginePrinter {
         StringBuilder result = new StringBuilder();
         result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(System.lineSeparator());
 
-        // line 900
-        result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
-        result.append(System.lineSeparator());
-        result.append(System.lineSeparator());
+        result.append("In ihrer " + engine.getZYear() + "-jährigen Amtszeit sind ");
+        result.append(engine.getPercentDeathToll() + "% der Bevölkerung im Jahr verstorben.").append(System.lineSeparator());
+        result.append("Insgesamt sind ").append(engine.getDeathTollSum()).append(" Einwohner gestorben.").append(System.lineSeparator());
 
-        // line 940
-        result.append("Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.");
-        result.append(System.lineSeparator());
-        result.append("Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!");
-        result.append(System.lineSeparator());
-        result.append(System.lineSeparator());
+        BigDecimal legacy = engine.getArea().divide(engine.getPopulation(), RoundingMode.HALF_UP);
+        result.append("Zu Beginn hatten sie 10 Hektar pro Einwohner,").append(System.lineSeparator());
+        result.append("jetzt sind es ").append(legacy).append(" Hektar/Einwohner.").append(System.lineSeparator());
 
-        // line 960
-        result.append("Sie hätten glücklicher agieren können, aber es war nicht übel.");
-        result.append(System.lineSeparator());
-        result.append(this.engine.getPopulation().multiply(new BigDecimal("0.8"))).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
-        result.append(System.lineSeparator());
-        result.append(System.lineSeparator());
+        // TODO: check and fix legacy calculation - message should match criteria
+        if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.valueOf(33)) || is(legacy).lessThan(BigDecimal.valueOf(7))) {
+            result.append("Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,").append(System.lineSeparator());
+            result.append("sondern auch zum Versager des Jahres erklärt.").append(System.lineSeparator());
+        } else {
+
+            if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {
+                result.append("Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.");
+                result.append(System.lineSeparator());
+                result.append("Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!");
+            } else if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {
+                result.append("Sie hätten glücklicher agieren können, aber es war nicht übel.");
+                result.append(System.lineSeparator());
+                result.append(this.engine.getPopulation().multiply(new BigDecimal("0.8"))).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
+            } else {
+                result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
+            }
+        }
 
         result.append(ANSI_RESET);
+        result.append(System.lineSeparator());
+        result.append(System.lineSeparator());
         return result.toString();
     }
 }

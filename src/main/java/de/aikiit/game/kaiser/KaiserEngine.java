@@ -211,7 +211,8 @@ public class KaiserEngine {
         if (is(this.deathToll).greaterThan(this.population.multiply(BigDecimal.valueOf(0.45)))) {
             System.out.println(KaiserEnginePrinter.ANSI_YELLOW);
             System.out.println("Sie haben " + this.deathToll + " Menschen in nur einem Jahr verhungern lassen!");
-            System.out.println("Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt.");
+            System.out.println("Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,");
+            System.out.println("sondern auch zum Versager des Jahres erklärt.");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
             return; // TODO stop the game here!
         }
