@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import uk.org.webcompere.systemstubs.SystemStubs;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class KaiserActionsTest {
 
@@ -29,15 +30,22 @@ class KaiserActionsTest {
     }
 
 
+    @SneakyThrows
     @Test
     void sell() {
+        SystemStubs.withTextFromSystemIn("0")
+                .execute(() -> {
+                    assertDoesNotThrow(() -> KaiserActions.sell(new KaiserEngine()));
+                });
     }
 
     @Test
+    @SneakyThrows
     void feed() {
     }
 
     @Test
+    @SneakyThrows
     void cultivate() {
     }
 }
