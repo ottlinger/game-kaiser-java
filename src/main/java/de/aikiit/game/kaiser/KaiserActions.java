@@ -84,7 +84,7 @@ public class KaiserActions {
                     case "You cannot cultivate more area than you have." ->
                             System.out.println("Überleg doch mal, Du hast nur " + engine.getArea() + " Hektar Land. Probier es nochmals.");
                     case "You cannot cultivate more than you have." ->
-                            System.out.println("Nun denk doch mal nach, Du hast nur" + engine.getSupplies() + " Korn zur Verfügung. Nun denn, versuche es erneut.");
+                            System.out.println("Nun denk doch mal nach, Du hast nur " + engine.getSupplies() + " Korn zur Verfügung. Nun denn, versuche es erneut.");
                     case "Not enough workers available." ->
                             System.out.println("Sie haben aber nur " + engine.getPopulation() + " Arbeiter. Noch einmal.");
                 }

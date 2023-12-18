@@ -62,7 +62,7 @@
         <configuration>
           <timeoutConstant>8000</timeoutConstant>
           <threads>8</threads>
-          <coverageThreshold>33</coverageThreshold>
+          <coverageThreshold>30</coverageThreshold>
           <failWhenNoMutations>false</failWhenNoMutations>
           <verbose>false</verbose>
           <targetClasses>

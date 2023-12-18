@@ -196,7 +196,7 @@ public class KaiserEngine {
 
     public void finishRoundAfterActions() {
         BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);
-        this.increase = cost.multiply(factor).divide(this.population, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100L).add(BigDecimal.ONE));
+        this.increase = cost.multiply(factor).divide(this.population, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100).add(BigDecimal.ONE));
 
         this.cost = this.q.divide(BigDecimal.valueOf(20L));
         refreshFamineQuotient();
@@ -213,10 +213,15 @@ public class KaiserEngine {
             System.out.println("Sie haben " + this.deathToll + " Menschen in nur einem Jahr verhungern lassen!");
             System.out.println("Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt.");
             System.out.println(KaiserEnginePrinter.ANSI_RESET);
-            return; // TODO stop the game!
+            return; // TODO stop the game here!
         }
 
-        // TODO this.percentDeathToll = this.zYear
-        // TODO LINE 553
+        // calc death statistics
+        // p1 = ((z-1)*p1+D*100/p)/z
+        BigDecimal tempQuotient = this.percentDeathToll.multiply(BigDecimal.valueOf(this.zYear - 1)).add(this.deathToll.multiply(BigDecimal.valueOf(100)).divide(this.population, RoundingMode.HALF_UP)); // tbd
+        this.percentDeathToll = tempQuotient.divide(BigDecimal.valueOf(this.zYear), RoundingMode.HALF_UP);
+
+        this.population = this.cost; // TODO why? shouldn't this somehow be added up?
+        this.deathTollSum = this.deathTollSum.add(this.deathToll);
     }
 }

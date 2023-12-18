@@ -56,6 +56,4 @@ public class KaiserEngineSellLandTest {
         assertThat(engine.getSupplies()).isEqualTo(supplyB4.add(engine.getYield().multiply(BigDecimal.valueOf(4L))));
         assertThat(engine.getCost()).isEqualTo(BigDecimal.ZERO);
     }
-
-
 }
