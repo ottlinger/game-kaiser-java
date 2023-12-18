@@ -20,13 +20,16 @@ class KaiserEnginePrinterTest {
 
     @Test
     void getYearResult() {
+        assertThat(printer.getYearResult(4711)).contains("4711");
     }
 
     @Test
     void getResults() {
+        assertThat(printer.getResults()).isNotEmpty();
     }
 
     @Test
     void evaluateRegency() {
+        assertThat(printer.evaluateRegency()).isNotEmpty();
     }
 }
