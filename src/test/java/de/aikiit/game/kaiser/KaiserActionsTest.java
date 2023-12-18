@@ -42,10 +42,19 @@ class KaiserActionsTest {
     @Test
     @SneakyThrows
     void feed() {
+        SystemStubs.withTextFromSystemIn("0")
+                .execute(() -> {
+                    assertDoesNotThrow(() -> KaiserActions.feed(new KaiserEngine()));
+                });
     }
 
     @Test
     @SneakyThrows
     void cultivate() {
+        SystemStubs.withTextFromSystemIn("0")
+                .execute(() -> {
+                    assertDoesNotThrow(() -> KaiserActions.cultivate(new KaiserEngine()));
+                });
+
     }
 }
