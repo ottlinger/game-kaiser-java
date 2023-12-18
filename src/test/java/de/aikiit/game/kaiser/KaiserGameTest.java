@@ -45,7 +45,7 @@ class KaiserGameTest {
 
     @Test
     void status() {
-        assertDoesNotThrow(() -> game.finish());
+        assertDoesNotThrow(() -> game.status());
     }
 
     @SneakyThrows
