@@ -28,4 +28,10 @@ class KaiserGameTest {
     void byeByeBanner() {
         assertDoesNotThrow(() -> game.byeByeBanner());
     }
+
+    @Test
+    void finish() {
+        assertDoesNotThrow(() -> game.finish());
+    }
+
 }
