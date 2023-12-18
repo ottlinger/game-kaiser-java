@@ -6,6 +6,8 @@ An adaption of the old Kaiser/Sumeria game
 
 [![codecov.io](https://codecov.io/github/ottlinger/game-kaiser-java/coverage.svg?branch=main)](https://codecov.io/github/ottlinger/game-kaiser-java?branch=main)
 
+[![CodeQL](https://github.com/ottlinger/game-kaiser-java/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/ottlinger/game-kaiser-java/actions/workflows/codeql.yml)
+
 ## Introduction
 
 The game basically starts with a fixed population and land size.
