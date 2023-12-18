@@ -199,7 +199,23 @@ public class KaiserEngine {
         this.increase = cost.multiply(factor).divide(this.population, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100L).add(BigDecimal.ONE));
 
         this.cost = this.q.divide(BigDecimal.valueOf(20L));
+        refreshFamineQuotient();
 
-        // TBD
+        if (is(this.population).lessThan(this.cost)) {
+            this.deathToll = BigDecimal.ZERO;
+            return; // start new round without any deaths
+        }
+
+        // calculate deaths
+        this.deathToll = this.population.subtract(this.cost);
+        if (is(this.deathToll).greaterThan(this.population.multiply(BigDecimal.valueOf(0.45)))) {
+            System.out.println(KaiserEnginePrinter.ANSI_YELLOW);
+            System.out.println("Sie haben " + this.deathToll + " Menschen in nur einem Jahr verhungern lassen!");
+            System.out.println("Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt.");
+            System.out.println(KaiserEnginePrinter.ANSI_RESET);
+            return; // TODO stop the game!
+        }
+
+        // TODO this.percentDeathToll = this.zYear
     }
 }

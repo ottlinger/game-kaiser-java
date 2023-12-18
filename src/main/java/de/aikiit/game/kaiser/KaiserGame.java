@@ -75,6 +75,7 @@ public class KaiserGame {
 
     public void status() {
         System.out.println(printer.getStatus(round));
+        System.out.println(printer.getYearResult(round));
     }
 
     public void actions() {

@@ -37,6 +37,16 @@ public class KaiserEnginePrinter {
         return status.toString();
     }
 
+    public String getYearResult(int round) {
+        StringBuilder status = new StringBuilder();
+
+        status.append(ANSI_GREEN).append("Im Jahr ").append(round).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_CYAN).append("Es starben         ").append(StringUtils.leftPad(String.valueOf(this.engine.getDeathToll()), 10)).append(" Einwohner").append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_CYAN).append("hinzugekommen sind ").append(StringUtils.leftPad(String.valueOf(this.engine.getIncrease()), 10)).append(" Einwohner").append(ANSI_RESET).append(System.lineSeparator());
+        return status.toString();
+
+    }
+
     public String getResults() {
         StringBuilder result = new StringBuilder();
 
