@@ -28,6 +28,19 @@ public class KaiserEngineFeedToPopulationTest {
     }
 
     @Test
+    void feedToPopulationDoesNothingIfNegativeValueIsGiven() {
+        BigDecimal costB4 = engine.getCost();
+        BigDecimal areaB4 = engine.getArea();
+        BigDecimal supplyB4 = engine.getSupplies();
+
+        engine.feedToPopulation(-1234L);
+
+        assertThat(engine.getArea()).isEqualTo(areaB4);
+        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
+        assertThat(engine.getCost()).isEqualTo(costB4);
+    }
+
+    @Test
     void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
         BigDecimal costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();
