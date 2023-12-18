@@ -1,5 +1,7 @@
 package de.aikiit.game.kaiser;
 
+import org.assertj.core.util.VisibleForTesting;
+
 public class KaiserGame {
 
     public static final int MAX_ROUNDS = 10;
@@ -8,6 +10,11 @@ public class KaiserGame {
     private int round = 0;
 
     public KaiserGame() {
+        this(new KaiserEngine());
+    }
+
+    @VisibleForTesting
+    KaiserGame(KaiserEngine engine) {
         this.engine = new KaiserEngine();
         this.printer = new KaiserEnginePrinter(this.engine);
     }

@@ -1,13 +1,22 @@
 package de.aikiit.game.kaiser;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import uk.org.webcompere.systemstubs.SystemStubs;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class KaiserGameTest {
 
     private KaiserGame game;
+
+    @Mock
+    private KaiserEngine mockedEngine;
 
     @BeforeEach
     void createNewGameUnderTest() {
@@ -37,6 +46,18 @@ class KaiserGameTest {
     @Test
     void status() {
         assertDoesNotThrow(() -> game.finish());
+    }
+
+    @SneakyThrows
+    @Test
+    void actionsWithMockedEngine() {
+        KaiserGame gameWithMockedEngine = new KaiserGame(mockedEngine);
+
+        SystemStubs.withTextFromSystemIn("0")
+                .execute(() -> {
+                    // as we can only stub one call to System.in, we get an exception from the second call
+                    assertThrows(NoSuchElementException.class, () -> gameWithMockedEngine.actions());
+                });
     }
 
 }
