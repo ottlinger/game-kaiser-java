@@ -13,7 +13,7 @@ An adaption of the old Kaiser/Sumeria game
 The game basically starts with a fixed population and land size.
 Each round generates a harvest and you will be prompted to sell/buy/transform the harvest and the next round is about to begin.
 
-It is based on an old [KAISER.BAS](./kaiser_basic1992.pdf) basic listing I found when I did some spring cleaning.
+It is based on an old [📃 KAISER.BAS](./kaiser_basic1992.pdf) basic listing I found when I did some spring cleaning.
 
 ## How to run
 
