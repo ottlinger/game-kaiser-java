@@ -199,6 +199,12 @@ public class KaiserEngine {
         }
     }
 
+    /**
+     * Performs an act of using your area and people to cultivate, plant crops for the upcoming season/next round.
+     * You cannot give more than you have.
+     *
+     * @param cultivate how many hectares you want to use for agricultural purposes. Negative input is ignored. An input of {@code 0} will trigger a recalculation of the current land price.
+     */
     public void cultivate(Long cultivate) {
         if (cultivate == 0) {
             calculateNewPrice();
