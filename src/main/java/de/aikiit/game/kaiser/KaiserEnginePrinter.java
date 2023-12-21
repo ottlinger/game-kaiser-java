@@ -67,8 +67,8 @@ public class KaiserEnginePrinter {
         StringBuilder result = new StringBuilder();
         result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(System.lineSeparator());
 
-        result.append("In ihrer " + engine.getZYear() + "-jährigen Amtszeit sind ");
-        result.append(engine.getPercentDeathToll() + "% der Bevölkerung im Jahr verstorben.").append(System.lineSeparator());
+        result.append("In ihrer ").append(engine.getZYear()).append("-jährigen Amtszeit sind ");
+        result.append(engine.getPercentDeathToll()).append("% der Bevölkerung im Jahr verstorben.").append(System.lineSeparator());
         result.append("Insgesamt sind ").append(engine.getDeathTollSum()).append(" Einwohner gestorben.").append(System.lineSeparator());
 
         BigDecimal legacy = engine.getArea().divide(engine.getPopulation(), RoundingMode.HALF_UP);
