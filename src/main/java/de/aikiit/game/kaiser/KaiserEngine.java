@@ -134,6 +134,7 @@ public class KaiserEngine {
 
     /**
      * Performs an act of buying land (new land is acquired by reducing the supplies according to the current land price).
+     * You cannot buy more than you can afford.
      *
      * @param buy how many hectares you want to buy. Negative input is ignored.
      * @return the given number of hectares. {@code 0} means that the player does not want to buy anything, which will trigger the possibility to sell land.
@@ -155,6 +156,12 @@ public class KaiserEngine {
         return buy;
     }
 
+    /**
+     * Performs an act of selling land (resulting in an increase of supplies as the land is sold to the current land price).
+     * You cannot sell more than you have.
+     *
+     * @param sell how many hectares you want to sell. Negative input is ignored.
+     */
     public void sellLand(Long sell) {
         if (sell < 0) {
             System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
