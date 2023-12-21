@@ -9,8 +9,18 @@ import java.util.Random;
 
 import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
+/**
+ * This class encapsulates the game's logics and operations on its attributes.
+ * As the game is based on rounds {@link #startNewRound()} starts a new round and performs calculations based on the player's actions.
+ * <br />
+ * In each round there is a chance for famine-induced loss,
+ * which is handled in {@link #processFamine()} based on an underlying random probability factor.
+ */
 @Getter
 public class KaiserEngine {
+    /**
+     * e - External damage, e.g. loss due to rats.
+     */
     private BigDecimal externalDamage = BigDecimal.ZERO; // e
     private BigDecimal deathToll; // d
     private BigDecimal increase; // i in original-  birthRate?
@@ -25,6 +35,9 @@ public class KaiserEngine {
     private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient
     private BigDecimal cost = BigDecimal.ZERO;
 
+    /**
+     * Default constructor to start a game with the given default settings.
+     */
     public KaiserEngine() {
         this.population = BigDecimal.valueOf(95L);
         this.zYear = 0;
