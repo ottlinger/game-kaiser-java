@@ -7,6 +7,7 @@ class GameKaiserJavaApplicationTests {
 
 	@Disabled
 	void contextLoads() {
+		// intentionally left empty as it verifies that the app's context loads properly
 	}
 
 }
