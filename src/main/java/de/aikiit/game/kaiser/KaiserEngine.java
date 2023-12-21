@@ -65,7 +65,7 @@ public class KaiserEngine {
     }
 
     void refreshFamineQuotient() {
-        this.q = getRandomNumberUntil(10).divide(new BigDecimal("10"), 0, RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
+        this.q = getRandomNumberUntil(10).divide(BigDecimal.TEN, 0, RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
 
     }
 
