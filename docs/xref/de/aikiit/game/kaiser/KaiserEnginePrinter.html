@@ -75,8 +75,8 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          StringBuilder result = <strong class="jxr_keyword">new</strong> StringBuilder();
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          result.append(ANSI_BLUE).append(<span class="jxr_string">"&gt;&gt;&gt;&gt; Bewertung Ihrer Herrschaft &lt;&lt;&lt;&lt;"</span>).append(System.lineSeparator());
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          result.append(<span class="jxr_string">"In ihrer "</span> + engine.getZYear() + <span class="jxr_string">"-jährigen Amtszeit sind "</span>);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          result.append(engine.getPercentDeathToll() + <span class="jxr_string">"% der Bevölkerung im Jahr verstorben."</span>).append(System.lineSeparator());
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          result.append(<span class="jxr_string">"In ihrer "</span>).append(engine.getZYear()).append(<span class="jxr_string">"-jährigen Amtszeit sind "</span>);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          result.append(engine.getPercentDeathToll()).append(<span class="jxr_string">"% der Bevölkerung im Jahr verstorben."</span>).append(System.lineSeparator());
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          result.append(<span class="jxr_string">"Insgesamt sind "</span>).append(engine.getDeathTollSum()).append(<span class="jxr_string">" Einwohner gestorben."</span>).append(System.lineSeparator());
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          BigDecimal legacy = engine.getArea().divide(engine.getPopulation(), RoundingMode.HALF_UP);
