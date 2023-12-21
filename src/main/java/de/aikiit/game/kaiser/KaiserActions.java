@@ -3,6 +3,10 @@ package de.aikiit.game.kaiser;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * This class contains all available actions that have to be taken by the player of the game.
+ * At the moment this is done via the operating system's console.
+ */
 public class KaiserActions {
 
     /**
@@ -29,6 +33,11 @@ public class KaiserActions {
         }
     }
 
+    /**
+     * Perform a sell operation in the current game.
+     *
+     * @param engine the current game engine
+     */
     public static void sell(KaiserEngine engine) {
         while (true) {
             try {
@@ -48,6 +57,11 @@ public class KaiserActions {
         }
     }
 
+    /**
+     * Perform a feeding operation in the current game, that means give food to the population.
+     *
+     * @param engine the current game engine
+     */
     public static void feed(KaiserEngine engine) {
         while (true) {
             try {
@@ -67,6 +81,11 @@ public class KaiserActions {
         }
     }
 
+    /**
+     * In order to feed your population you need to plant crops and cultivate your available area/land.
+     *
+     * @param engine the current game engine
+     */
     public static void cultivate(KaiserEngine engine) {
         while (true) {
             try {
