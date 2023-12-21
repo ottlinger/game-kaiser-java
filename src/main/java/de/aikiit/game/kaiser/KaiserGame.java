@@ -76,7 +76,7 @@ public class KaiserGame {
                 #     #   #   #         #     #   #   #         #  #   ###### #      # #      ##### \s
                 #     #   #   #         #     #   #   #         #   #  #    # # #    # #      #   # \s
                 ######    #   ######    ######    #   ######    #    # #    # #  ####  ###### #    #\s
-                                                                                                    \s                                                                            """);
+                                                                                                    \n                                                                           """);
         System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
