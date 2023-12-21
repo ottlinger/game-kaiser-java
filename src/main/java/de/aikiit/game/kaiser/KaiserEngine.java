@@ -259,6 +259,12 @@ public class KaiserEngine {
         this.cost = getRandomNumberUntil(5);
     }
 
+    /**
+     * Perform "round"-final calculations such as
+     * <li>number of people that died</li>
+     * <li>adapt overall (internal) death statistics</li>
+     * <li>refresh internal famine quotient</li>
+     */
     public void finishRoundAfterActions() {
         BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);
         this.increase = cost.multiply(factor).divide(this.population, 0, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100).add(BigDecimal.ONE), 0, RoundingMode.HALF_UP);
