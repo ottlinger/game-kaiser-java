@@ -45,9 +45,7 @@ public class KaiserEngineFeedToPopulationTest {
         BigDecimal costB4 = engine.getCost();
         BigDecimal supplyB4 = engine.getSupplies();
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.feedToPopulation(Long.MAX_VALUE);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.feedToPopulation(Long.MAX_VALUE));
 
         String expectedMessage = "Not Enough in Stock";
         assertThat(exception.getMessage()).contains(expectedMessage);

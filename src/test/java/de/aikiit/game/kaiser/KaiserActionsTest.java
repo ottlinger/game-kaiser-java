@@ -34,27 +34,21 @@ class KaiserActionsTest {
     @Test
     void sell() {
         SystemStubs.withTextFromSystemIn("0")
-                .execute(() -> {
-                    assertDoesNotThrow(() -> KaiserActions.sell(new KaiserEngine()));
-                });
+                .execute(() -> assertDoesNotThrow(() -> KaiserActions.sell(new KaiserEngine())));
     }
 
     @Test
     @SneakyThrows
     void feed() {
         SystemStubs.withTextFromSystemIn("0")
-                .execute(() -> {
-                    assertDoesNotThrow(() -> KaiserActions.feed(new KaiserEngine()));
-                });
+                .execute(() -> assertDoesNotThrow(() -> KaiserActions.feed(new KaiserEngine())));
     }
 
     @Test
     @SneakyThrows
     void cultivate() {
         SystemStubs.withTextFromSystemIn("0")
-                .execute(() -> {
-                    assertDoesNotThrow(() -> KaiserActions.cultivate(new KaiserEngine()));
-                });
+                .execute(() -> assertDoesNotThrow(() -> KaiserActions.cultivate(new KaiserEngine())));
 
     }
 }

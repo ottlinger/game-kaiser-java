@@ -39,9 +39,7 @@ public class KaiserEngineCultivateTest {
     void youCanNotCultivateMoreThanYourArea() {
         BigDecimal areaB4 = engine.getArea();
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.cultivate(Long.MAX_VALUE);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.cultivate(Long.MAX_VALUE));
 
         String expectedMessage = "You cannot cultivate more area than you have.";
         assertThat(exception.getMessage()).contains(expectedMessage);
@@ -55,9 +53,7 @@ public class KaiserEngineCultivateTest {
         BigDecimal suppliesB4 = engine.getSupplies();
         BigDecimal areaB4 = engine.getArea();
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.cultivate(Long.MAX_VALUE);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.cultivate(Long.MAX_VALUE));
 
         String expectedMessage = "You cannot cultivate more than you have.";
         assertThat(exception.getMessage()).contains(expectedMessage);

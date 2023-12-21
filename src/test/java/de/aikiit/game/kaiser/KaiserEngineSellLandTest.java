@@ -47,9 +47,7 @@ public class KaiserEngineSellLandTest {
         BigDecimal areaB4 = engine.getArea();
         BigDecimal supplyB4 = engine.getSupplies();
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.sellLand(Long.MAX_VALUE);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.sellLand(Long.MAX_VALUE));
 
         String expectedMessage = "Not Enough Land";
         assertThat(exception.getMessage()).contains(expectedMessage);
