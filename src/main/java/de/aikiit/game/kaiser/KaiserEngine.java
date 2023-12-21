@@ -260,9 +260,11 @@ public class KaiserEngine {
 
     /**
      * Perform "round"-final calculations such as
+     * <ul>
      * <li>number of people that died</li>
      * <li>adapt overall (internal) death statistics</li>
      * <li>refresh internal famine quotient</li>
+     * </ul>
      */
     public void finishRoundAfterActions() {
         BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);
