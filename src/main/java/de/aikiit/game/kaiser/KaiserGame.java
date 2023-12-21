@@ -15,7 +15,7 @@ public class KaiserGame {
 
     @VisibleForTesting
     KaiserGame(KaiserEngine engine) {
-        this.engine = new KaiserEngine();
+        this.engine = engine;
         this.printer = new KaiserEnginePrinter(this.engine);
     }
 

@@ -56,7 +56,7 @@ class KaiserGameTest {
         SystemStubs.withTextFromSystemIn("0")
                 .execute(() -> {
                     // as we can only stub one call to System.in, we get an exception from the second call
-                    assertThrows(NoSuchElementException.class, () -> gameWithMockedEngine.actions());
+                    assertThrows(NullPointerException.class, () -> gameWithMockedEngine.actions());
                 });
     }
 
@@ -68,7 +68,7 @@ class KaiserGameTest {
         SystemStubs.withTextFromSystemIn("0")
                 .execute(() -> {
                     // as we can only stub one call to System.in, we get an exception from the second call
-                    assertThrows(NoSuchElementException.class, () -> gameWithMockedEngine.run());
+                    assertThrows(NullPointerException.class, () -> gameWithMockedEngine.run());
                 });
     }
 }
