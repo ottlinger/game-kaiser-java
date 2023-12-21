@@ -177,6 +177,12 @@ public class KaiserEngine {
         }
     }
 
+    /**
+     * Performs an act of using supplies to feed your population.
+     * You cannot give more than you have.
+     *
+     * @param feed how many dzt you want to feed
+     */
     public void feedToPopulation(Long feed) {
         if (feed < 0) {
             System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "Ignoriere negative Eingaben - Du willst mich wohl verkackeiern." + KaiserEnginePrinter.ANSI_RESET);
