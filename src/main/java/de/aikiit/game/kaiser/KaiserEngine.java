@@ -75,10 +75,20 @@ public class KaiserEngine {
         this.yield = cost.add(BigDecimal.valueOf(17L));
     }
 
+    /**
+     * Helper method to retrieve a new random number without any comma (scale=0).
+     *
+     * @param threshold number is greater than 0 and at most threshold.
+     * @return a new random number.
+     */
     BigDecimal getRandomNumberUntil(int threshold) {
-        return BigDecimal.valueOf(new Random().nextInt(threshold + 1) + 1);
+        return BigDecimal.valueOf(new Random().nextInt(threshold + 1) + 1).setScale(0, RoundingMode.HALF_EVEN);
     }
 
+    /**
+     * Evaluate internally, if a famine is happening in the current round.
+     * If so this method performs all necessary calculations/reductions within the currently running game.
+     */
     public void processFamine() {
         if (is(q).lessThan(BigDecimal.ZERO)) {
             this.population = this.population.divide(BigDecimal.valueOf(2L), 0, RoundingMode.HALF_UP);
@@ -89,6 +99,9 @@ public class KaiserEngine {
         refreshFamineQuotient();
     }
 
+    /**
+     * Explicitly trigger the recalculation of the given internal famine calculation factor.
+     */
     void refreshFamineQuotient() {
         this.q = getRandomNumberUntil(10).divide(BigDecimal.TEN, 0, RoundingMode.HALF_UP).subtract(new BigDecimal("0.3"));
 
@@ -111,6 +124,8 @@ public class KaiserEngine {
     }
 
     /**
+     * Calculates the available area per person in the current game.
+     *
      * @return area per capita, called <b>L</b> in original. Land ownership?
      */
     public BigDecimal getAreaPerCapita() {
