@@ -15,6 +15,15 @@ import static org.apache.commons.lang3.compare.ComparableUtils.is;
  * <br />
  * In each round there is a chance for famine-induced loss,
  * which is handled in {@link #processFamine()} based on an underlying random probability factor.
+ * <br />
+ * Apart from these automated things the player can:
+ * <ul>
+ *     <li>{@link #buyLand(Long)} buy new land</li>
+ *     <li>{@link #sellLand(Long)} sell existing land</li>
+ *     <li>{@link #cultivate(Long)} cultivate land in order to achieve new yields</li>
+ *     <li>{@link #feedToPopulation(Long)} give food to your population</li>
+ * </ul>
+ * After user interactions the round is finished in {@link #finishRoundAfterActions()}.
  */
 @Getter
 public class KaiserEngine {
@@ -52,6 +61,9 @@ public class KaiserEngine {
         this.externalDamage = this.humans.subtract(this.supplies);
     }
 
+    /**
+     * Starts a new round in performs initial calculations before user actions are taken into account.
+     */
     public void startNewRound() {
         this.area = this.humans.divide(this.yield, 0, RoundingMode.HALF_UP);
         this.externalDamage = this.humans.subtract(this.supplies);
