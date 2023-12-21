@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import uk.org.webcompere.systemstubs.SystemStubs;
 
-import java.util.NoSuchElementException;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
