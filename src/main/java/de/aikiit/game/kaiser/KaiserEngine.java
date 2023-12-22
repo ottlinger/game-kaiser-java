@@ -44,6 +44,8 @@ public class KaiserEngine {
     private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient
     private BigDecimal cost = BigDecimal.ZERO;
 
+    private static final Random RANDOM = new Random();
+
     /**
      * Default constructor to start a game with the given default settings.
      */
@@ -82,7 +84,7 @@ public class KaiserEngine {
      * @return a new random number.
      */
     BigDecimal getRandomNumberUntil(int threshold) {
-        return BigDecimal.valueOf(new Random().nextInt(threshold + 1) + 1).setScale(0, RoundingMode.HALF_EVEN);
+        return BigDecimal.valueOf(RANDOM.nextInt(threshold + 1) + 1).setScale(0, RoundingMode.HALF_EVEN);
     }
 
     /**
