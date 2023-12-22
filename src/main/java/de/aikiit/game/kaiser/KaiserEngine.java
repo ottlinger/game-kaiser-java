@@ -5,6 +5,7 @@ import org.assertj.core.util.VisibleForTesting;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.SecureRandom;
 import java.util.Random;
 
 import static org.apache.commons.lang3.compare.ComparableUtils.is;
@@ -44,7 +45,7 @@ public class KaiserEngine {
     private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient
     private BigDecimal cost = BigDecimal.ZERO;
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new SecureRandom();
 
     /**
      * Default constructor to start a game with the given default settings.
