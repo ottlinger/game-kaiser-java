@@ -56,6 +56,9 @@ public class KaiserGame {
         byeByeBanner();
     }
 
+    /**
+     * Shows information about the game flow and welcomes the player.
+     */
     public void intro() {
         banner();
         System.out.println("Versuchen Sie die antike Stadt " + KaiserEnginePrinter.ANSI_YELLOW + ">SUMERIA<" + KaiserEnginePrinter.ANSI_RESET + " zu regieren!");
@@ -65,6 +68,9 @@ public class KaiserGame {
         System.out.println();
     }
 
+    /**
+     * Shows the game's banner.
+     */
     public void banner() {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
@@ -82,6 +88,9 @@ public class KaiserGame {
         System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
+    /**
+     * Shows console banner after the game is over.
+     */
     public void byeByeBanner() {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
@@ -98,11 +107,23 @@ public class KaiserGame {
         System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
+    /**
+     * Shows the underlying status of the current round the player is in.
+     */
     public void status() {
         System.out.println(printer.getStatus(round));
         System.out.println(printer.getYearResult(round));
     }
 
+    /**
+     * Performs user interactions.
+     * The player can either
+     * <ul>
+     *     <li>buy or sell land</li>
+     *     <li>feed the population</li>
+     *     <li>perform agricultural operations per round.</li>
+     * </ul>
+     */
     public void actions() {
         System.out.println();
         System.out.println(KaiserEnginePrinter.ANSI_PURPLE + "#+#+#+#+ Was möchten Sie tun?" + KaiserEnginePrinter.ANSI_RESET);
@@ -118,6 +139,9 @@ public class KaiserGame {
         System.out.println();
     }
 
+    /**
+     * Shows results after the game is over.
+     */
     public void finish() {
         System.out.println(printer.getResults());
         System.out.println(printer.evaluateRegency());
