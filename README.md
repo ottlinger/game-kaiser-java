@@ -22,6 +22,10 @@ $ ./run.sh
 ```
 
 Have fun :)
+ 
+## Site reports
+
+A Maven-generated site report is also available [here](https://ottlinger.github.io/game-kaiser-java/).
 
 # DevHints
 
@@ -32,7 +36,3 @@ Have fun :)
 ## Console Colours
 
 * https://talyian.github.io/ansicolors/
-
-## Site reports
-
-A Maven-generated site report is also available [here](https://ottlinger.github.io/game-kaiser-java/).
