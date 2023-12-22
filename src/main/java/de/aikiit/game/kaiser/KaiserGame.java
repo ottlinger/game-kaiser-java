@@ -2,11 +2,26 @@ package de.aikiit.game.kaiser;
 
 import org.assertj.core.util.VisibleForTesting;
 
+/**
+ * This class encapsulates the actual game flow.
+ * A player
+ * <ul>
+ *     <li>is shown current statistics and</li>
+ *     <li>can start to act</li>
+ *     <li>until the maximum number of rounds is reached and the game ends.</li>
+ * </ul>
+ */
 public class KaiserGame {
 
+    /**
+     * The player can play at most this number of rounds.
+     */
     public static final int MAX_ROUNDS = 10;
     private final KaiserEngine engine;
     private final KaiserEnginePrinter printer;
+    /**
+     * The current round of the game.
+     */
     private int round = 0;
 
     public KaiserGame() {
@@ -23,6 +38,9 @@ public class KaiserGame {
         round++;
     }
 
+    /**
+     * Start the game and allow player interactions until the maximum number of rounds is reached.
+     */
     public void run() {
         intro();
         status();
