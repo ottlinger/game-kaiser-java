@@ -7,6 +7,10 @@ import java.math.RoundingMode;
 
 import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
+/**
+ * This class contains static helper methods to print
+ * results or calculation or status information of the currently running game.
+ */
 public class KaiserEnginePrinter {
 
     // inspired by https://talyian.github.io/ansicolors/
@@ -28,6 +32,12 @@ public class KaiserEnginePrinter {
         this.engine = engine;
     }
 
+    /**
+     * Show status information of the underlying game engine for the given round.
+     *
+     * @param round current round/year of the game.
+     * @return colour-encoded status.
+     */
     public String getStatus(int round) {
         StringBuilder status = new StringBuilder();
 
@@ -40,6 +50,12 @@ public class KaiserEnginePrinter {
         return status.toString();
     }
 
+    /**
+     * Show population result of the current round.
+     *
+     * @param round current round/year of the game.
+     * @return colour-encoded population statistics.
+     */
     public String getYearResult(int round) {
         StringBuilder status = new StringBuilder();
 
@@ -50,6 +66,11 @@ public class KaiserEnginePrinter {
 
     }
 
+    /**
+     * After the game ends and the maximum number of years is reached an overall statistics is printed out.
+     *
+     * @return colour-encoded overall statistics.
+     */
     public String getResults() {
         StringBuilder result = new StringBuilder();
 
@@ -63,6 +84,11 @@ public class KaiserEnginePrinter {
         return result.toString();
     }
 
+    /**
+     * Depending on global rules the player's legacy is described/classified depending on the engine's results.
+     *
+     * @return colour-encoded legacy/regency output.
+     */
     public String evaluateRegency() {
         StringBuilder result = new StringBuilder();
         result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(System.lineSeparator());
