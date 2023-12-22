@@ -33,25 +33,6 @@ Have fun :)
 
 * https://talyian.github.io/ansicolors/
 
-## BigDecimal
-
-```java
-firstBigDecimal.compareTo(secondBigDecimal) < 0 // "<"
-firstBigDecimal.compareTo(secondBigDecimal) > 0 // ">"    
-firstBigDecimal.compareTo(secondBigDecimal) == 0 // "=="  
-firstBigDecimal.compareTo(secondBigDecimal) >= 0 // ">="   
-
-or
-import static org.apache.commons.lang3.compare.ComparableUtils.is;
-
-var areEqual = is(first).equalTo(second);
-var isGreater = is(first).greaterThan(second);
-var isLess = is(first).lessThan(second);
-var isBetween = is(first).between(second, third);
-// etc.
-
-```
-
 ## Site reports
 
 A Maven-generated site report is also available [here](https://ottlinger.github.io/game-kaiser-java/).
