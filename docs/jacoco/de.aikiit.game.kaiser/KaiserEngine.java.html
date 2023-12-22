@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaiserEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">game-kaiser-java</a> &gt; <a href="index.source.html" class="el_package">de.aikiit.game.kaiser</a> &gt; <span class="el_source">KaiserEngine.java</span></div><h1>KaiserEngine.java</h1><pre class="source lang-java linenums">package de.aikiit.game.kaiser;
+
+import lombok.Getter;
+import org.assertj.core.util.VisibleForTesting;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.security.SecureRandom;
+import java.util.Random;
+
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
+
+/**
+ * This class encapsulates the game's logics and operations on its attributes.
+ * As the game is based on rounds {@link #startNewRound()} starts a new round and performs calculations based on the player's actions.
+ * &lt;br /&gt;
+ * In each round there is a chance for famine-induced loss,
+ * which is handled in {@link #processFamine()} based on an underlying random probability factor.
+ * &lt;br /&gt;
+ * Apart from these automated things the player can:
+ * &lt;ul&gt;
+ *     &lt;li&gt;{@link #buyLand(Long)} buy new land&lt;/li&gt;
+ *     &lt;li&gt;{@link #sellLand(Long)} sell existing land&lt;/li&gt;
+ *     &lt;li&gt;{@link #cultivate(Long)} cultivate land in order to achieve new yields&lt;/li&gt;
+ *     &lt;li&gt;{@link #feedToPopulation(Long)} give food to your population&lt;/li&gt;
+ * &lt;/ul&gt;
+ * After user interactions the round is finished in {@link #finishRoundAfterActions()}.
+ */
+@Getter
+public class KaiserEngine {
+    /**
+     * e - External damage, e.g. loss due to rats.
+     */
+<span class="fc" id="L34">    private BigDecimal externalDamage = BigDecimal.ZERO; // e</span>
+<span class="fc" id="L35">    private BigDecimal deathToll; // d</span>
+<span class="fc" id="L36">    private BigDecimal increase; // i in original-  birthRate?</span>
+<span class="fc" id="L37">    private Integer zYear; // why z in original?</span>
+<span class="fc" id="L38">    private BigDecimal population = BigDecimal.ZERO; // h in original</span>
+<span class="fc" id="L39">    private BigDecimal area = BigDecimal.ZERO;</span>
+<span class="fc" id="L40">    private BigDecimal yield = BigDecimal.ZERO;</span>
+<span class="fc" id="L41">    private BigDecimal supplies = BigDecimal.ZERO;</span>
+<span class="pc" id="L42">    private BigDecimal humans = BigDecimal.ZERO;</span>
+<span class="fc" id="L43">    private BigDecimal deathTollSum; // d1 in original</span>
+<span class="fc" id="L44">    private BigDecimal percentDeathToll; // p1 in original</span>
+<span class="fc" id="L45">    private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient</span>
+<span class="fc" id="L46">    private BigDecimal cost = BigDecimal.ZERO;</span>
+
+<span class="fc" id="L48">    private static final Random RANDOM = new SecureRandom();</span>
+
+    /**
+     * Default constructor to start a game with the given default settings.
+     */
+<span class="fc" id="L53">    public KaiserEngine() {</span>
+<span class="fc" id="L54">        this.population = BigDecimal.valueOf(95L);</span>
+<span class="fc" id="L55">        this.zYear = 0;</span>
+<span class="fc" id="L56">        this.yield = BigDecimal.valueOf(3L);</span>
+<span class="fc" id="L57">        this.supplies = BigDecimal.valueOf(2800L);</span>
+<span class="fc" id="L58">        this.humans = BigDecimal.valueOf(3000L);</span>
+<span class="fc" id="L59">        this.area = this.humans.divide(this.yield, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L60">        this.increase = BigDecimal.valueOf(5L);</span>
+<span class="fc" id="L61">        this.deathToll = BigDecimal.ZERO;</span>
+<span class="fc" id="L62">        this.percentDeathToll = BigDecimal.ZERO;</span>
+<span class="fc" id="L63">        this.deathTollSum = BigDecimal.ZERO;</span>
+<span class="fc" id="L64">        this.externalDamage = this.humans.subtract(this.supplies);</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * Starts a new round in performs initial calculations before user actions are taken into account.
+     */
+    public void startNewRound() {
+<span class="fc" id="L71">        this.area = this.humans.divide(this.yield, 0, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L72">        this.externalDamage = this.humans.subtract(this.supplies);</span>
+<span class="fc" id="L73">        this.zYear++;</span>
+<span class="fc" id="L74">        this.population = this.population.add(this.increase);</span>
+
+<span class="fc" id="L76">        processFamine();</span>
+<span class="fc" id="L77">        this.cost = getRandomNumberUntil(10);</span>
+<span class="fc" id="L78">        this.yield = cost.add(BigDecimal.valueOf(17L));</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Helper method to retrieve a new random number without any comma (scale=0).
+     *
+     * @param threshold number is greater than 0 and at most threshold.
+     * @return a new random number.
+     */
+    BigDecimal getRandomNumberUntil(int threshold) {
+<span class="fc" id="L88">        return BigDecimal.valueOf(RANDOM.nextInt(threshold + 1) + 1).setScale(0, RoundingMode.HALF_EVEN);</span>
+    }
+
+    /**
+     * Evaluate internally, if a famine is happening in the current round.
+     * If so this method performs all necessary calculations/reductions within the currently running game.
+     */
+    public void processFamine() {
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (is(q).lessThan(BigDecimal.ZERO)) {</span>
+<span class="fc" id="L97">            this.population = this.population.divide(BigDecimal.valueOf(2L), 0, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L98">            System.out.println(KaiserEnginePrinter.ORANGE);</span>
+<span class="fc" id="L99">            System.out.println(&quot;Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!&quot;);</span>
+<span class="fc" id="L100">            System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
+        }
+<span class="fc" id="L102">        refreshFamineQuotient();</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * Explicitly trigger the recalculation of the given internal famine calculation factor.
+     */
+    void refreshFamineQuotient() {
+<span class="fc" id="L109">        this.q = getRandomNumberUntil(10).divide(BigDecimal.TEN, 0, RoundingMode.HALF_UP).subtract(new BigDecimal(&quot;0.3&quot;));</span>
+
+<span class="fc" id="L111">    }</span>
+
+    @VisibleForTesting
+    void setQ(BigDecimal q) {
+<span class="fc" id="L115">        this.q = q;</span>
+<span class="fc" id="L116">    }</span>
+
+    @VisibleForTesting
+    void setSupplies(BigDecimal supplies) {
+<span class="fc" id="L120">        this.supplies = supplies;</span>
+<span class="fc" id="L121">    }</span>
+
+
+    @VisibleForTesting
+    void setArea(BigDecimal area) {
+<span class="fc" id="L126">        this.area = area;</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Calculates the available area per person in the current game.
+     *
+     * @return area per capita, called &lt;b&gt;L&lt;/b&gt; in original. Land ownership?
+     */
+    public BigDecimal getAreaPerCapita() {
+<span class="fc" id="L135">        return area.divide(population, 0, RoundingMode.HALF_UP);</span>
+    }
+
+    /**
+     * Performs an act of buying land (new land is acquired by reducing the supplies according to the current land price).
+     * You cannot buy more than you can afford.
+     *
+     * @param buy how many hectares you want to buy. Negative input is ignored.
+     * @return the given number of hectares. {@code 0} means that the player does not want to buy anything, which will trigger the possibility to sell land.
+     */
+    public long buyLand(Long buy) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (buy &lt; 0) {</span>
+<span class="fc" id="L147">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+        }
+
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (buy &gt; 0) {</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies)) {</span>
+<span class="fc" id="L152">                this.area = this.area.add(BigDecimal.valueOf(buy));</span>
+<span class="fc" id="L153">                this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));</span>
+<span class="fc" id="L154">                this.cost = BigDecimal.ZERO; // price is recalculated per round</span>
+            } else {
+<span class="fc" id="L156">                throw new IllegalArgumentException(&quot;Not Enough Supplies&quot;);</span>
+            }
+        }
+<span class="fc" id="L159">        return buy;</span>
+    }
+
+    /**
+     * Performs an act of selling land (resulting in an increase of supplies as the land is sold to the current land price).
+     * You cannot sell more than you have.
+     *
+     * @param sell how many hectares you want to sell. Negative input is ignored.
+     */
+    public void sellLand(Long sell) {
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (sell &lt; 0) {</span>
+<span class="fc" id="L170">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L171">            return;</span>
+        }
+
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        if (is(BigDecimal.valueOf(sell)).lessThan(this.area)) {</span>
+<span class="fc" id="L175">            this.area = this.area.subtract(BigDecimal.valueOf(sell));</span>
+<span class="fc" id="L176">            this.supplies = this.supplies.add(this.yield.multiply(BigDecimal.valueOf(sell)));</span>
+<span class="fc" id="L177">            this.cost = BigDecimal.ZERO; // price is recalculated per round</span>
+        } else {
+<span class="fc" id="L179">            throw new IllegalArgumentException(&quot;Not Enough Land&quot;);</span>
+        }
+<span class="fc" id="L181">    }</span>
+
+    /**
+     * Performs an act of using supplies to feed your population.
+     * You cannot give more than you have.
+     *
+     * @param feed how many dzt you want to feed
+     */
+    public void feedToPopulation(Long feed) {
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (feed &lt; 0) {</span>
+<span class="fc" id="L191">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L192">            return;</span>
+        }
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        if (feed != 0) {</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">            if (is(BigDecimal.valueOf(feed)).lessThanOrEqualTo(this.supplies)) {</span>
+<span class="fc" id="L197">                this.supplies = this.supplies.subtract(BigDecimal.valueOf(feed));</span>
+<span class="fc" id="L198">                this.cost = BigDecimal.ONE; // price is recalculated per round</span>
+            } else {
+<span class="fc" id="L200">                throw new IllegalArgumentException(&quot;Not Enough in Stock&quot;);</span>
+            }
+        }
+<span class="fc" id="L203">    }</span>
+
+    /**
+     * Performs an act of using your area and people to cultivate, plant crops for the upcoming season/next round.
+     * You cannot give more than you have.
+     *
+     * @param cultivate how many hectares you want to use for agricultural purposes. Negative input is ignored. An input of {@code 0} will trigger a recalculation of the current land price.
+     */
+    public void cultivate(Long cultivate) {
+<span class="fc bfc" id="L212" title="All 2 branches covered.">        if (cultivate == 0) {</span>
+<span class="fc" id="L213">            calculateNewPrice();</span>
+<span class="fc" id="L214">            return;</span>
+        }
+
+<span class="fc bfc" id="L217" title="All 2 branches covered.">        if (cultivate &lt; 0) {</span>
+<span class="fc" id="L218">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L219">            return;</span>
+        }
+
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (is(this.area).lessThan(BigDecimal.valueOf(cultivate))) {</span>
+<span class="fc" id="L223">            throw new IllegalArgumentException(&quot;You cannot cultivate more area than you have.&quot;);</span>
+        }
+
+<span class="fc" id="L226">        BigDecimal halfCultivate = BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), 0, RoundingMode.HALF_UP);</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">        if (is(this.supplies).lessThan(halfCultivate)) {</span>
+<span class="fc" id="L228">            throw new IllegalArgumentException(&quot;You cannot cultivate more than you have.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L231" title="All 2 branches covered.">        if (is(BigDecimal.valueOf(cultivate)).greaterThan(getPopulation().multiply(BigDecimal.TEN))) {</span>
+<span class="fc" id="L232">            throw new IllegalArgumentException(&quot;Not enough workers available.&quot;);</span>
+        }
+
+        // perform seeding
+<span class="fc" id="L236">        this.supplies = this.supplies.subtract(halfCultivate);</span>
+<span class="fc" id="L237">        calculateNewPrice();</span>
+
+        // yields after cultivation and population increase
+<span class="fc" id="L240">        this.yield = this.cost;</span>
+<span class="fc" id="L241">        this.humans = this.yield.multiply(BigDecimal.valueOf(cultivate));</span>
+
+        // cultivation kills rats ;)
+<span class="fc" id="L244">        this.externalDamage = BigDecimal.ZERO;</span>
+<span class="fc" id="L245">        calculateNewPrice();</span>
+
+        // but add some external damage in some cases in a naiive manner
+        // original condition stated: if int(c/2) &lt;&gt; c/2
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        if (this.cost.divide(BigDecimal.valueOf(2L), 0, RoundingMode.DOWN).intValue() == this.cost.divide(BigDecimal.valueOf(2L), 0, RoundingMode.UP).intValue()) {</span>
+<span class="nc" id="L250">            this.externalDamage = this.supplies.divide(this.cost, 0, RoundingMode.HALF_UP);</span>
+        }
+<span class="fc" id="L252">        this.supplies = this.supplies.subtract(this.externalDamage).add(this.humans);</span>
+<span class="fc" id="L253">        calculateNewPrice();</span>
+<span class="fc" id="L254">    }</span>
+
+    @VisibleForTesting
+    /**
+     * Change price for next round.
+     */
+    void calculateNewPrice() {
+<span class="fc" id="L261">        this.cost = getRandomNumberUntil(5);</span>
+<span class="fc" id="L262">    }</span>
+
+    /**
+     * Perform &quot;round&quot;-final calculations such as
+     * &lt;ul&gt;
+     * &lt;li&gt;number of people that died&lt;/li&gt;
+     * &lt;li&gt;adapt overall (internal) death statistics&lt;/li&gt;
+     * &lt;li&gt;refresh internal famine quotient&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    public void finishRoundAfterActions() {
+<span class="fc" id="L273">        BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);</span>
+<span class="fc" id="L274">        this.increase = cost.multiply(factor).divide(this.population, 0, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100).add(BigDecimal.ONE), 0, RoundingMode.HALF_UP);</span>
+
+<span class="fc" id="L276">        this.cost = this.q.divide(BigDecimal.valueOf(20L), 0, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L277">        refreshFamineQuotient();</span>
+
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">        if (is(this.population).lessThan(this.cost)) {</span>
+<span class="nc" id="L280">            this.deathToll = BigDecimal.ZERO;</span>
+<span class="nc" id="L281">            return; // start new round without any deaths</span>
+        }
+
+        // calculate deaths
+<span class="fc" id="L285">        this.deathToll = this.population.subtract(this.cost);</span>
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (is(this.deathToll).greaterThan(this.population.multiply(BigDecimal.valueOf(0.45)))) {</span>
+<span class="fc" id="L287">            System.out.println(KaiserEnginePrinter.ANSI_YELLOW);</span>
+<span class="fc" id="L288">            System.out.println(&quot;Sie haben &quot; + this.deathToll + &quot; Menschen in nur einem Jahr verhungern lassen!&quot;);</span>
+<span class="fc" id="L289">            System.out.println(&quot;Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,&quot;);</span>
+<span class="fc" id="L290">            System.out.println(&quot;sondern auch zum Versager des Jahres erklärt.&quot;);</span>
+<span class="fc" id="L291">            System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L292">            return; // TODO stop the game here!</span>
+        }
+
+        // calc death statistics
+        // p1 = ((z-1)*p1+D*100/p)/z
+<span class="nc" id="L297">        BigDecimal tempQuotient = this.percentDeathToll.multiply(BigDecimal.valueOf(this.zYear - 1)).add(this.deathToll.multiply(BigDecimal.valueOf(100)).divide(this.population, 0, RoundingMode.HALF_UP));</span>
+<span class="nc" id="L298">        this.percentDeathToll = tempQuotient.divide(BigDecimal.valueOf(this.zYear), 0, RoundingMode.HALF_UP);</span>
+
+<span class="nc" id="L300">        this.population = this.cost; // TODO why? shouldn't this somehow be added up?</span>
+<span class="nc" id="L301">        this.deathTollSum = this.deathTollSum.add(this.deathToll);</span>
+<span class="nc" id="L302">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

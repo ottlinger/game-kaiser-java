@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaiserActions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">game-kaiser-java</a> &gt; <a href="index.source.html" class="el_package">de.aikiit.game.kaiser</a> &gt; <span class="el_source">KaiserActions.java</span></div><h1>KaiserActions.java</h1><pre class="source lang-java linenums">package de.aikiit.game.kaiser;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+/**
+ * This class contains all available actions that have to be taken by the player of the game.
+ * At the moment this is done via the operating system's console.
+ */
+<span class="nc" id="L10">public class KaiserActions {</span>
+
+    /**
+     * Try to buy land in the current game.
+     *
+     * @param engine the current game engine
+     * @return {@code true} if the buy action succeeded, {@code false} otherwise.
+     */
+    public static boolean buy(KaiserEngine engine) {
+        while (true) {
+            try {
+<span class="fc" id="L21">                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Wieviel Land wollen Sie kaufen? 0 = nichts&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L22">                Long buy = new Scanner(System.in).nextLong();</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">                return engine.buyLand(buy) &gt; 0;</span>
+<span class="nc" id="L24">            } catch (InputMismatchException e) {</span>
+<span class="nc" id="L25">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L26">                System.out.println(&quot;Gib einen richtigen Wert ein, Du Knalltüte!&quot;);</span>
+<span class="nc" id="L27">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L28">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L29">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L30">                System.out.println(&quot;Überleg doch mal, Du hast nur &quot; + engine.getSupplies() + &quot; Korn zur Verfügung. Nun denn, versuch es nochmals.&quot;);</span>
+<span class="nc" id="L31">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L32">            }</span>
+        }
+    }
+
+    /**
+     * Perform a sell operation in the current game.
+     *
+     * @param engine the current game engine
+     */
+    public static void sell(KaiserEngine engine) {
+        while (true) {
+            try {
+<span class="fc" id="L44">                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Wieviel Land wollen Sie verkaufen?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L45">                Long sell = new Scanner(System.in).nextLong();</span>
+<span class="fc" id="L46">                engine.sellLand(sell);</span>
+<span class="fc" id="L47">                return;</span>
+<span class="nc" id="L48">            } catch (InputMismatchException e) {</span>
+<span class="nc" id="L49">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L50">                System.out.println(&quot;Gib einen richtigen Wert ein, Du Knalltüte!&quot;);</span>
+<span class="nc" id="L51">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L52">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L53">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L54">                System.out.println(&quot;Überleg doch mal, Du hast nur &quot; + engine.getArea() + &quot; Hektar Land. Probier es erneut.&quot;);</span>
+<span class="nc" id="L55">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L56">            }</span>
+        }
+    }
+
+    /**
+     * Perform a feeding operation in the current game, that means give food to the population.
+     *
+     * @param engine the current game engine
+     */
+    public static void feed(KaiserEngine engine) {
+        while (true) {
+            try {
+<span class="fc" id="L68">                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Wieviel dzt wollen Sie an Ihr Volk verteilen?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L69">                Long feed = new Scanner(System.in).nextLong();</span>
+<span class="fc" id="L70">                engine.feedToPopulation(feed);</span>
+<span class="fc" id="L71">                return;</span>
+<span class="nc" id="L72">            } catch (InputMismatchException e) {</span>
+<span class="nc" id="L73">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L74">                System.out.println(&quot;Gib einen richtigen Wert ein, Du Knalltüte!&quot;);</span>
+<span class="nc" id="L75">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L76">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L77">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L78">                System.out.println(&quot;Überleg doch mal, Du hast nur &quot; + engine.getSupplies() + &quot; Korn zur Verfügung. Nun denn, probier es erneut.&quot;);</span>
+<span class="nc" id="L79">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L80">            }</span>
+        }
+    }
+
+    /**
+     * In order to feed your population you need to plant crops and cultivate your available area/land.
+     *
+     * @param engine the current game engine
+     */
+    public static void cultivate(KaiserEngine engine) {
+        while (true) {
+            try {
+<span class="fc" id="L92">                System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Wieviel Land wollen Sie bebauen?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L93">                Long cultivate = new Scanner(System.in).nextLong();</span>
+<span class="fc" id="L94">                engine.cultivate(cultivate);</span>
+<span class="fc" id="L95">                return;</span>
+<span class="nc" id="L96">            } catch (InputMismatchException e) {</span>
+<span class="nc" id="L97">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc" id="L98">                System.out.println(&quot;Gib einen richtigen Wert ein, Du Knalltüte!&quot;);</span>
+<span class="nc" id="L99">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L100">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L101">                System.out.print(KaiserEnginePrinter.ANSI_PURPLE);</span>
+<span class="nc bnc" id="L102" title="All 4 branches missed.">                switch (e.getMessage()) {</span>
+                    case &quot;You cannot cultivate more area than you have.&quot; -&gt;
+<span class="nc" id="L104">                            System.out.println(&quot;Überleg doch mal, Du hast nur &quot; + engine.getArea() + &quot; Hektar Land. Probier es nochmals.&quot;);</span>
+                    case &quot;You cannot cultivate more than you have.&quot; -&gt;
+<span class="nc" id="L106">                            System.out.println(&quot;Nun denk doch mal nach, Du hast nur &quot; + engine.getSupplies() + &quot; Korn zur Verfügung. Nun denn, versuche es erneut.&quot;);</span>
+                    case &quot;Not enough workers available.&quot; -&gt;
+<span class="nc" id="L108">                            System.out.println(&quot;Sie haben aber nur &quot; + engine.getPopulation() + &quot; Arbeiter. Noch einmal.&quot;);</span>
+                }
+<span class="nc" id="L110">                System.out.print(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="nc" id="L111">            }</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
