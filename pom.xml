@@ -81,6 +81,27 @@
       </properties>
     </developer>
   </developers>
+  <profiles>
+    <profile>
+      <id>no-tests</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+      </properties>
+      <build>
+        <defaultGoal>clean install</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <configuration>
+              <skip>true</skip>
+              <failWhenNoMutations>false</failWhenNoMutations>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <build>
     <defaultGoal>clean install org.pitest:pitest-maven:mutationCoverage</defaultGoal>
     <plugins>
