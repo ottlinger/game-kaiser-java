@@ -43,7 +43,7 @@
   <properties>
     <java.version>17</java.version>
     <encoding.utf8>UTF-8</encoding.utf8>
-    <javadoc.version>3.8.0</javadoc.version>
+    <javadoc.version>3.10.0</javadoc.version>
   </properties>
   <dependencies>
     <!--dependency>
