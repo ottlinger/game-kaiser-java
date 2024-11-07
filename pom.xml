@@ -242,7 +242,8 @@
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>4.0.0-M16</version>
+          <!-- MSITE-1025: do not use 4.x as it breaks doxia-2-compatibility -->
+          <version>3.21.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
