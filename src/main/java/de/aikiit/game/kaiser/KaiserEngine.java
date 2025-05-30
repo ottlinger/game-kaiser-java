@@ -110,17 +110,28 @@ public class KaiserEngine {
 
     }
 
+    /**
+     * Allow setting the area value for testing purposes.
+     * @param q q value.
+     */
     @VisibleForTesting
     void setQ(BigDecimal q) {
         this.q = q;
     }
 
+    /**
+     * Allow setting the supplies value for testing purposes.
+     * @param supplies current supplies.
+     */
     @VisibleForTesting
     void setSupplies(BigDecimal supplies) {
         this.supplies = supplies;
     }
 
-
+    /**
+     * Allow setting the area value for testing purposes.
+     * @param area current area.
+     */
     @VisibleForTesting
     void setArea(BigDecimal area) {
         this.area = area;
@@ -253,10 +264,10 @@ public class KaiserEngine {
         calculateNewPrice();
     }
 
-    @VisibleForTesting
     /**
      * Change price for next round.
      */
+    @VisibleForTesting
     void calculateNewPrice() {
         this.cost = getRandomNumberUntil(5);
     }

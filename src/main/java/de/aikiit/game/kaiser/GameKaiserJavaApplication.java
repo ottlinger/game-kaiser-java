@@ -7,8 +7,11 @@ package de.aikiit.game.kaiser;
 //@SpringBootApplication
 public class GameKaiserJavaApplication {
 
+    /**
+     * Start the actual game directly.
+     * @param args no parameters required at the moment.
+     */
     public static void main(String[] args) {
-        //SpringApplication.run(GameKaiserJavaApplication.class, args);
         new KaiserGame().run();
     }
 
