@@ -14,23 +14,52 @@ import static org.apache.commons.lang3.compare.ComparableUtils.is;
 public class KaiserEnginePrinter {
 
     // inspired by https://talyian.github.io/ansicolors/
+    /**
+     * Reset anything in console.
+     */
     public static final String ANSI_RESET = &quot;\u001B[0m&quot;;
+    /**
+     * Colour BLACK.
+     */
     public static final String ANSI_BLACK = &quot;\u001B[30m&quot;;
+    /**
+     * Colour RED.
+     */
     public static final String ANSI_RED = &quot;\u001B[31m&quot;;
+    /**
+     * Colour GREEN.
+     */
     public static final String ANSI_GREEN = &quot;\u001B[32m&quot;;
+    /**
+     * Colour YELLOW.
+     */
     public static final String ANSI_YELLOW = &quot;\u001B[33m&quot;;
+    /**
+     * Colour BLUE.
+     */
     public static final String ANSI_BLUE = &quot;\u001B[34m&quot;;
+    /**
+     * Colour PURPLE.
+     */
     public static final String ANSI_PURPLE = &quot;\u001B[35m&quot;;
+    /**
+     * Colour CYAN.
+     */
     public static final String ANSI_CYAN = &quot;\u001B[36m&quot;;
+    /**
+     * Colour WHITE.
+     */
     public static final String ANSI_WHITE = &quot;\u001B[37m&quot;;
-
+    /**
+     * Colour ORANGE.
+     */
     public static final String ORANGE = &quot;\u001B[38;5;202m&quot;;
 
     private final KaiserEngine engine;
 
-<span class="fc" id="L31">    public KaiserEnginePrinter(KaiserEngine engine) {</span>
-<span class="fc" id="L32">        this.engine = engine;</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L60">    public KaiserEnginePrinter(KaiserEngine engine) {</span>
+<span class="fc" id="L61">        this.engine = engine;</span>
+<span class="fc" id="L62">    }</span>
 
     /**
      * Show status information of the underlying game engine for the given round.
@@ -39,15 +68,14 @@ public class KaiserEnginePrinter {
      * @return colour-encoded status.
      */
     public String getStatus(int round) {
-<span class="fc" id="L42">        StringBuilder status = new StringBuilder();</span>
-
-<span class="fc" id="L44">        status.append(ANSI_GREEN).append(&quot;### STATUS nach Runde &quot;).append(round).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L45">        status.append(ANSI_CYAN).append(&quot;Die Einwohnerzahl beträgt jetzt   &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getPopulation()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L46">        status.append(ANSI_CYAN).append(&quot;Die Stadt besitzt an Land (Hektar)&quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L47">        status.append(ANSI_CYAN).append(&quot;Die Ernte betrug (dzt/Hektar)     &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L48">        status.append(ANSI_RED).append(&quot;Ratten haben gefressen (dzt)      &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getExternalDamage()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L49">        status.append(ANSI_RED).append(&quot;Eure Vorräte betragen (dzt)       &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getSupplies()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L50">        return status.toString();</span>
+<span class="fc" id="L71">        StringBuilder status = new StringBuilder();</span>
+<span class="fc" id="L72">        status.append(ANSI_GREEN).append(&quot;### STATUS nach Runde &quot;).append(round).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L73">        status.append(ANSI_CYAN).append(&quot;Die Einwohnerzahl beträgt jetzt   &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getPopulation()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L74">        status.append(ANSI_CYAN).append(&quot;Die Stadt besitzt an Land (Hektar)&quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L75">        status.append(ANSI_CYAN).append(&quot;Die Ernte betrug (dzt/Hektar)     &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L76">        status.append(ANSI_RED).append(&quot;Ratten haben gefressen (dzt)      &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getExternalDamage()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L77">        status.append(ANSI_RED).append(&quot;Eure Vorräte betragen (dzt)       &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getSupplies()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L78">        return status.toString();</span>
     }
 
     /**
@@ -57,13 +85,9 @@ public class KaiserEnginePrinter {
      * @return colour-encoded population statistics.
      */
     public String getYearResult(int round) {
-<span class="fc" id="L60">        StringBuilder status = new StringBuilder();</span>
-
-<span class="fc" id="L62">        status.append(ANSI_GREEN).append(&quot;Im Jahr &quot;).append(round).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L63">        status.append(ANSI_CYAN).append(&quot;Es starben         &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getDeathToll()), 10)).append(&quot; Einwohner&quot;).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L64">        status.append(ANSI_CYAN).append(&quot;hinzugekommen sind &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getIncrease()), 10)).append(&quot; Einwohner&quot;).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L65">        return status.toString();</span>
-
+<span class="fc" id="L88">        return ANSI_GREEN + &quot;Im Jahr &quot; + round + ANSI_RESET + System.lineSeparator() +</span>
+<span class="fc" id="L89">                ANSI_CYAN + &quot;Es starben         &quot; + StringUtils.leftPad(String.valueOf(this.engine.getDeathToll()), 10) + &quot; Einwohner&quot; + ANSI_RESET + System.lineSeparator() +</span>
+<span class="fc" id="L90">                ANSI_CYAN + &quot;hinzugekommen sind &quot; + StringUtils.leftPad(String.valueOf(this.engine.getIncrease()), 10) + &quot; Einwohner&quot; + ANSI_RESET + System.lineSeparator();</span>
     }
 
     /**
@@ -72,16 +96,11 @@ public class KaiserEnginePrinter {
      * @return colour-encoded overall statistics.
      */
     public String getResults() {
-<span class="fc" id="L75">        StringBuilder result = new StringBuilder();</span>
-
-<span class="fc" id="L77">        result.append(&quot;In Ihrer &quot;).append(KaiserGame.MAX_ROUNDS).append(&quot;-jährigen Amtszeit sind durchschnittlich &quot;);</span>
-<span class="fc" id="L78">        result.append(this.engine.getPercentDeathToll()).append(&quot; % im Jahr verstorben.&quot;).append(System.lineSeparator());</span>
-<span class="fc" id="L79">        result.append(&quot;Insgesamt sind damit &quot;).append(this.engine.getDeathTollSum()).append(&quot; Einwohner verstorben.&quot;).append(System.lineSeparator());</span>
-
-<span class="fc" id="L81">        result.append(System.lineSeparator());</span>
-<span class="fc" id="L82">        result.append(&quot;Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie &quot;).append(this.engine.getAreaPerCapita()).append(&quot; Hektar/Einwohner.&quot;).append(System.lineSeparator());</span>
-
-<span class="fc" id="L84">        return result.toString();</span>
+<span class="fc" id="L99">        return &quot;In Ihrer &quot; + KaiserGame.MAX_ROUNDS + &quot;-jährigen Amtszeit sind durchschnittlich &quot; +</span>
+<span class="fc" id="L100">                this.engine.getPercentDeathToll() + &quot; % im Jahr verstorben.&quot; + System.lineSeparator() +</span>
+<span class="fc" id="L101">                &quot;Insgesamt sind damit &quot; + this.engine.getDeathTollSum() + &quot; Einwohner verstorben.&quot; + System.lineSeparator() +</span>
+<span class="fc" id="L102">                System.lineSeparator() +</span>
+<span class="fc" id="L103">                &quot;Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie &quot; + this.engine.getAreaPerCapita() + &quot; Hektar/Einwohner.&quot; + System.lineSeparator();</span>
     }
 
     /**
@@ -90,40 +109,40 @@ public class KaiserEnginePrinter {
      * @return colour-encoded legacy/regency output.
      */
     public String evaluateRegency() {
-<span class="fc" id="L93">        StringBuilder result = new StringBuilder();</span>
-<span class="fc" id="L94">        result.append(ANSI_BLUE).append(&quot;&gt;&gt;&gt;&gt; Bewertung Ihrer Herrschaft &lt;&lt;&lt;&lt;&quot;).append(System.lineSeparator());</span>
+<span class="fc" id="L112">        StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L113">        result.append(ANSI_BLUE).append(&quot;&gt;&gt;&gt;&gt; Bewertung Ihrer Herrschaft &lt;&lt;&lt;&lt;&quot;).append(System.lineSeparator());</span>
 
-<span class="fc" id="L96">        result.append(&quot;In ihrer &quot;).append(engine.getZYear()).append(&quot;-jährigen Amtszeit sind &quot;);</span>
-<span class="fc" id="L97">        result.append(engine.getPercentDeathToll()).append(&quot;% der Bevölkerung im Jahr verstorben.&quot;).append(System.lineSeparator());</span>
-<span class="fc" id="L98">        result.append(&quot;Insgesamt sind &quot;).append(engine.getDeathTollSum()).append(&quot; Einwohner gestorben.&quot;).append(System.lineSeparator());</span>
+<span class="fc" id="L115">        result.append(&quot;In ihrer &quot;).append(engine.getZYear()).append(&quot;-jährigen Amtszeit sind &quot;);</span>
+<span class="fc" id="L116">        result.append(engine.getPercentDeathToll()).append(&quot;% der Bevölkerung im Jahr verstorben.&quot;).append(System.lineSeparator());</span>
+<span class="fc" id="L117">        result.append(&quot;Insgesamt sind &quot;).append(engine.getDeathTollSum()).append(&quot; Einwohner gestorben.&quot;).append(System.lineSeparator());</span>
 
-<span class="fc" id="L100">        BigDecimal legacy = engine.getArea().divide(engine.getPopulation(), RoundingMode.HALF_UP);</span>
-<span class="fc" id="L101">        result.append(&quot;Zu Beginn hatten sie 10 Hektar pro Einwohner,&quot;).append(System.lineSeparator());</span>
-<span class="fc" id="L102">        result.append(&quot;jetzt sind es &quot;).append(legacy).append(&quot; Hektar/Einwohner.&quot;).append(System.lineSeparator());</span>
+<span class="fc" id="L119">        BigDecimal legacy = engine.getArea().divide(engine.getPopulation(), RoundingMode.HALF_UP);</span>
+<span class="fc" id="L120">        result.append(&quot;Zu Beginn hatten sie 10 Hektar pro Einwohner,&quot;).append(System.lineSeparator());</span>
+<span class="fc" id="L121">        result.append(&quot;jetzt sind es &quot;).append(legacy).append(&quot; Hektar/Einwohner.&quot;).append(System.lineSeparator());</span>
 
         // TODO: check and fix legacy calculation - message should match criteria
-<span class="pc bpc" id="L105" title="2 of 4 branches missed.">        if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.valueOf(33)) || is(legacy).lessThan(BigDecimal.valueOf(7))) {</span>
-<span class="nc" id="L106">            result.append(&quot;Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,&quot;).append(System.lineSeparator());</span>
-<span class="nc" id="L107">            result.append(&quot;sondern auch zum Versager des Jahres erklärt.&quot;).append(System.lineSeparator());</span>
+<span class="pc bpc" id="L124" title="2 of 4 branches missed.">        if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.valueOf(33)) || is(legacy).lessThan(BigDecimal.valueOf(7))) {</span>
+<span class="nc" id="L125">            result.append(&quot;Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,&quot;).append(System.lineSeparator());</span>
+<span class="nc" id="L126">            result.append(&quot;sondern auch zum Versager des Jahres erklärt.&quot;).append(System.lineSeparator());</span>
         } else {
 
-<span class="pc bpc" id="L110" title="2 of 4 branches missed.">            if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {</span>
-<span class="nc" id="L111">                result.append(&quot;Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.&quot;);</span>
-<span class="nc" id="L112">                result.append(System.lineSeparator());</span>
-<span class="nc" id="L113">                result.append(&quot;Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!&quot;);</span>
-<span class="pc bpc" id="L114" title="2 of 4 branches missed.">            } else if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {</span>
-<span class="nc" id="L115">                result.append(&quot;Sie hätten glücklicher agieren können, aber es war nicht übel.&quot;);</span>
-<span class="nc" id="L116">                result.append(System.lineSeparator());</span>
-<span class="nc" id="L117">                result.append(this.engine.getPopulation().multiply(new BigDecimal(&quot;0.8&quot;))).append(&quot; Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.&quot;);</span>
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">            if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {</span>
+<span class="nc" id="L130">                result.append(&quot;Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.&quot;);</span>
+<span class="nc" id="L131">                result.append(System.lineSeparator());</span>
+<span class="nc" id="L132">                result.append(&quot;Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!&quot;);</span>
+<span class="pc bpc" id="L133" title="2 of 4 branches missed.">            } else if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {</span>
+<span class="nc" id="L134">                result.append(&quot;Sie hätten glücklicher agieren können, aber es war nicht übel.&quot;);</span>
+<span class="nc" id="L135">                result.append(System.lineSeparator());</span>
+<span class="nc" id="L136">                result.append(this.engine.getPopulation().multiply(new BigDecimal(&quot;0.8&quot;))).append(&quot; Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.&quot;);</span>
             } else {
-<span class="fc" id="L119">                result.append(&quot;Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.&quot;);</span>
+<span class="fc" id="L138">                result.append(&quot;Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.&quot;);</span>
             }
         }
 
-<span class="fc" id="L123">        result.append(ANSI_RESET);</span>
-<span class="fc" id="L124">        result.append(System.lineSeparator());</span>
-<span class="fc" id="L125">        result.append(System.lineSeparator());</span>
-<span class="fc" id="L126">        return result.toString();</span>
+<span class="fc" id="L142">        result.append(ANSI_RESET);</span>
+<span class="fc" id="L143">        result.append(System.lineSeparator());</span>
+<span class="fc" id="L144">        result.append(System.lineSeparator());</span>
+<span class="fc" id="L145">        return result.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
