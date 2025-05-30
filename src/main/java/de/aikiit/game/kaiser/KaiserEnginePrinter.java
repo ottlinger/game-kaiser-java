@@ -14,16 +14,45 @@ import static org.apache.commons.lang3.compare.ComparableUtils.is;
 public class KaiserEnginePrinter {
 
     // inspired by https://talyian.github.io/ansicolors/
+    /**
+     * Reset anything in console.
+     */
     public static final String ANSI_RESET = "\u001B[0m";
+    /**
+     * Colour BLACK.
+     */
     public static final String ANSI_BLACK = "\u001B[30m";
+    /**
+     * Colour RED.
+     */
     public static final String ANSI_RED = "\u001B[31m";
+    /**
+     * Colour GREEN.
+     */
     public static final String ANSI_GREEN = "\u001B[32m";
+    /**
+     * Colour YELLOW.
+     */
     public static final String ANSI_YELLOW = "\u001B[33m";
+    /**
+     * Colour BLUE.
+     */
     public static final String ANSI_BLUE = "\u001B[34m";
+    /**
+     * Colour PURPLE.
+     */
     public static final String ANSI_PURPLE = "\u001B[35m";
+    /**
+     * Colour CYAN.
+     */
     public static final String ANSI_CYAN = "\u001B[36m";
+    /**
+     * Colour WHITE.
+     */
     public static final String ANSI_WHITE = "\u001B[37m";
-
+    /**
+     * Colour ORANGE.
+     */
     public static final String ORANGE = "\u001B[38;5;202m";
 
     private final KaiserEngine engine;
@@ -40,7 +69,6 @@ public class KaiserEnginePrinter {
      */
     public String getStatus(int round) {
         StringBuilder status = new StringBuilder();
-
         status.append(ANSI_GREEN).append("### STATUS nach Runde ").append(round).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Einwohnerzahl beträgt jetzt   ").append(StringUtils.leftPad(String.valueOf(this.engine.getPopulation()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Stadt besitzt an Land (Hektar)").append(StringUtils.leftPad(String.valueOf(this.engine.getArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());
@@ -57,13 +85,9 @@ public class KaiserEnginePrinter {
      * @return colour-encoded population statistics.
      */
     public String getYearResult(int round) {
-        StringBuilder status = new StringBuilder();
-
-        status.append(ANSI_GREEN).append("Im Jahr ").append(round).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_CYAN).append("Es starben         ").append(StringUtils.leftPad(String.valueOf(this.engine.getDeathToll()), 10)).append(" Einwohner").append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_CYAN).append("hinzugekommen sind ").append(StringUtils.leftPad(String.valueOf(this.engine.getIncrease()), 10)).append(" Einwohner").append(ANSI_RESET).append(System.lineSeparator());
-        return status.toString();
-
+        return ANSI_GREEN + "Im Jahr " + round + ANSI_RESET + System.lineSeparator() +
+                ANSI_CYAN + "Es starben         " + StringUtils.leftPad(String.valueOf(this.engine.getDeathToll()), 10) + " Einwohner" + ANSI_RESET + System.lineSeparator() +
+                ANSI_CYAN + "hinzugekommen sind " + StringUtils.leftPad(String.valueOf(this.engine.getIncrease()), 10) + " Einwohner" + ANSI_RESET + System.lineSeparator();
     }
 
     /**
@@ -72,16 +96,11 @@ public class KaiserEnginePrinter {
      * @return colour-encoded overall statistics.
      */
     public String getResults() {
-        StringBuilder result = new StringBuilder();
-
-        result.append("In Ihrer ").append(KaiserGame.MAX_ROUNDS).append("-jährigen Amtszeit sind durchschnittlich ");
-        result.append(this.engine.getPercentDeathToll()).append(" % im Jahr verstorben.").append(System.lineSeparator());
-        result.append("Insgesamt sind damit ").append(this.engine.getDeathTollSum()).append(" Einwohner verstorben.").append(System.lineSeparator());
-
-        result.append(System.lineSeparator());
-        result.append("Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie ").append(this.engine.getAreaPerCapita()).append(" Hektar/Einwohner.").append(System.lineSeparator());
-
-        return result.toString();
+        return "In Ihrer " + KaiserGame.MAX_ROUNDS + "-jährigen Amtszeit sind durchschnittlich " +
+                this.engine.getPercentDeathToll() + " % im Jahr verstorben." + System.lineSeparator() +
+                "Insgesamt sind damit " + this.engine.getDeathTollSum() + " Einwohner verstorben." + System.lineSeparator() +
+                System.lineSeparator() +
+                "Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie " + this.engine.getAreaPerCapita() + " Hektar/Einwohner." + System.lineSeparator();
     }
 
     /**

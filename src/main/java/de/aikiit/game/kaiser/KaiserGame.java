@@ -17,6 +17,7 @@ public class KaiserGame {
      * The player can play at most this number of rounds.
      */
     public static final int MAX_ROUNDS = 10;
+
     private final KaiserEngine engine;
     private final KaiserEnginePrinter printer;
     /**
@@ -84,7 +85,7 @@ public class KaiserGame {
                 #   #  #    # # #    # #      #   # \s
                 #    # #    # #  ####  ###### #    #\s
                                                     \s
-                                                                    """);
+                """);
         System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
@@ -103,7 +104,8 @@ public class KaiserGame {
                 #     #   #   #         #     #   #   #         #  #   ###### #      # #      ##### \s
                 #     #   #   #         #     #   #   #         #   #  #    # # #    # #      #   # \s
                 ######    #   ######    ######    #   ######    #    # #    # #  ####  ###### #    #\s
-                                                                                                    \n                                                                           """);
+                                                                                                    \n
+                """);
         System.out.println(KaiserEnginePrinter.ANSI_RESET);
     }
 
