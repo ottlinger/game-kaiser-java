@@ -25,10 +25,17 @@ public class KaiserGame {
      */
     private int round = 0;
 
+    /**
+     * Initializes a game with default parameters.
+     */
     public KaiserGame() {
         this(new KaiserEngine());
     }
 
+    /**
+     * Allows setting an explicit engine for testing purposes.
+     * @param engine initialize with the given engine.
+     */
     @VisibleForTesting
     KaiserGame(KaiserEngine engine) {
         this.engine = engine;
