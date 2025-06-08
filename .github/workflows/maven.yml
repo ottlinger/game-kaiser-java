@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        java: [17, 21]
+        java: [17, 21, 24]
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -40,6 +40,6 @@ jobs:
         run: ./mvnw -e -B -V -ntp clean package
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
