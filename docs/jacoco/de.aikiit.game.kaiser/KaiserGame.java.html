@@ -25,49 +25,56 @@ public class KaiserGame {
      */
 <span class="fc" id="L26">    private int round = 0;</span>
 
+    /**
+     * Initializes a game with default parameters.
+     */
     public KaiserGame() {
-<span class="fc" id="L29">        this(new KaiserEngine());</span>
-<span class="fc" id="L30">    }</span>
+<span class="fc" id="L32">        this(new KaiserEngine());</span>
+<span class="fc" id="L33">    }</span>
 
+    /**
+     * Allows setting an explicit engine for testing purposes.
+     * @param engine initialize with the given engine.
+     */
     @VisibleForTesting
-<span class="fc" id="L33">    KaiserGame(KaiserEngine engine) {</span>
-<span class="fc" id="L34">        this.engine = engine;</span>
-<span class="fc" id="L35">        this.printer = new KaiserEnginePrinter(this.engine);</span>
-<span class="fc" id="L36">    }</span>
+<span class="fc" id="L40">    KaiserGame(KaiserEngine engine) {</span>
+<span class="fc" id="L41">        this.engine = engine;</span>
+<span class="fc" id="L42">        this.printer = new KaiserEnginePrinter(this.engine);</span>
+<span class="fc" id="L43">    }</span>
 
     private void incrementRoundCounter() {
-<span class="nc" id="L39">        round++;</span>
-<span class="nc" id="L40">    }</span>
+<span class="nc" id="L46">        round++;</span>
+<span class="nc" id="L47">    }</span>
 
     /**
      * Start the game and allow player interactions until the maximum number of rounds is reached.
      */
     public void run() {
-<span class="fc" id="L46">        intro();</span>
-<span class="nc" id="L47">        status();</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">        while (round &lt; MAX_ROUNDS) {</span>
-<span class="nc" id="L49">            incrementRoundCounter();</span>
-<span class="nc" id="L50">            engine.startNewRound();</span>
-<span class="nc" id="L51">            status();</span>
-<span class="nc" id="L52">            actions();</span>
-<span class="nc" id="L53">            engine.finishRoundAfterActions();</span>
+<span class="fc" id="L53">        intro();</span>
+<span class="nc" id="L54">        status();</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        while (round &lt; MAX_ROUNDS) {</span>
+<span class="nc" id="L56">            incrementRoundCounter();</span>
+<span class="nc" id="L57">            engine.startNewRound();</span>
+<span class="nc" id="L58">            status();</span>
+<span class="nc" id="L59">            actions();</span>
+<span class="nc" id="L60">            engine.finishRoundAfterActions();</span>
         }
 
-<span class="nc" id="L56">        finish();</span>
-<span class="nc" id="L57">        byeByeBanner();</span>
-<span class="nc" id="L58">    }</span>
+<span class="nc" id="L63">        finish();</span>
+<span class="nc" id="L64">        byeByeBanner();</span>
+<span class="nc" id="L65">    }</span>
 
     /**
      * Shows information about the game flow and welcomes the player.
      */
     public void intro() {
-<span class="fc" id="L64">        banner();</span>
-<span class="fc" id="L65">        System.out.println(&quot;Versuchen Sie die antike Stadt &quot; + KaiserEnginePrinter.ANSI_YELLOW + &quot;&gt;SUMERIA&lt;&quot; + KaiserEnginePrinter.ANSI_RESET + &quot; zu regieren!&quot;);</span>
-<span class="fc" id="L66">        System.out.println(&quot;Ihre Regierungszeit beträgt &quot; + MAX_ROUNDS + &quot; Jahre.&quot;);</span>
-<span class="fc" id="L67">        System.out.println(&quot;Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.&quot;);</span>
-<span class="fc" id="L68">        System.out.println(&quot;Dann werden wir weitersehen .......&quot;);</span>
-<span class="fc" id="L69">        System.out.println();</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L71">        banner();</span>
+<span class="fc" id="L72">        System.out.println(&quot;Versuchen Sie die antike Stadt &quot; + KaiserEnginePrinter.ANSI_YELLOW + &quot;&gt;SUMERIA&lt;&quot; + KaiserEnginePrinter.ANSI_RESET + &quot; zu regieren!&quot;);</span>
+<span class="fc" id="L73">        System.out.println(&quot;Ihre Regierungszeit beträgt &quot; + MAX_ROUNDS + &quot; Jahre.&quot;);</span>
+<span class="fc" id="L74">        System.out.println(&quot;Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.&quot;);</span>
+<span class="fc" id="L75">        System.out.println(&quot;Dann werden wir weitersehen .......&quot;);</span>
+<span class="fc" id="L76">        System.out.println();</span>
+<span class="fc" id="L77">    }</span>
 
     /**
      * Shows the game's banner.
@@ -75,8 +82,8 @@ public class KaiserGame {
     public void banner() {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
-<span class="fc" id="L78">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
-<span class="fc" id="L79">        System.out.println(&quot;&quot;&quot;</span>
+<span class="fc" id="L85">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
+<span class="fc" id="L86">        System.out.println(&quot;&quot;&quot;</span>
                 #    #                              \s
                 #   #    ##   #  ####  ###### ##### \s
                 #  #    #  #  # #      #      #    #\s
@@ -86,8 +93,8 @@ public class KaiserGame {
                 #    # #    # #  ####  ###### #    #\s
                                                     \s
                 &quot;&quot;&quot;);
-<span class="fc" id="L89">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L90">    }</span>
+<span class="fc" id="L96">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L97">    }</span>
 
     /**
      * Shows console banner after the game is over.
@@ -95,8 +102,8 @@ public class KaiserGame {
     public void byeByeBanner() {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
-<span class="fc" id="L98">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
-<span class="fc" id="L99">        System.out.println(&quot;&quot;&quot;</span>
+<span class="fc" id="L105">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
+<span class="fc" id="L106">        System.out.println(&quot;&quot;&quot;</span>
                 ######                  ######                  #    #                              \s
                 #     # #   # ######    #     # #   # ######    #   #    ##   #  ####  ###### ##### \s
                 #     #  # #  #         #     #  # #  #         #  #    #  #  # #      #      #    #\s
@@ -106,16 +113,16 @@ public class KaiserGame {
                 ######    #   ######    ######    #   ######    #    # #    # #  ####  ###### #    #\s
                                                                                                     \n
                 &quot;&quot;&quot;);
-<span class="fc" id="L109">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L116">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L117">    }</span>
 
     /**
      * Shows the underlying status of the current round the player is in.
      */
     public void status() {
-<span class="fc" id="L116">        System.out.println(printer.getStatus(round));</span>
-<span class="fc" id="L117">        System.out.println(printer.getYearResult(round));</span>
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L123">        System.out.println(printer.getStatus(round));</span>
+<span class="fc" id="L124">        System.out.println(printer.getYearResult(round));</span>
+<span class="fc" id="L125">    }</span>
 
     /**
      * Performs user interactions.
@@ -127,26 +134,26 @@ public class KaiserGame {
      * &lt;/ul&gt;
      */
     public void actions() {
-<span class="fc" id="L130">        System.out.println();</span>
-<span class="fc" id="L131">        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;#+#+#+#+ Was möchten Sie tun?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L137">        System.out.println();</span>
+<span class="fc" id="L138">        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;#+#+#+#+ Was möchten Sie tun?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
 
         // only buy or sell is allowed
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (!KaiserActions.buy(this.engine)) {</span>
-<span class="nc" id="L135">            KaiserActions.sell(this.engine);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (!KaiserActions.buy(this.engine)) {</span>
+<span class="nc" id="L142">            KaiserActions.sell(this.engine);</span>
         }
 
-<span class="nc" id="L138">        KaiserActions.feed(this.engine);</span>
-<span class="nc" id="L139">        KaiserActions.cultivate(this.engine);</span>
+<span class="nc" id="L145">        KaiserActions.feed(this.engine);</span>
+<span class="nc" id="L146">        KaiserActions.cultivate(this.engine);</span>
 
-<span class="nc" id="L141">        System.out.println();</span>
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L148">        System.out.println();</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * Shows results after the game is over.
      */
     public void finish() {
-<span class="fc" id="L148">        System.out.println(printer.getResults());</span>
-<span class="fc" id="L149">        System.out.println(printer.evaluateRegency());</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L155">        System.out.println(printer.getResults());</span>
+<span class="fc" id="L156">        System.out.println(printer.evaluateRegency());</span>
+<span class="fc" id="L157">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
