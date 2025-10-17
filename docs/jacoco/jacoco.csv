@@ -2,5 +2,5 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 game-kaiser-java,de.aikiit.game.kaiser,KaiserActions,120,62,4,2,40,15,4,5,1,4
 game-kaiser-java,de.aikiit.game.kaiser,KaiserGame,47,92,4,0,18,31,3,9,1,9
 game-kaiser-java,de.aikiit.game.kaiser,GameKaiserJavaApplication,8,0,0,0,3,0,2,0,2,0
-game-kaiser-java,de.aikiit.game.kaiser,KaiserEngine,49,562,3,31,7,113,3,30,0,16
+game-kaiser-java,de.aikiit.game.kaiser,KaiserEngine,58,553,3,31,8,112,3,30,0,16
 game-kaiser-java,de.aikiit.game.kaiser,KaiserEnginePrinter,48,271,6,6,8,35,6,5,0,5
