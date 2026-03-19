@@ -258,7 +258,7 @@ public class KaiserEngine {
         // but add some external damage in some cases in a naiive manner
         // original condition stated: if int(c/2) &lt;&gt; c/2
 <span class="pc bpc" id="L260" title="1 of 2 branches missed.">        if (this.cost.divide(BigDecimal.valueOf(2L), 0, RoundingMode.DOWN).intValue() == this.cost.divide(BigDecimal.valueOf(2L), 0, RoundingMode.UP).intValue()) {</span>
-<span class="nc" id="L261">            this.externalDamage = this.supplies.divide(this.cost, 0, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L261">            this.externalDamage = this.supplies.divide(this.cost, 0, RoundingMode.HALF_UP);</span>
         }
 <span class="fc" id="L263">        this.supplies = this.supplies.subtract(this.externalDamage).add(this.humans);</span>
 <span class="fc" id="L264">        calculateNewPrice();</span>
