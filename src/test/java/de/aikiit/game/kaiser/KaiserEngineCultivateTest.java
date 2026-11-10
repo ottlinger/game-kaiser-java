@@ -1,91 +1,85 @@
 package de.aikiit.game.kaiser;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class KaiserEngineCultivateTest {
-    private KaiserEngine engine;
-
-    @BeforeEach
-    void createNewEngineUnderTest() {
-        this.engine = new KaiserEngine();
-    }
-
+class KaiserEngineCultivateTest {
     @Test
-    void cultivateZeroChangesCostForNextRound() {
-        BigDecimal costB4 = engine.getCost();
-
+    void zeroStillCalculatesHarvestRatsAndImmigrationFactor() {
+        BasicRandom random = new BasicRandom(0.99, 0.2, 0.99);
+        KaiserEngine engine = new KaiserEngine(random);
+        engine.startNewRound();
         engine.cultivate(0L);
+        assertThat(engine.getHarvestYield()).isEqualByComparingTo("5");
+        assertThat(engine.getTotalHarvest()).isZero();
+        assertThat(engine.getRatLoss()).isEqualByComparingTo("1400");
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("1400");
+        assertThat(engine.getImmigrationFactor()).isEqualTo(5);
+        assertThat(random.remaining()).isZero();
+    }
 
-        assertThat(engine.getCost()).isNotEqualTo(costB4);
+    @ParameterizedTest
+    @CsvSource({"0,0", "0.2,1400", "0.4,0", "0.6,700", "0.8,0"})
+    void onlyEvenRatRollsCauseDamage(double roll, String loss) {
+        KaiserEngine engine = new KaiserEngine(new BasicRandom(0.0, roll, 0.0));
+        engine.cultivate(0L);
+        assertThat(engine.getRatLoss()).isEqualByComparingTo(loss);
     }
 
     @Test
-    void cultivateNegativeInputDoesNotChangeCost() {
-        BigDecimal costB4 = engine.getCost();
-
-        engine.cultivate(-1234L);
-
-        assertThat(engine.getCost()).isEqualTo(costB4);
+    void seedAndRatLossUseFloorNotRounding() {
+        KaiserEngine engine = new KaiserEngine(new BasicRandom(0.0, 0.2, 0.0));
+        engine.startNewRound();
+        engine.cultivate(3L);
+        // S=2800-INT(3/2)=2799; E=INT(2799/2)=1399; H=3.
+        assertThat(engine.getRatLoss()).isEqualByComparingTo("1399");
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("1403");
     }
 
     @Test
-    void youCanNotCultivateMoreThanYourArea() {
-        BigDecimal areaB4 = engine.getArea();
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.cultivate(Long.MAX_VALUE));
-
-        String expectedMessage = "You cannot cultivate more area than you have.";
-        assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getArea()).isEqualTo(areaB4);
+    void exactSeedStockIsRejectedButZeroPlantingBypassesValidation() {
+        KaiserEngine engine = new KaiserEngine(new BasicRandom(0.0, 0.0, 0.0));
+        engine.startNewRound();
+        engine.feedToPopulation(2798L);
+        assertThrows(IllegalArgumentException.class, () -> engine.cultivate(4L));
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2");
+        engine.cultivate(0L);
     }
 
     @Test
-    void youNeedToHaveEnoughSupplies() {
-        engine.setArea(BigDecimal.valueOf(Long.MAX_VALUE));
-        engine.setSupplies(BigDecimal.valueOf(Long.MAX_VALUE).divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP));
-        BigDecimal suppliesB4 = engine.getSupplies();
-        BigDecimal areaB4 = engine.getArea();
+    void exactWorkerCapacityIsRejectedButPlantingAllLandIsAllowed() {
+        KaiserEngine engine = new KaiserEngine(new BasicRandom(0.0, 0.0, 0.0));
+        // Initial P=95, so 950 is forbidden; 949 is allowed.
+        assertThrows(IllegalArgumentException.class, () -> engine.cultivate(950L));
+        engine.cultivate(949L);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.cultivate(Long.MAX_VALUE));
-
-        String expectedMessage = "You cannot cultivate more than you have.";
-        assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getSupplies()).isEqualTo(suppliesB4);
-        assertThat(engine.getArea()).isEqualTo(areaB4);
+        KaiserEngine allLand = new KaiserEngine(new BasicRandom(0.99, 0.4, 0.0, 0.5,
+                0.0, 0.0, 0.0));
+        allLand.startNewRound();
+        allLand.feedToPopulation(2000L);
+        allLand.cultivate(900L);
+        allLand.finishRoundAfterActions();
+        allLand.startNewRound(); // P=103: 1000 hectares now strictly below capacity.
+        allLand.cultivate(1000L);
+        assertThat(allLand.getTotalHarvest()).isEqualByComparingTo("1000");
     }
 
     @Test
-    void youNeedWorkersForCultivation() {
-        engine.setArea(BigDecimal.valueOf(Long.MAX_VALUE));
-        engine.setSupplies(BigDecimal.valueOf(Long.MAX_VALUE).divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP));
-        BigDecimal suppliesB4 = engine.getSupplies();
-        BigDecimal areaB4 = engine.getArea();
-
-        assertThat(engine.getPopulation()).isEqualTo(BigDecimal.valueOf(95L)); // is default value
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            engine.cultivate(BigDecimal.valueOf(1000L).longValue()); // is 10 times more than population
-        });
-
-        String expectedMessage = "Not enough workers available.";
-        assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getSupplies()).isEqualTo(suppliesB4);
-        assertThat(engine.getArea()).isEqualTo(areaB4);
+    void moreLandThanOwnedIsRejectedWithoutRandomDraws() {
+        KaiserEngine engine = new KaiserEngine(new BasicRandom());
+        assertThrows(IllegalArgumentException.class, () -> engine.cultivate(1001L));
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 
     @Test
-    void cultivateRegularUseCaseAndSetPriceToOneAfterwards() {
-        BigDecimal supplyB4 = engine.getSupplies();
-        BigDecimal costB4 = engine.getCost();
-        engine.cultivate(4L);
-
-        assertThat(engine.getSupplies()).isNotEqualTo(supplyB4);
-        assertThat(engine.getCost()).isNotEqualTo(costB4);
+    void negativeInputEndsGameWithoutHarvest() {
+        KaiserEngine engine = new KaiserEngine(new BasicRandom());
+        engine.cultivate(-1L);
+        assertThat(engine.getState()).isEqualTo(KaiserEngine.GameState.ABORTED);
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 }

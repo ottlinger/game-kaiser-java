@@ -3,9 +3,6 @@ package de.aikiit.game.kaiser;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 /**
  * This class contains static helper methods to print
@@ -71,10 +68,10 @@ public class KaiserEnginePrinter {
         StringBuilder status = new StringBuilder();
         status.append(ANSI_GREEN).append("### STATUS nach Runde ").append(round).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Einwohnerzahl beträgt jetzt   ").append(StringUtils.leftPad(String.valueOf(this.engine.getPopulation()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_CYAN).append("Die Stadt besitzt an Land (Hektar)").append(StringUtils.leftPad(String.valueOf(this.engine.getArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_CYAN).append("Die Ernte betrug (dzt/Hektar)     ").append(StringUtils.leftPad(String.valueOf(this.engine.getYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_RED).append("Ratten haben gefressen (dzt)      ").append(StringUtils.leftPad(String.valueOf(this.engine.getExternalDamage()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_RED).append("Eure Vorräte betragen (dzt)       ").append(StringUtils.leftPad(String.valueOf(this.engine.getSupplies()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_CYAN).append("Die Stadt besitzt an Land (Hektar)").append(StringUtils.leftPad(String.valueOf(this.engine.getLandArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_CYAN).append("Die Ernte betrug (dzt/Hektar)     ").append(StringUtils.leftPad(String.valueOf(this.engine.getHarvestYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Ratten haben gefressen (dzt)      ").append(StringUtils.leftPad(String.valueOf(this.engine.getRatLoss()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Eure Vorräte betragen (dzt)       ").append(StringUtils.leftPad(String.valueOf(this.engine.getGrainStocks()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         return status.toString();
     }
 
@@ -86,8 +83,8 @@ public class KaiserEnginePrinter {
      */
     public String getYearResult(int round) {
         return ANSI_GREEN + "Im Jahr " + round + ANSI_RESET + System.lineSeparator() +
-                ANSI_CYAN + "Es starben         " + StringUtils.leftPad(String.valueOf(this.engine.getDeathToll()), 10) + " Einwohner" + ANSI_RESET + System.lineSeparator() +
-                ANSI_CYAN + "hinzugekommen sind " + StringUtils.leftPad(String.valueOf(this.engine.getIncrease()), 10) + " Einwohner" + ANSI_RESET + System.lineSeparator();
+                ANSI_CYAN + "Es starben         " + StringUtils.leftPad(String.valueOf(this.engine.getStarvationDeaths()), 10) + " Einwohner" + ANSI_RESET + System.lineSeparator() +
+                ANSI_CYAN + "hinzugekommen sind " + StringUtils.leftPad(String.valueOf(this.engine.getImmigrants()), 10) + " Einwohner" + ANSI_RESET + System.lineSeparator();
     }
 
     /**
@@ -97,10 +94,10 @@ public class KaiserEnginePrinter {
      */
     public String getResults() {
         return "In Ihrer " + KaiserGame.MAX_ROUNDS + "-jährigen Amtszeit sind durchschnittlich " +
-                this.engine.getPercentDeathToll() + " % im Jahr verstorben." + System.lineSeparator() +
-                "Insgesamt sind damit " + this.engine.getDeathTollSum() + " Einwohner verstorben." + System.lineSeparator() +
+                format(this.engine.getAverageStarvationPercentage()) + " % im Jahr verstorben." + System.lineSeparator() +
+                "Insgesamt sind damit " + this.engine.getTotalStarvationDeaths() + " Einwohner verstorben." + System.lineSeparator() +
                 System.lineSeparator() +
-                "Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie " + this.engine.getAreaPerCapita() + " Hektar/Einwohner." + System.lineSeparator();
+                "Anfangs hatten Sie 10 Hektar pro Einwohner, jetzt haben Sie " + format(this.engine.getLandPerPerson()) + " Hektar/Einwohner." + System.lineSeparator();
     }
 
     /**
@@ -112,36 +109,36 @@ public class KaiserEnginePrinter {
         StringBuilder result = new StringBuilder();
         result.append(ANSI_BLUE).append(">>>> Bewertung Ihrer Herrschaft <<<<").append(System.lineSeparator());
 
-        result.append("In ihrer ").append(engine.getZYear()).append("-jährigen Amtszeit sind ");
-        result.append(engine.getPercentDeathToll()).append("% der Bevölkerung im Jahr verstorben.").append(System.lineSeparator());
-        result.append("Insgesamt sind ").append(engine.getDeathTollSum()).append(" Einwohner gestorben.").append(System.lineSeparator());
-
-        BigDecimal legacy = engine.getArea().divide(engine.getPopulation(), RoundingMode.HALF_UP);
-        result.append("Zu Beginn hatten sie 10 Hektar pro Einwohner,").append(System.lineSeparator());
-        result.append("jetzt sind es ").append(legacy).append(" Hektar/Einwohner.").append(System.lineSeparator());
-
-        // TODO: check and fix legacy calculation - message should match criteria
-        if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.valueOf(33)) || is(legacy).lessThan(BigDecimal.valueOf(7))) {
-            result.append("Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,").append(System.lineSeparator());
-            result.append("sondern auch zum Versager des Jahres erklärt.").append(System.lineSeparator());
-        } else {
-
-            if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {
-                result.append("Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.");
-                result.append(System.lineSeparator());
-                result.append("Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!");
-            } else if (is(engine.getPercentDeathToll()).greaterThan(BigDecimal.TEN) || is(legacy).lessThan(BigDecimal.valueOf(9))) {
-                result.append("Sie hätten glücklicher agieren können, aber es war nicht übel.");
-                result.append(System.lineSeparator());
-                result.append(this.engine.getPopulation().multiply(new BigDecimal("0.8"))).append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
-            } else {
-                result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
-            }
+        switch (engine.getRegency()) {
+            case DISASTROUS -> result.append(dismissalMessage());
+            case TYRANNICAL -> result.append("Ihre hartherzige Regierungsmethode erinnert an Nero und Iwan den Schrecklichen.")
+                    .append(System.lineSeparator())
+                    .append("Die (verbliebenen) Einwohner würden Sie gerne zum Teufel jagen!");
+            case MEDIOCRE -> result.append("Sie hätten glücklicher agieren können, aber es war nicht übel.")
+                    .append(System.lineSeparator())
+                    .append(engine.countDiscontentedResidents())
+                    .append(" Einwohner möchten Sie zwar hängen sehen, aber kleine Probleme hat ja jeder.");
+            case EXCELLENT -> result.append("Eine wunderbare Regierungszeit! Karl, Konrad und Willi (die Großen) hätten es nicht besser machen können.");
         }
 
         result.append(ANSI_RESET);
         result.append(System.lineSeparator());
         result.append(System.lineSeparator());
         return result.toString();
+    }
+
+    public String getDismissal() {
+        return ANSI_YELLOW + "Sie haben " + engine.getStarvationDeaths()
+                + " Menschen in nur einem Jahr verhungern lassen!" + System.lineSeparator()
+                + dismissalMessage() + ANSI_RESET;
+    }
+
+    private static String dismissalMessage() {
+        return "Auf Grund dieser extremen Misswirtschaft werden Sie nicht nur aus Amt und Würden gejagt,"
+                + System.lineSeparator() + "sondern auch zum Versager des Jahres erklärt.";
+    }
+
+    private static String format(BigDecimal value) {
+        return value.stripTrailingZeros().toPlainString();
     }
 }

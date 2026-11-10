@@ -3,64 +3,51 @@ package de.aikiit.game.kaiser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class KaiserEngineFeedToPopulationTest {
+class KaiserEngineFeedToPopulationTest {
     private KaiserEngine engine;
 
     @BeforeEach
-    void createNewEngineUnderTest() {
-        this.engine = new KaiserEngine();
+    void setup() {
+        engine = new KaiserEngine(new BasicRandom());
+        engine.startNewRound();
     }
 
     @Test
-    void feedToPopulationDoesNothingIfZeroIsGiven() {
-        BigDecimal costB4 = engine.getCost();
-        BigDecimal supplyB4 = engine.getSupplies();
+    void feedingStoresAllocationAndReducesStocks() {
+        engine.feedToPopulation(2000L);
+        assertThat(engine.getFoodAllocated()).isEqualByComparingTo("2000");
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("800");
+        assertThat(engine.getPlagueRoll()).isEqualTo(1);
+    }
 
+    @Test
+    void zeroFoodIsAValidAllocation() {
         engine.feedToPopulation(0L);
-
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+        assertThat(engine.getFoodAllocated()).isZero();
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 
     @Test
-    void feedToPopulationDoesNothingIfNegativeValueIsGiven() {
-        BigDecimal costB4 = engine.getCost();
-        BigDecimal areaB4 = engine.getArea();
-        BigDecimal supplyB4 = engine.getSupplies();
-
-        engine.feedToPopulation(-1234L);
-
-        assertThat(engine.getArea()).isEqualTo(areaB4);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+    void allStocksCanBeDistributed() {
+        engine.feedToPopulation(2800L);
+        assertThat(engine.getFoodAllocated()).isEqualByComparingTo("2800");
+        assertThat(engine.getGrainStocks()).isZero();
     }
 
     @Test
-    void feedToPopulationWithNotEnoughSupplyAsArgumentInducesNoChanges() {
-        BigDecimal costB4 = engine.getCost();
-        BigDecimal supplyB4 = engine.getSupplies();
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.feedToPopulation(Long.MAX_VALUE));
-
-        String expectedMessage = "Not Enough in Stock";
-        assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+    void insufficientStocksDoNotChangeState() {
+        assertThrows(IllegalArgumentException.class, () -> engine.feedToPopulation(2801L));
+        assertThat(engine.getFoodAllocated()).isZero();
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 
     @Test
-    void feedToPopulationRegularUseCaseAndSetPriceToOneAfterwards() {
-        BigDecimal supplyB4 = engine.getSupplies();
-        engine.feedToPopulation(4L);
-
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(BigDecimal.valueOf(4L)));
-        assertThat(engine.getCost()).isEqualTo(BigDecimal.ONE);
+    void negativeInputEndsGame() {
+        engine.feedToPopulation(-1L);
+        assertThat(engine.getState()).isEqualTo(KaiserEngine.GameState.ABORTED);
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
-
-
 }

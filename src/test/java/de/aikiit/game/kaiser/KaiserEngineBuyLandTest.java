@@ -3,69 +3,55 @@ package de.aikiit.game.kaiser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class KaiserEngineBuyLandTest {
+class KaiserEngineBuyLandTest {
     private KaiserEngine engine;
 
     @BeforeEach
-    void createNewEngineUnderTest() {
-        this.engine = new KaiserEngine();
+    void setup() {
+        engine = new KaiserEngine(new BasicRandom(0.0));
+        engine.startNewRound();
+        engine.prepareLandTrading();
     }
 
     @Test
-    void buyLandDoesNothingIfZeroIsGiven() {
-        BigDecimal costB4 = engine.getCost();
-        BigDecimal areaB4 = engine.getArea();
-        BigDecimal supplyB4 = engine.getSupplies();
-
-        engine.buyLand(0L);
-
-        assertThat(engine.getArea()).isEqualTo(areaB4);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+    void buyingUsesLandPriceNotHarvestYield() {
+        assertThat(engine.buyLand(4L)).isEqualTo(4);
+        assertThat(engine.getLandArea()).isEqualByComparingTo("1004");
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2732");
+        assertThat(engine.getLandPrice()).isEqualByComparingTo("17");
     }
 
     @Test
-    void buyLandDoesNothingIfNegativeInputIsGiven() {
-        BigDecimal costB4 = engine.getCost();
-        BigDecimal areaB4 = engine.getArea();
-        BigDecimal supplyB4 = engine.getSupplies();
-
-        engine.buyLand(-3456L);
-
-        assertThat(engine.getArea()).isEqualTo(areaB4);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+    void zeroChangesNothing() {
+        assertThat(engine.buyLand(0L)).isZero();
+        assertThat(engine.getLandArea()).isEqualByComparingTo("1000");
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 
     @Test
-    void buyLandWithMoreThanCashAsArgumentInducesNoChanges() {
-        BigDecimal costB4 = engine.getCost();
-        BigDecimal areaB4 = engine.getArea();
-        BigDecimal supplyB4 = engine.getSupplies();
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> engine.buyLand(Long.MAX_VALUE));
-
-        String expectedMessage = "Not Enough Supplies";
-        assertThat(exception.getMessage()).contains(expectedMessage);
-        assertThat(engine.getArea()).isEqualTo(areaB4);
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4);
-        assertThat(engine.getCost()).isEqualTo(costB4);
+    void unaffordablePurchaseChangesNothing() {
+        assertThrows(IllegalArgumentException.class, () -> engine.buyLand(Long.MAX_VALUE));
+        assertThat(engine.getLandArea()).isEqualByComparingTo("1000");
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 
     @Test
-    void buyLandRegularUseCaseAndSetPriceToZeroAfterwards() {
-        BigDecimal areaB4 = engine.getArea();
-        BigDecimal supplyB4 = engine.getSupplies();
-        engine.buyLand(4L);
-
-        assertThat(engine.getArea()).isEqualTo(areaB4.add(BigDecimal.valueOf(4L)));
-        assertThat(engine.getSupplies()).isEqualTo(supplyB4.subtract(engine.getYield().multiply(BigDecimal.valueOf(4L))));
-        assertThat(engine.getCost()).isEqualTo(BigDecimal.ZERO);
+    void spendingExactlyAllStocksIsAllowed() {
+        // Price 20 divides the initial 2800 units exactly.
+        KaiserEngine exact = new KaiserEngine(new BasicRandom(0.3));
+        exact.startNewRound();
+        exact.prepareLandTrading();
+        exact.buyLand(140L);
+        assertThat(exact.getGrainStocks()).isZero();
     }
 
+    @Test
+    void negativeInputEndsGame() {
+        engine.buyLand(-1L);
+        assertThat(engine.getState()).isEqualTo(KaiserEngine.GameState.ABORTED);
+        assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
+    }
 }

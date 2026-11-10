@@ -21,6 +21,15 @@ It is based on an old [📃 KAISER.BAS](./kaiser_basic1992.pdf) basic listing I 
 $ ./run.sh
 ```
 
+The game opens directly with the introduction; no access code is required.
+Confirm `Start (J/N)` with `j` to begin.
+Enter `0` when you do not want to buy land; you can then sell land instead.
+Negative quantities end the game, as in the BASIC listing. Decimal quantities use a point.
+
+The Java rules and turn order follow the checked-in listing, including its strict
+seed/worker limits and final report in year 11 after ten action years.
+See [BASIC port notes](./BASIC-PORT.md) for variable names, formulas and original quirks.
+
 Have fun :)
  
 ## Site reports
