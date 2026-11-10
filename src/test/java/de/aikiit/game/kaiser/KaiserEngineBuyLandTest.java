@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class KaiserEngineBuyLandTest {
     private KaiserEngine engine;
@@ -33,7 +33,9 @@ class KaiserEngineBuyLandTest {
 
     @Test
     void unaffordablePurchaseChangesNothing() {
-        assertThrows(IllegalArgumentException.class, () -> engine.buyLand(Long.MAX_VALUE));
+        assertThatThrownBy(() -> engine.buyLand(Long.MAX_VALUE))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not Enough Supplies");
         assertThat(engine.getLandArea()).isEqualByComparingTo("1000");
         assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }

@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class KaiserEngineTest {
     @Test
@@ -101,7 +101,9 @@ class KaiserEngineTest {
         assertThat(engine.getStarvationDeaths()).isEqualByComparingTo(deaths);
         if (state == KaiserEngine.GameState.DISMISSED) {
             assertThat(engine.getTotalStarvationDeaths()).isZero();
-            assertThrows(IllegalStateException.class, engine::startNewRound);
+            assertThatThrownBy(engine::startNewRound)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("The game has ended.");
         }
     }
 

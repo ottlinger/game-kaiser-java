@@ -5,7 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class KaiserEngineCultivateTest {
     @Test
@@ -45,7 +45,9 @@ class KaiserEngineCultivateTest {
         KaiserEngine engine = new KaiserEngine(new BasicRandom(0.0, 0.0, 0.0));
         engine.startNewRound();
         engine.feedToPopulation(2798L);
-        assertThrows(IllegalArgumentException.class, () -> engine.cultivate(4L));
+        assertThatThrownBy(() -> engine.cultivate(4L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("You cannot cultivate more than you have.");
         assertThat(engine.getGrainStocks()).isEqualByComparingTo("2");
         engine.cultivate(0L);
     }
@@ -54,7 +56,9 @@ class KaiserEngineCultivateTest {
     void exactWorkerCapacityIsRejectedButPlantingAllLandIsAllowed() {
         KaiserEngine engine = new KaiserEngine(new BasicRandom(0.0, 0.0, 0.0));
         // Initial P=95, so 950 is forbidden; 949 is allowed.
-        assertThrows(IllegalArgumentException.class, () -> engine.cultivate(950L));
+        assertThatThrownBy(() -> engine.cultivate(950L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not enough workers available.");
         engine.cultivate(949L);
 
         KaiserEngine allLand = new KaiserEngine(new BasicRandom(0.99, 0.4, 0.0, 0.5,
@@ -71,7 +75,9 @@ class KaiserEngineCultivateTest {
     @Test
     void moreLandThanOwnedIsRejectedWithoutRandomDraws() {
         KaiserEngine engine = new KaiserEngine(new BasicRandom());
-        assertThrows(IllegalArgumentException.class, () -> engine.cultivate(1001L));
+        assertThatThrownBy(() -> engine.cultivate(1001L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("You cannot cultivate more area than you have.");
         assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
 

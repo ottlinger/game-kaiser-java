@@ -44,7 +44,19 @@
     <java.version>17</java.version>
     <encoding.utf8>UTF-8</encoding.utf8>
     <javadoc.version>3.12.0</javadoc.version>
+    <checkstyle.version>3.6.0</checkstyle.version>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-bom</artifactId>
+        <version>${assertj.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <!--dependency>
           <groupId>org.springframework.boot</groupId>
@@ -72,6 +84,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>uk.org.webcompere</groupId>
@@ -93,6 +106,49 @@
     </developer>
   </developers>
   <profiles>
+    <profile>
+      <id>clover</id>
+      <properties>
+        <jacoco.skip>true</jacoco.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openclover</groupId>
+            <artifactId>clover-maven-plugin</artifactId>
+            <version>5.1.1</version>
+            <configuration>
+              <jdk>${java.version}</jdk>
+              <generateHtml>true</generateHtml>
+              <generateXml>true</generateXml>
+              <setTestFailureIgnore>false</setTestFailureIgnore>
+            </configuration>
+            <executions>
+              <execution>
+                <id>instrument-for-coverage</id>
+                <goals>
+                  <goal>setup</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>coverage-report</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>clover</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>no-tests</id>
       <properties>
@@ -116,6 +172,26 @@
   <build>
     <defaultGoal>clean install org.pitest:pitest-maven:mutationCoverage</defaultGoal>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.version}</version>
+        <configuration>
+          <configLocation>${project.basedir}/config/checkstyle/checkstyle.xml</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <consoleOutput>true</consoleOutput>
+          <failOnViolation>true</failOnViolation>
+        </configuration>
+        <executions>
+          <execution>
+            <id>check-imports</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- used to create a shaded JAR that is executable -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -136,6 +212,12 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.8.16</version>
+          <configuration>
+            <formats>
+              <format>HTML</format>
+              <format>XML</format>
+            </formats>
+          </configuration>
           <executions>
             <execution>
               <id>prepare-agent</id>
@@ -290,6 +372,17 @@
   <reporting>
     <plugins>
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
         <reportSets>
@@ -317,7 +410,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>${checkstyle.version}</version>
+        <configuration>
+          <configLocation>${project.basedir}/config/checkstyle/checkstyle.xml</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

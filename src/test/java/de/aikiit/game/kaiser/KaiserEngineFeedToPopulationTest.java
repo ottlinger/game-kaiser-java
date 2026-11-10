@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class KaiserEngineFeedToPopulationTest {
     private KaiserEngine engine;
@@ -39,7 +39,9 @@ class KaiserEngineFeedToPopulationTest {
 
     @Test
     void insufficientStocksDoNotChangeState() {
-        assertThrows(IllegalArgumentException.class, () -> engine.feedToPopulation(2801L));
+        assertThatThrownBy(() -> engine.feedToPopulation(2801L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Not Enough in Stock");
         assertThat(engine.getFoodAllocated()).isZero();
         assertThat(engine.getGrainStocks()).isEqualByComparingTo("2800");
     }
