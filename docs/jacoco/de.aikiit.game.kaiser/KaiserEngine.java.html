@@ -1,315 +1,535 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaiserEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">game-kaiser-java</a> &gt; <a href="index.source.html" class="el_package">de.aikiit.game.kaiser</a> &gt; <span class="el_source">KaiserEngine.java</span></div><h1>KaiserEngine.java</h1><pre class="source lang-java linenums">package de.aikiit.game.kaiser;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaiserEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">game-kaiser-java</a> &gt; <a href="index.source.html" class="el_package">de.aikiit.game.kaiser</a> &gt; <span class="el_source">KaiserEngine.java</span></div><h1>KaiserEngine.java</h1><pre class="source lang-java linenums">package de.aikiit.game.kaiser;
 
 import lombok.Getter;
-import org.assertj.core.util.VisibleForTesting;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
+import java.util.Objects;
 import java.util.Random;
 
-import static org.apache.commons.lang3.compare.ComparableUtils.is;
-
 /**
- * This class encapsulates the game's logics and operations on its attributes.
- * As the game is based on rounds {@link #startNewRound()} starts a new round and performs calculations based on the player's actions.
- * &lt;br /&gt;
- * In each round there is a chance for famine-induced loss,
- * which is handled in {@link #processFamine()} based on an underlying random probability factor.
- * &lt;br /&gt;
- * Apart from these automated things the player can:
- * &lt;ul&gt;
- *     &lt;li&gt;{@link #buyLand(Long)} buy new land&lt;/li&gt;
- *     &lt;li&gt;{@link #sellLand(Long)} sell existing land&lt;/li&gt;
- *     &lt;li&gt;{@link #cultivate(Long)} cultivate land in order to achieve new yields&lt;/li&gt;
- *     &lt;li&gt;{@link #feedToPopulation(Long)} give food to your population&lt;/li&gt;
- * &lt;/ul&gt;
- * After user interactions the round is finished in {@link #finishRoundAfterActions()}.
+ * Maintains the city's population, land, grain stocks and reign statistics, and
+ * applies the rules from KAISER.BAS (09.08.1992) without performing console I/O.
+ * The caller controls the dialogue and the order in which the player's actions
+ * are requested.
+ * &lt;p&gt;
+ * A year starts with {@link #startNewRound()}, which adds immigrants and applies
+ * any plague determined at the end of the previous year. After reporting that
+ * state, the caller invokes {@link #prepareLandTrading()}, offers buying or
+ * selling land, allocates food and processes planting. Finally,
+ * {@link #finishRoundAfterActions()} determines immigration and starvation and
+ * may dismiss the ruler. After ten action years, one further year-start update
+ * prepares the final report and marks the reign as completed.
+ * &lt;p&gt;
+ * BASIC's reused variables are deliberately separated here: Q is food allocated
+ * and later a plague roll; Y is harvest yield and later land price; C is several
+ * unrelated random factors. Quantities may be fractional. Explicit BASIC
+ * {@code INT} operations round down, while fractional statistics retain decimal
+ * precision. Negative action quantities abort the game; other invalid quantities
+ * are rejected before the action changes resources.
  */
 @Getter
 public class KaiserEngine {
+<span class="fc" id="L35">    private static final MathContext PRECISION = MathContext.DECIMAL128;</span>
+<span class="fc" id="L36">    private static final BigDecimal HUNDRED = BigDecimal.valueOf(100);</span>
+
+    /** Describes whether further annual updates and player actions are permitted. */
+<span class="fc" id="L39">    public enum GameState {</span>
+        /** The reign is in progress and the caller may advance the game. */
+<span class="fc" id="L41">        RUNNING,</span>
+        /** The ten action years and the final year-start update have completed. */
+<span class="fc" id="L43">        COMPLETED,</span>
+        /** More than 45 percent of the population starved in one year. */
+<span class="fc" id="L45">        DISMISSED,</span>
+        /** The player or console input ended the game before completion. */
+<span class="fc" id="L47">        ABORTED</span>
+    }
+
+    /** Final rating based on average starvation and land owned per inhabitant. */
+<span class="fc" id="L51">    public enum Regency {</span>
+        /** Average starvation exceeds 33 percent, or land per person is below seven hectares. */
+<span class="fc" id="L53">        DISASTROUS,</span>
+        /** Below the disastrous tier, but starvation exceeds 10 percent or land per person is below nine. */
+<span class="fc" id="L55">        TYRANNICAL,</span>
+        /** Below the worse tiers, but starvation exceeds three percent or land per person is below ten. */
+<span class="fc" id="L57">        MEDIOCRE,</span>
+        /** Average starvation is at most three percent and land per person is at least ten hectares. */
+<span class="fc" id="L59">        EXCELLENT</span>
+    }
+
+    @Getter(lombok.AccessLevel.NONE)
+    private final Random random;
+    private int year;
+    private BigDecimal population;
+    private BigDecimal landArea;
+    private BigDecimal grainStocks;
+    private BigDecimal harvestYield;
+    private BigDecimal totalHarvest;
+    private BigDecimal ratLoss;
+    private BigDecimal immigrants;
+    private BigDecimal starvationDeaths;
+    private BigDecimal totalStarvationDeaths;
+    private BigDecimal averageStarvationPercentage;
+    private BigDecimal landPrice;
+    private BigDecimal foodAllocated;
+    private int plagueRoll;
+    private int immigrationFactor;
+    private boolean plagueOccurred;
+    private GameState state;
+
     /**
-     * e - External damage, e.g. loss due to rats.
+     * Creates a new reign with the BASIC starting resources and a secure random
+     * source for prices, harvests, rat losses, immigration and plague events.
+     * The first annual population update is deferred until {@link #startNewRound()}.
      */
-<span class="fc" id="L34">    private BigDecimal externalDamage = BigDecimal.ZERO; // e</span>
-    private BigDecimal deathToll; // d
-    private BigDecimal increase; // i in original-  birthRate?
-    private Integer zYear; // why z in original?
-<span class="fc" id="L38">    private BigDecimal population = BigDecimal.ZERO; // h in original</span>
-<span class="fc" id="L39">    private BigDecimal area = BigDecimal.ZERO;</span>
-<span class="fc" id="L40">    private BigDecimal yield = BigDecimal.ZERO;</span>
-<span class="fc" id="L41">    private BigDecimal supplies = BigDecimal.ZERO;</span>
-<span class="fc" id="L42">    private BigDecimal humans = BigDecimal.ZERO;</span>
-    private BigDecimal deathTollSum; // d1 in original
-    private BigDecimal percentDeathToll; // p1 in original
-<span class="fc" id="L45">    private BigDecimal q = BigDecimal.ONE; // q - disaster/famineQuotient</span>
-<span class="fc" id="L46">    private BigDecimal cost = BigDecimal.ZERO;</span>
-
-<span class="fc" id="L48">    private static final Random RANDOM = new SecureRandom();</span>
+    public KaiserEngine() {
+<span class="nc" id="L88">        this(new SecureRandom());</span>
+<span class="nc" id="L89">    }</span>
 
     /**
-     * Default constructor to start a game with the given default settings.
+     * Creates a new reign using a caller-supplied source of random values. Injecting
+     * a known sequence makes the BASIC calculations and random draw order testable
+     * without changing the game rules.
+     *
+     * @param random source supplying values in the interval {@code [0, 1)}
+     * @throws NullPointerException if {@code random} is null
      */
-<span class="fc" id="L53">    public KaiserEngine() {</span>
-<span class="fc" id="L54">        this.population = BigDecimal.valueOf(95L);</span>
-<span class="fc" id="L55">        this.zYear = 0;</span>
-<span class="fc" id="L56">        this.yield = BigDecimal.valueOf(3L);</span>
-<span class="fc" id="L57">        this.supplies = BigDecimal.valueOf(2800L);</span>
-<span class="fc" id="L58">        this.humans = BigDecimal.valueOf(3000L);</span>
-<span class="fc" id="L59">        this.area = this.humans.divide(this.yield, RoundingMode.HALF_UP);</span>
-<span class="fc" id="L60">        this.increase = BigDecimal.valueOf(5L);</span>
-<span class="fc" id="L61">        this.deathToll = BigDecimal.ZERO;</span>
-<span class="fc" id="L62">        this.percentDeathToll = BigDecimal.ZERO;</span>
-<span class="fc" id="L63">        this.deathTollSum = BigDecimal.ZERO;</span>
-<span class="fc" id="L64">        this.externalDamage = this.humans.subtract(this.supplies);</span>
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L99">    KaiserEngine(Random random) {</span>
+<span class="fc" id="L100">        this.random = Objects.requireNonNull(random);</span>
+<span class="fc" id="L101">        reset();</span>
+<span class="fc" id="L102">    }</span>
 
     /**
-     * Starts a new round in performs initial calculations before user actions are taken into account.
+     * Restores all resources, annual figures and accumulated statistics to their
+     * starting values, and makes the game runnable again. The city starts with
+     * 95 inhabitants, 1000 hectares and 2800 DZ of grain. Its initial report refers
+     * to a harvest of 3000 DZ at three DZ per hectare, 200 DZ lost to rats and five
+     * immigrants who will arrive at the first year start.
+     * &lt;p&gt;
+     * The supplied random source is retained rather than reseeded, so a replay
+     * continues drawing new values from the same source. Corresponds to BASIC
+     * lines 90–110 and is also used when the player starts again.
+     */
+    void reset() {
+<span class="fc" id="L116">        year = 0;</span>
+<span class="fc" id="L117">        population = BigDecimal.valueOf(95);</span>
+<span class="fc" id="L118">        grainStocks = BigDecimal.valueOf(2800);</span>
+<span class="fc" id="L119">        totalHarvest = BigDecimal.valueOf(3000);</span>
+<span class="fc" id="L120">        harvestYield = BigDecimal.valueOf(3);</span>
+<span class="fc" id="L121">        landArea = BigDecimal.valueOf(1000);</span>
+<span class="fc" id="L122">        ratLoss = BigDecimal.valueOf(200);</span>
+<span class="fc" id="L123">        immigrants = BigDecimal.valueOf(5);</span>
+<span class="fc" id="L124">        starvationDeaths = BigDecimal.ZERO;</span>
+<span class="fc" id="L125">        totalStarvationDeaths = BigDecimal.ZERO;</span>
+<span class="fc" id="L126">        averageStarvationPercentage = BigDecimal.ZERO;</span>
+<span class="fc" id="L127">        landPrice = BigDecimal.ZERO;</span>
+<span class="fc" id="L128">        foodAllocated = BigDecimal.ZERO;</span>
+<span class="fc" id="L129">        plagueRoll = 1;</span>
+<span class="fc" id="L130">        immigrationFactor = 0;</span>
+<span class="fc" id="L131">        plagueOccurred = false;</span>
+<span class="fc" id="L132">        state = GameState.RUNNING;</span>
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * Advances to the next report year, adds the previously calculated immigrants
+     * and applies the stored plague roll. A roll of zero or less halves the updated
+     * population, rounding down; plague deaths do not enter starvation statistics.
+     * Land ownership, harvest figures and rat losses remain unchanged for reporting.
+     * &lt;p&gt;
+     * On entering year 11, the same population update still takes place, but the
+     * game becomes {@link GameState#COMPLETED}: the caller should report and evaluate
+     * the reign without offering another action phase. This method prepares the
+     * report data but does not print it. Corresponds to BASIC lines 220–270.
+     *
+     * @throws IllegalStateException if the game has already ended
      */
     public void startNewRound() {
-<span class="fc" id="L71">        this.area = this.humans.divide(this.yield, 0, RoundingMode.HALF_UP);</span>
-<span class="fc" id="L72">        this.externalDamage = this.humans.subtract(this.supplies);</span>
-<span class="fc" id="L73">        this.zYear++;</span>
-<span class="fc" id="L74">        this.population = this.population.add(this.increase);</span>
-
-<span class="fc" id="L76">        processFamine();</span>
-<span class="fc" id="L77">        this.cost = getRandomNumberUntil(10);</span>
-<span class="fc" id="L78">        this.yield = cost.add(BigDecimal.valueOf(17L));</span>
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L149">        requireRunning();</span>
+<span class="fc" id="L150">        year++;</span>
+<span class="fc" id="L151">        population = population.add(immigrants);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        plagueOccurred = plagueRoll &lt;= 0;</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (plagueOccurred) {</span>
+<span class="fc" id="L154">            population = floor(population.divide(BigDecimal.valueOf(2), PRECISION));</span>
+        }
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        if (year == KaiserGame.MAX_ROUNDS + 1) {</span>
+<span class="fc" id="L157">            state = GameState.COMPLETED;</span>
+        }
+<span class="fc" id="L159">    }</span>
 
     /**
-     * Helper method to retrieve a new random number without any comma (scale=0).
+     * Draws the grain price for one hectare of land, uniformly from 17 through 26 DZ,
+     * and stores it for both buying and selling during the current year. It does not
+     * replace the previous harvest yield or consume grain.
+     * &lt;p&gt;
+     * The caller invokes this after reporting the previous harvest and before
+     * asking for a trade, matching BASIC line 310.
      *
-     * @param threshold number is greater than 0 and at most threshold.
-     * @return a new random number.
+     * @throws IllegalStateException if the game has already ended
      */
-    BigDecimal getRandomNumberUntil(int threshold) {
-<span class="fc" id="L88">        return BigDecimal.valueOf(RANDOM.nextInt(threshold + 1) + 1).setScale(0, RoundingMode.HALF_EVEN);</span>
+    public void prepareLandTrading() {
+<span class="fc" id="L172">        requireRunning();</span>
+<span class="fc" id="L173">        landPrice = BigDecimal.valueOf((int) Math.floor(10 * random.nextDouble()) + 17);</span>
+<span class="fc" id="L174">    }</span>
+
+    /**
+     * Buys a whole-number quantity of land using the same validation, grain payment
+     * and abort handling as {@link #buyLand(BigDecimal)}.
+     *
+     * @param hectares hectares requested; zero skips buying and a negative value aborts
+     * @return the requested quantity, including zero or a negative abort request
+     * @throws IllegalArgumentException if the purchase costs more grain than is available
+     * @throws IllegalStateException if the game has already ended
+     */
+    public long buyLand(long hectares) {
+<span class="fc" id="L186">        buyLand(BigDecimal.valueOf(hectares));</span>
+<span class="fc" id="L187">        return hectares;</span>
     }
 
     /**
-     * Evaluate internally, if a famine is happening in the current round.
-     * If so this method performs all necessary calculations/reductions within the currently running game.
-     */
-    public void processFamine() {
-<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (is(q).lessThan(BigDecimal.ZERO)) {</span>
-<span class="fc" id="L97">            this.population = this.population.divide(BigDecimal.valueOf(2L), 0, RoundingMode.HALF_UP);</span>
-<span class="fc" id="L98">            System.out.println(KaiserEnginePrinter.ORANGE);</span>
-<span class="fc" id="L99">            System.out.println(&quot;Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!&quot;);</span>
-<span class="fc" id="L100">            System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
-        }
-<span class="fc" id="L102">        refreshFamineQuotient();</span>
-<span class="fc" id="L103">    }</span>
-
-    /**
-     * Explicitly trigger the recalculation of the given internal famine calculation factor.
-     */
-    void refreshFamineQuotient() {
-<span class="fc" id="L109">        this.q = getRandomNumberUntil(10).divide(BigDecimal.TEN, 0, RoundingMode.HALF_UP).subtract(new BigDecimal(&quot;0.3&quot;));</span>
-
-<span class="fc" id="L111">    }</span>
-
-    /**
-     * Allow setting the area value for testing purposes.
-     * @param q q value.
-     */
-    @VisibleForTesting
-    void setQ(BigDecimal q) {
-<span class="fc" id="L119">        this.q = q;</span>
-<span class="fc" id="L120">    }</span>
-
-    /**
-     * Allow setting the supplies value for testing purposes.
-     * @param supplies current supplies.
-     */
-    @VisibleForTesting
-    void setSupplies(BigDecimal supplies) {
-<span class="fc" id="L128">        this.supplies = supplies;</span>
-<span class="fc" id="L129">    }</span>
-
-    /**
-     * Allow setting the area value for testing purposes.
-     * @param area current area.
-     */
-    @VisibleForTesting
-    void setArea(BigDecimal area) {
-<span class="fc" id="L137">        this.area = area;</span>
-<span class="fc" id="L138">    }</span>
-
-    /**
-     * Calculates the available area per person in the current game.
+     * Increases owned land by the requested hectares and pays for it from grain stocks
+     * at the current land price. Spending exactly all available grain is allowed.
+     * A zero quantity changes no resources and lets the caller offer selling instead.
+     * A negative quantity aborts the game without changing land or stocks.
+     * &lt;p&gt;
+     * The caller must first establish the year's price with
+     * {@link #prepareLandTrading()}. Corresponds to BASIC lines 320–334.
      *
-     * @return area per capita, called &lt;b&gt;L&lt;/b&gt; in original. Land ownership?
+     * @param hectares requested land area, which may be fractional
+     * @return the requested quantity; a negative return denotes an abort, not a purchase
+     * @throws IllegalArgumentException if the purchase costs more grain than is available
+     * @throws IllegalStateException if the game has already ended
      */
-    public BigDecimal getAreaPerCapita() {
-<span class="fc" id="L146">        return area.divide(population, 0, RoundingMode.HALF_UP);</span>
+    public BigDecimal buyLand(BigDecimal hectares) {
+<span class="fc" id="L205">        requireRunning();</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        if (abortOnNegative(hectares)) {</span>
+<span class="fc" id="L207">            return hectares;</span>
+        }
+<span class="fc" id="L209">        BigDecimal price = landPrice.multiply(hectares);</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">        if (price.compareTo(grainStocks) &gt; 0) {</span>
+<span class="fc" id="L211">            throw new IllegalArgumentException(&quot;Not Enough Supplies&quot;);</span>
+        }
+<span class="fc" id="L213">        landArea = landArea.add(hectares);</span>
+<span class="fc" id="L214">        grainStocks = grainStocks.subtract(price);</span>
+<span class="fc" id="L215">        return hectares;</span>
     }
 
     /**
-     * Performs an act of buying land (new land is acquired by reducing the supplies according to the current land price).
-     * You cannot buy more than you can afford.
+     * Sells a whole-number quantity of land using the same price, ownership checks
+     * and abort handling as {@link #sellLand(BigDecimal)}.
      *
-     * @param buy how many hectares you want to buy. Negative input is ignored.
-     * @return the given number of hectares. {@code 0} means that the player does not want to buy anything, which will trigger the possibility to sell land.
+     * @param hectares hectares offered; zero skips selling and a negative value aborts
+     * @throws IllegalArgumentException if the quantity equals or exceeds owned land
+     * @throws IllegalStateException if the game has already ended
      */
-    public long buyLand(Long buy) {
-<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (buy &lt; 0) {</span>
-<span class="fc" id="L158">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
-        }
+    public void sellLand(long hectares) {
+<span class="fc" id="L227">        sellLand(BigDecimal.valueOf(hectares));</span>
+<span class="fc" id="L228">    }</span>
 
-<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (buy &gt; 0) {</span>
-<span class="fc bfc" id="L162" title="All 2 branches covered.">            if (is(this.yield.multiply(BigDecimal.valueOf(buy))).lessThanOrEqualTo(this.supplies)) {</span>
-<span class="fc" id="L163">                this.area = this.area.add(BigDecimal.valueOf(buy));</span>
-<span class="fc" id="L164">                this.supplies = this.supplies.subtract(this.yield.multiply(BigDecimal.valueOf(buy)));</span>
-<span class="fc" id="L165">                this.cost = BigDecimal.ZERO; // price is recalculated per round</span>
-            } else {
-<span class="fc" id="L167">                throw new IllegalArgumentException(&quot;Not Enough Supplies&quot;);</span>
+    /**
+     * Reduces owned land by the offered hectares and credits grain stocks at the
+     * current land price. The city must retain some land: selling exactly the owned
+     * area is rejected just like selling more. Zero leaves resources unchanged;
+     * a negative quantity aborts the game without a trade.
+     * &lt;p&gt;
+     * The caller offers this action only when the player bought zero hectares and
+     * must first establish the year's price with {@link #prepareLandTrading()}.
+     * Corresponds to BASIC lines 340–350, including the strict comparison at line 342.
+     *
+     * @param hectares offered land area, which may be fractional
+     * @throws IllegalArgumentException if the quantity equals or exceeds owned land
+     * @throws IllegalStateException if the game has already ended
+     */
+    public void sellLand(BigDecimal hectares) {
+<span class="fc" id="L245">        requireRunning();</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">        if (abortOnNegative(hectares)) {</span>
+<span class="fc" id="L247">            return;</span>
+        }
+<span class="fc bfc" id="L249" title="All 2 branches covered.">        if (hectares.compareTo(landArea) &gt;= 0) {</span>
+<span class="fc" id="L250">            throw new IllegalArgumentException(&quot;Not Enough Land&quot;);</span>
+        }
+<span class="fc" id="L252">        landArea = landArea.subtract(hectares);</span>
+<span class="fc" id="L253">        grainStocks = grainStocks.add(landPrice.multiply(hectares));</span>
+<span class="fc" id="L254">    }</span>
+
+    /**
+     * Allocates a whole-number amount of grain for feeding using the same stock
+     * checks, deferred starvation calculation and abort handling as
+     * {@link #feedToPopulation(BigDecimal)}.
+     *
+     * @param grain grain to distribute in DZ; zero is valid and a negative value aborts
+     * @throws IllegalArgumentException if the allocation exceeds available grain stocks
+     * @throws IllegalStateException if the game has already ended
+     */
+    public void feedToPopulation(long grain) {
+<span class="fc" id="L266">        feedToPopulation(BigDecimal.valueOf(grain));</span>
+<span class="fc" id="L267">    }</span>
+
+    /**
+     * Removes the requested grain from stocks and remembers it as this year's food
+     * allocation. Population does not change immediately: at year end, every complete
+     * 20 DZ will support one inhabitant. This separates BASIC's food variable Q from
+     * the later plague roll so that a random event cannot overwrite the allocation.
+     * &lt;p&gt;
+     * Zero is a valid allocation, distributing all available stocks is allowed, and
+     * a negative quantity aborts without consuming grain. The caller invokes feeding
+     * once after trading and before planting. Corresponds to BASIC lines 411–430;
+     * the stored allocation is evaluated at line 540.
+     *
+     * @param grain grain to distribute in DZ, which may be fractional
+     * @throws IllegalArgumentException if the allocation exceeds available grain stocks
+     * @throws IllegalStateException if the game has already ended
+     */
+    public void feedToPopulation(BigDecimal grain) {
+<span class="fc" id="L285">        requireRunning();</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        if (abortOnNegative(grain)) {</span>
+<span class="fc" id="L287">            return;</span>
+        }
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        if (grain.compareTo(grainStocks) &gt; 0) {</span>
+<span class="fc" id="L290">            throw new IllegalArgumentException(&quot;Not Enough in Stock&quot;);</span>
+        }
+<span class="fc" id="L292">        foodAllocated = grain;</span>
+<span class="fc" id="L293">        grainStocks = grainStocks.subtract(grain);</span>
+<span class="fc" id="L294">    }</span>
+
+    /**
+     * Plants a whole-number area and processes the harvest using the same resource
+     * checks, random draws and abort handling as {@link #cultivate(BigDecimal)}.
+     *
+     * @param hectares area to plant; zero still processes the season and a negative value aborts
+     * @throws IllegalArgumentException if the land, seed or worker limits are violated
+     * @throws IllegalStateException if the game has already ended
+     */
+    public void cultivate(long hectares) {
+<span class="fc" id="L305">        cultivate(BigDecimal.valueOf(hectares));</span>
+<span class="fc" id="L306">    }</span>
+
+    /**
+     * Validates the planted area, consumes seed grain and processes this year's
+     * harvest and rat damage. For a positive area, the city must own at least that
+     * much land, have strictly more grain than {@code floor(hectares / 2)}, and
+     * plant strictly fewer than ten hectares per inhabitant. Validation failures
+     * change no resources and consume no random values.
+     * &lt;p&gt;
+     * After consuming the seed, a roll from one through five determines harvest
+     * yield per hectare. A second such roll determines rat losses: even rolls remove
+     * {@code floor(remaining stocks / roll)} grain, while odd rolls cause no damage.
+     * Rat losses are deducted before the new harvest is added. A third roll is
+     * retained as the factor for the year-end immigration calculation.
+     * &lt;p&gt;
+     * Planting zero bypasses resource checks and seed consumption but still performs
+     * all three draws and stock updates, with a harvest of zero. Negative input
+     * aborts without processing the season. Corresponds to BASIC lines 441–531.
+     *
+     * @param hectares area to plant, which may be fractional
+     * @throws IllegalArgumentException if the land, seed or worker limits are violated
+     * @throws IllegalStateException if the game has already ended
+     */
+    public void cultivate(BigDecimal hectares) {
+<span class="fc" id="L330">        requireRunning();</span>
+<span class="fc bfc" id="L331" title="All 2 branches covered.">        if (abortOnNegative(hectares)) {</span>
+<span class="fc" id="L332">            return;</span>
+        }
+<span class="fc" id="L334">        BigDecimal plantedArea = hectares;</span>
+<span class="fc" id="L335">        BigDecimal seed = plantedArea.divide(BigDecimal.valueOf(2), 0, RoundingMode.FLOOR);</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">        if (hectares.signum() != 0) {</span>
+<span class="fc bfc" id="L337" title="All 2 branches covered.">            if (plantedArea.compareTo(landArea) &gt; 0) {</span>
+<span class="fc" id="L338">                throw new IllegalArgumentException(&quot;You cannot cultivate more area than you have.&quot;);</span>
             }
-        }
-<span class="fc" id="L170">        return buy;</span>
-    }
-
-    /**
-     * Performs an act of selling land (resulting in an increase of supplies as the land is sold to the current land price).
-     * You cannot sell more than you have.
-     *
-     * @param sell how many hectares you want to sell. Negative input is ignored.
-     */
-    public void sellLand(Long sell) {
-<span class="fc bfc" id="L180" title="All 2 branches covered.">        if (sell &lt; 0) {</span>
-<span class="fc" id="L181">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L182">            return;</span>
-        }
-
-<span class="fc bfc" id="L185" title="All 2 branches covered.">        if (is(BigDecimal.valueOf(sell)).lessThan(this.area)) {</span>
-<span class="fc" id="L186">            this.area = this.area.subtract(BigDecimal.valueOf(sell));</span>
-<span class="fc" id="L187">            this.supplies = this.supplies.add(this.yield.multiply(BigDecimal.valueOf(sell)));</span>
-<span class="fc" id="L188">            this.cost = BigDecimal.ZERO; // price is recalculated per round</span>
-        } else {
-<span class="fc" id="L190">            throw new IllegalArgumentException(&quot;Not Enough Land&quot;);</span>
-        }
-<span class="fc" id="L192">    }</span>
-
-    /**
-     * Performs an act of using supplies to feed your population.
-     * You cannot give more than you have.
-     *
-     * @param feed how many dzt you want to feed
-     */
-    public void feedToPopulation(Long feed) {
-<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (feed &lt; 0) {</span>
-<span class="fc" id="L202">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L203">            return;</span>
-        }
-
-<span class="fc bfc" id="L206" title="All 2 branches covered.">        if (feed != 0) {</span>
-<span class="fc bfc" id="L207" title="All 2 branches covered.">            if (is(BigDecimal.valueOf(feed)).lessThanOrEqualTo(this.supplies)) {</span>
-<span class="fc" id="L208">                this.supplies = this.supplies.subtract(BigDecimal.valueOf(feed));</span>
-<span class="fc" id="L209">                this.cost = BigDecimal.ONE; // price is recalculated per round</span>
-            } else {
-<span class="fc" id="L211">                throw new IllegalArgumentException(&quot;Not Enough in Stock&quot;);</span>
+            // These two comparisons are strictly '&lt;' in the printed BASIC.
+<span class="fc bfc" id="L341" title="All 2 branches covered.">            if (seed.compareTo(grainStocks) &gt;= 0) {</span>
+<span class="fc" id="L342">                throw new IllegalArgumentException(&quot;You cannot cultivate more than you have.&quot;);</span>
             }
+<span class="fc bfc" id="L344" title="All 2 branches covered.">            if (plantedArea.compareTo(population.multiply(BigDecimal.TEN)) &gt;= 0) {</span>
+<span class="fc" id="L345">                throw new IllegalArgumentException(&quot;Not enough workers available.&quot;);</span>
+            }
+<span class="fc" id="L347">            grainStocks = grainStocks.subtract(seed);</span>
         }
-<span class="fc" id="L214">    }</span>
+
+<span class="fc" id="L350">        harvestYield = BigDecimal.valueOf(rollOneToFive());</span>
+<span class="fc" id="L351">        totalHarvest = plantedArea.multiply(harvestYield);</span>
+<span class="fc" id="L352">        int ratRoll = rollOneToFive();</span>
+        // Line 522 skips damage for odd C; only even rolls cause rat losses.
+<span class="fc bfc" id="L354" title="All 2 branches covered.">        ratLoss = ratRoll % 2 == 0</span>
+<span class="fc" id="L355">                ? grainStocks.divide(BigDecimal.valueOf(ratRoll), 0, RoundingMode.FLOOR)</span>
+<span class="fc" id="L356">                : BigDecimal.ZERO;</span>
+<span class="fc" id="L357">        grainStocks = grainStocks.subtract(ratLoss).add(totalHarvest);</span>
+<span class="fc" id="L358">        immigrationFactor = rollOneToFive();</span>
+<span class="fc" id="L359">    }</span>
 
     /**
-     * Performs an act of using your area and people to cultivate, plant crops for the upcoming season/next round.
-     * You cannot give more than you have.
+     * Resolves the year's demographic consequences after trading, feeding and
+     * planting. Immigration for the next year is calculated from owned land,
+     * remaining grain, current population and the factor drawn during planting.
+     * The food allocation supports {@code floor(foodAllocated / 20)} inhabitants;
+     * only after calculating that number is next year's plague roll drawn.
+     * &lt;p&gt;
+     * If food supports more people than currently live in the city, starvation
+     * deaths become zero, but population and accumulated starvation statistics
+     * remain unchanged. Otherwise, unsupported inhabitants count as starvation
+     * deaths. Losing more than 45 percent of the population immediately sets
+     * {@link GameState#DISMISSED}, without updating population or accumulated statistics.
+     * &lt;p&gt;
+     * For a surviving reign, the running annual starvation percentage and total
+     * deaths are updated, and population is reduced to the supported number.
+     * Immigrants and any plague take effect only at the next year start; plague
+     * victims are never counted as starvation deaths. Corresponds to BASIC lines 533–556.
      *
-     * @param cultivate how many hectares you want to use for agricultural purposes. Negative input is ignored. An input of {@code 0} will trigger a recalculation of the current land price.
-     */
-    public void cultivate(Long cultivate) {
-<span class="fc bfc" id="L223" title="All 2 branches covered.">        if (cultivate == 0) {</span>
-<span class="fc" id="L224">            calculateNewPrice();</span>
-<span class="fc" id="L225">            return;</span>
-        }
-
-<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (cultivate &lt; 0) {</span>
-<span class="fc" id="L229">            System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;Ignoriere negative Eingaben - Du willst mich wohl verkackeiern.&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L230">            return;</span>
-        }
-
-<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (is(this.area).lessThan(BigDecimal.valueOf(cultivate))) {</span>
-<span class="fc" id="L234">            throw new IllegalArgumentException(&quot;You cannot cultivate more area than you have.&quot;);</span>
-        }
-
-<span class="fc" id="L237">        BigDecimal halfCultivate = BigDecimal.valueOf(cultivate).divide(BigDecimal.valueOf(2L), 0, RoundingMode.HALF_UP);</span>
-<span class="fc bfc" id="L238" title="All 2 branches covered.">        if (is(this.supplies).lessThan(halfCultivate)) {</span>
-<span class="fc" id="L239">            throw new IllegalArgumentException(&quot;You cannot cultivate more than you have.&quot;);</span>
-        }
-
-<span class="fc bfc" id="L242" title="All 2 branches covered.">        if (is(BigDecimal.valueOf(cultivate)).greaterThan(getPopulation().multiply(BigDecimal.TEN))) {</span>
-<span class="fc" id="L243">            throw new IllegalArgumentException(&quot;Not enough workers available.&quot;);</span>
-        }
-
-        // perform seeding
-<span class="fc" id="L247">        this.supplies = this.supplies.subtract(halfCultivate);</span>
-<span class="fc" id="L248">        calculateNewPrice();</span>
-
-        // yields after cultivation and population increase
-<span class="fc" id="L251">        this.yield = this.cost;</span>
-<span class="fc" id="L252">        this.humans = this.yield.multiply(BigDecimal.valueOf(cultivate));</span>
-
-        // cultivation kills rats ;)
-<span class="fc" id="L255">        this.externalDamage = BigDecimal.ZERO;</span>
-<span class="fc" id="L256">        calculateNewPrice();</span>
-
-        // but add some external damage in some cases in a naiive manner
-        // original condition stated: if int(c/2) &lt;&gt; c/2
-<span class="pc bpc" id="L260" title="1 of 2 branches missed.">        if (this.cost.divide(BigDecimal.valueOf(2L), 0, RoundingMode.DOWN).intValue() == this.cost.divide(BigDecimal.valueOf(2L), 0, RoundingMode.UP).intValue()) {</span>
-<span class="fc" id="L261">            this.externalDamage = this.supplies.divide(this.cost, 0, RoundingMode.HALF_UP);</span>
-        }
-<span class="fc" id="L263">        this.supplies = this.supplies.subtract(this.externalDamage).add(this.humans);</span>
-<span class="fc" id="L264">        calculateNewPrice();</span>
-<span class="fc" id="L265">    }</span>
-
-    /**
-     * Change price for next round.
-     */
-    @VisibleForTesting
-    void calculateNewPrice() {
-<span class="fc" id="L272">        this.cost = getRandomNumberUntil(5);</span>
-<span class="fc" id="L273">    }</span>
-
-    /**
-     * Perform &quot;round&quot;-final calculations such as
-     * &lt;ul&gt;
-     * &lt;li&gt;number of people that died&lt;/li&gt;
-     * &lt;li&gt;adapt overall (internal) death statistics&lt;/li&gt;
-     * &lt;li&gt;refresh internal famine quotient&lt;/li&gt;
-     * &lt;/ul&gt;
+     * @throws IllegalStateException if the game has already ended
      */
     public void finishRoundAfterActions() {
-<span class="fc" id="L284">        BigDecimal factor = BigDecimal.valueOf(20L).multiply(this.area).add(this.supplies);</span>
-<span class="fc" id="L285">        this.increase = cost.multiply(factor).divide(this.population, 0, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(100).add(BigDecimal.ONE), 0, RoundingMode.HALF_UP);</span>
+<span class="fc" id="L382">        requireRunning();</span>
+<span class="fc" id="L383">        BigDecimal immigrationNumerator = BigDecimal.valueOf(immigrationFactor)</span>
+<span class="fc" id="L384">                .multiply(BigDecimal.valueOf(20).multiply(landArea).add(grainStocks));</span>
+<span class="fc" id="L385">        immigrants = immigrationNumerator.divide(population.multiply(HUNDRED), 0, RoundingMode.FLOOR)</span>
+<span class="fc" id="L386">                .add(BigDecimal.ONE);</span>
+<span class="fc" id="L387">        BigDecimal supportedPopulation = foodAllocated.divide(BigDecimal.valueOf(20), 0, RoundingMode.FLOOR);</span>
+<span class="fc" id="L388">        plagueRoll = (int) Math.floor(10 * random.nextDouble() - 0.3);</span>
 
-<span class="fc" id="L287">        this.cost = this.q.divide(BigDecimal.valueOf(20L), 0, RoundingMode.HALF_UP);</span>
-<span class="fc" id="L288">        refreshFamineQuotient();</span>
-
-<span class="pc bpc" id="L290" title="1 of 2 branches missed.">        if (is(this.population).lessThan(this.cost)) {</span>
-<span class="nc" id="L291">            this.deathToll = BigDecimal.ZERO;</span>
-<span class="nc" id="L292">            return; // start new round without any deaths</span>
+<span class="fc bfc" id="L390" title="All 2 branches covered.">        if (population.compareTo(supportedPopulation) &lt; 0) {</span>
+            // BASIC jumps through line 210: D=0, without updating P1 or D1.
+<span class="fc" id="L392">            starvationDeaths = BigDecimal.ZERO;</span>
+<span class="fc" id="L393">            return;</span>
         }
-
-        // calculate deaths
-<span class="fc" id="L296">        this.deathToll = this.population.subtract(this.cost);</span>
-<span class="pc bpc" id="L297" title="1 of 2 branches missed.">        if (is(this.deathToll).greaterThan(this.population.multiply(BigDecimal.valueOf(0.45)))) {</span>
-<span class="fc" id="L298">            System.out.println(KaiserEnginePrinter.ANSI_YELLOW);</span>
-<span class="fc" id="L299">            System.out.println(&quot;Sie haben &quot; + this.deathToll + &quot; Menschen in nur einem Jahr verhungern lassen!&quot;);</span>
-<span class="fc" id="L300">            System.out.println(&quot;Auf Grund dieser extremen Misswirtschaft, werden Sie nicht nur aus Amt und Würden gejagt,&quot;);</span>
-<span class="fc" id="L301">            System.out.println(&quot;sondern auch zum Versager des Jahres erklärt.&quot;);</span>
-<span class="fc" id="L302">            System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L303">            return; // TODO stop the game here!</span>
+<span class="fc" id="L395">        starvationDeaths = population.subtract(supportedPopulation);</span>
+<span class="fc bfc" id="L396" title="All 2 branches covered.">        if (starvationDeaths.compareTo(population.multiply(new BigDecimal(&quot;0.45&quot;))) &gt; 0) {</span>
+<span class="fc" id="L397">            state = GameState.DISMISSED;</span>
+<span class="fc" id="L398">            return;</span>
         }
+<span class="fc" id="L400">        averageStarvationPercentage = averageStarvationPercentage.multiply(BigDecimal.valueOf(year - 1L))</span>
+<span class="fc" id="L401">                .add(starvationDeaths.multiply(HUNDRED).divide(population, PRECISION))</span>
+<span class="fc" id="L402">                .divide(BigDecimal.valueOf(year), PRECISION);</span>
+<span class="fc" id="L403">        population = supportedPopulation;</span>
+<span class="fc" id="L404">        totalStarvationDeaths = totalStarvationDeaths.add(starvationDeaths);</span>
+<span class="fc" id="L405">    }</span>
 
-        // calc death statistics
-        // p1 = ((z-1)*p1+D*100/p)/z
-<span class="nc" id="L308">        BigDecimal tempQuotient = this.percentDeathToll.multiply(BigDecimal.valueOf(this.zYear - 1)).add(this.deathToll.multiply(BigDecimal.valueOf(100)).divide(this.population, 0, RoundingMode.HALF_UP));</span>
-<span class="nc" id="L309">        this.percentDeathToll = tempQuotient.divide(BigDecimal.valueOf(this.zYear), 0, RoundingMode.HALF_UP);</span>
+    /**
+     * Calculates owned hectares per current inhabitant without rounding the result
+     * to a whole number. Evaluation uses this ratio so fractional differences near
+     * the seven-, nine- and ten-hectare thresholds remain significant.
+     *
+     * @return land area divided by population, using the engine's decimal precision
+     */
+    public BigDecimal getLandPerPerson() {
+<span class="fc" id="L415">        return landArea.divide(population, PRECISION);</span>
+    }
 
-<span class="nc" id="L311">        this.population = this.cost; // TODO why? shouldn't this somehow be added up?</span>
-<span class="nc" id="L312">        this.deathTollSum = this.deathTollSum.add(this.deathToll);</span>
-<span class="nc" id="L313">    }</span>
+    /**
+     * Classifies the reign using average annual starvation and current land per
+     * inhabitant, checking the worst applicable tier first. More than 33 percent
+     * average starvation or fewer than seven hectares per person is disastrous;
+     * more than ten percent or fewer than nine hectares is tyrannical; more than
+     * three percent or fewer than ten hectares is mediocre. Otherwise the reign
+     * is excellent. Threshold comparisons use unrounded values.
+     * &lt;p&gt;
+     * This method only evaluates the current figures: it does not end the game,
+     * print a message or consume randomness. The caller normally uses it after
+     * the final report-year update. Corresponds to BASIC lines 880–896.
+     *
+     * @return the worst rating whose starvation or land condition applies
+     */
+    public Regency getRegency() {
+<span class="fc" id="L433">        BigDecimal landPerPerson = getLandPerPerson();</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">        if (averageStarvationPercentage.compareTo(BigDecimal.valueOf(33)) &gt; 0</span>
+<span class="fc bfc" id="L435" title="All 2 branches covered.">                || landPerPerson.compareTo(BigDecimal.valueOf(7)) &lt; 0) {</span>
+<span class="fc" id="L436">            return Regency.DISASTROUS;</span>
+        }
+<span class="fc bfc" id="L438" title="All 2 branches covered.">        if (averageStarvationPercentage.compareTo(BigDecimal.TEN) &gt; 0</span>
+<span class="fc bfc" id="L439" title="All 2 branches covered.">                || landPerPerson.compareTo(BigDecimal.valueOf(9)) &lt; 0) {</span>
+<span class="fc" id="L440">            return Regency.TYRANNICAL;</span>
+        }
+<span class="fc bfc" id="L442" title="All 2 branches covered.">        if (averageStarvationPercentage.compareTo(BigDecimal.valueOf(3)) &gt; 0</span>
+<span class="fc bfc" id="L443" title="All 2 branches covered.">                || landPerPerson.compareTo(BigDecimal.TEN) &lt; 0) {</span>
+<span class="fc" id="L444">            return Regency.MEDIOCRE;</span>
+        }
+<span class="fc" id="L446">        return Regency.EXCELLENT;</span>
+    }
+
+    /**
+     * Draws the number of residents who would like to hang the ruler in the
+     * mediocre-reign message. The result is
+     * {@code floor(population * 0.8 * randomValue)}, rather than a fixed 80 percent
+     * of the population. No population or resource figures are changed.
+     * &lt;p&gt;
+     * Each call consumes a fresh random value. To preserve the BASIC draw order,
+     * the caller invokes this only when rendering that evaluation message, as
+     * at BASIC line 961.
+     *
+     * @return a non-negative, whole-number count of discontented residents
+     */
+    public BigDecimal countDiscontentedResidents() {
+<span class="fc" id="L462">        return floor(population.multiply(new BigDecimal(&quot;0.8&quot;))</span>
+<span class="fc" id="L463">                .multiply(BigDecimal.valueOf(random.nextDouble())));</span>
+    }
+
+    /**
+     * Indicates whether the reign completed, the ruler was dismissed or play was
+     * aborted. All three terminal states prevent further annual updates and actions.
+     *
+     * @return {@code true} whenever the state is not {@link GameState#RUNNING}
+     */
+    public boolean isGameOver() {
+<span class="fc bfc" id="L473" title="All 2 branches covered.">        return state != GameState.RUNNING;</span>
+    }
+
+    /**
+     * Marks the game as aborted without changing resources or demographic figures.
+     * Used for negative action quantities and exhausted console input. The caller
+     * is responsible for stopping the dialogue and displaying any closing message.
+     */
+    public void abort() {
+<span class="fc" id="L482">        state = GameState.ABORTED;</span>
+<span class="fc" id="L483">    }</span>
+
+    /**
+     * Applies the shared BASIC rule that a negative action quantity ends the game
+     * instead of requesting another quantity. Non-negative values are left for
+     * the action's normal validation.
+     *
+     * @param input quantity supplied to a player action
+     * @return whether the game was aborted because the quantity was negative
+     */
+    private boolean abortOnNegative(BigDecimal input) {
+<span class="fc bfc" id="L494" title="All 2 branches covered.">        if (input.signum() &lt; 0) {</span>
+<span class="fc" id="L495">            abort();</span>
+<span class="fc" id="L496">            return true;</span>
+        }
+<span class="fc" id="L498">        return false;</span>
+    }
+
+    /**
+     * Prevents an annual update or player action from modifying an ended reign.
+     * This checks the terminal state, not the ordering of actions within a year;
+     * the caller remains responsible for that order.
+     *
+     * @throws IllegalStateException if the game has completed, dismissed the ruler or been aborted
+     */
+    private void requireRunning() {
+<span class="fc bfc" id="L509" title="All 2 branches covered.">        if (isGameOver()) {</span>
+<span class="fc" id="L510">            throw new IllegalStateException(&quot;The game has ended.&quot;);</span>
+        }
+<span class="fc" id="L512">    }</span>
+
+    /**
+     * Consumes one random value and converts it to the inclusive range one through
+     * five, matching the BASIC subroutine used for harvest, rat and immigration rolls.
+     *
+     * @return a uniformly distributed integer from one through five
+     */
+    private int rollOneToFive() {
+<span class="fc" id="L521">        return (int) Math.floor(random.nextDouble() * 5) + 1;</span>
+    }
+
+    /**
+     * Implements BASIC's {@code INT} operation by rounding toward negative infinity,
+     * not toward zero or to the nearest integer.
+     *
+     * @param value number whose fractional part is to be rounded down
+     * @return the greatest integer less than or equal to {@code value}, with scale zero
+     */
+    private static BigDecimal floor(BigDecimal value) {
+<span class="fc" id="L532">        return value.setScale(0, RoundingMode.FLOOR);</span>
+    }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.16.202610240946</span></div></body></html>

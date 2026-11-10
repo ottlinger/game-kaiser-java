@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaiserGame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">game-kaiser-java</a> &gt; <a href="index.source.html" class="el_package">de.aikiit.game.kaiser</a> &gt; <span class="el_source">KaiserGame.java</span></div><h1>KaiserGame.java</h1><pre class="source lang-java linenums">package de.aikiit.game.kaiser;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KaiserGame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">game-kaiser-java</a> &gt; <a href="index.source.html" class="el_package">de.aikiit.game.kaiser</a> &gt; <span class="el_source">KaiserGame.java</span></div><h1>KaiserGame.java</h1><pre class="source lang-java linenums">package de.aikiit.game.kaiser;
 
-import org.assertj.core.util.VisibleForTesting;
+import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * This class encapsulates the actual game flow.
@@ -20,61 +21,84 @@ public class KaiserGame {
 
     private final KaiserEngine engine;
     private final KaiserEnginePrinter printer;
-    /**
-     * The current round of the game.
-     */
-<span class="fc" id="L26">    private int round = 0;</span>
+    private final Scanner input;
 
     /**
      * Initializes a game with default parameters.
      */
     public KaiserGame() {
-<span class="fc" id="L32">        this(new KaiserEngine());</span>
-<span class="fc" id="L33">    }</span>
+<span class="nc" id="L30">        this(new KaiserEngine(), new Scanner(System.in));</span>
+<span class="nc" id="L31">    }</span>
 
     /**
      * Allows setting an explicit engine for testing purposes.
      * @param engine initialize with the given engine.
      */
-    @VisibleForTesting
-<span class="fc" id="L40">    KaiserGame(KaiserEngine engine) {</span>
-<span class="fc" id="L41">        this.engine = engine;</span>
-<span class="fc" id="L42">        this.printer = new KaiserEnginePrinter(this.engine);</span>
-<span class="fc" id="L43">    }</span>
-
-    private void incrementRoundCounter() {
-<span class="nc" id="L46">        round++;</span>
-<span class="nc" id="L47">    }</span>
+<span class="fc" id="L37">    KaiserGame(KaiserEngine engine, Scanner input) {</span>
+<span class="fc" id="L38">        this.engine = Objects.requireNonNull(engine);</span>
+<span class="fc" id="L39">        this.input = Objects.requireNonNull(input);</span>
+<span class="fc" id="L40">        this.printer = new KaiserEnginePrinter(this.engine);</span>
+<span class="fc" id="L41">    }</span>
 
     /**
-     * Start the game and allow player interactions until the maximum number of rounds is reached.
+     * Shows the introduction and start confirmation without the original BASIC code
+     * gate, then runs the reign until completion, dismissal or an abort. A replay
+     * starts again with the introduction and start confirmation.
      */
     public void run() {
-<span class="fc" id="L53">        intro();</span>
-<span class="nc" id="L54">        status();</span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        while (round &lt; MAX_ROUNDS) {</span>
-<span class="nc" id="L56">            incrementRoundCounter();</span>
-<span class="nc" id="L57">            engine.startNewRound();</span>
-<span class="nc" id="L58">            status();</span>
-<span class="nc" id="L59">            actions();</span>
-<span class="nc" id="L60">            engine.finishRoundAfterActions();</span>
-        }
-
-<span class="nc" id="L63">        finish();</span>
-<span class="nc" id="L64">        byeByeBanner();</span>
-<span class="nc" id="L65">    }</span>
+        boolean playAgain;
+        do {
+<span class="fc" id="L51">            playAgain = false;</span>
+<span class="fc" id="L52">            intro();</span>
+<span class="fc" id="L53">            System.out.println(&quot;Start (J/N)?&quot;);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            if (&quot;n&quot;.equalsIgnoreCase(nextAnswer())) {</span>
+<span class="fc" id="L55">                engine.abort();</span>
+<span class="fc" id="L56">                break;</span>
+            }
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            while (!engine.isGameOver()) {</span>
+<span class="fc" id="L59">                engine.startNewRound();</span>
+<span class="fc" id="L60">                status();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                if (engine.isGameOver()) {</span>
+<span class="fc" id="L62">                    break; // BASIC line 270: final report, but no eleventh action phase.</span>
+                }
+<span class="fc" id="L64">                engine.prepareLandTrading();</span>
+<span class="fc" id="L65">                System.out.println(&quot;Ein Hektar Land kostet &quot; + engine.getLandPrice() + &quot; DZ Getreide.&quot;);</span>
+<span class="fc" id="L66">                actions();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">                if (!engine.isGameOver()) {</span>
+<span class="fc" id="L68">                    engine.finishRoundAfterActions();</span>
+                }
+            }
+<span class="pc bpc" id="L71" title="1 of 4 branches missed.">            switch (engine.getState()) {</span>
+<span class="fc" id="L72">                case DISMISSED -&gt; System.out.println(printer.getDismissal());</span>
+<span class="fc" id="L73">                case ABORTED -&gt; System.out.println(&quot;Das kann man nicht mit mir machen! Suchen Sie sich einen anderen zum Mitspielen!&quot;);</span>
+                case COMPLETED -&gt; {
+<span class="fc" id="L75">                    finish();</span>
+                    // Only the mediocre branch reaches the replay prompt in lines 959–966.
+<span class="fc bfc" id="L77" title="All 2 branches covered.">                    if (engine.getRegency() == KaiserEngine.Regency.MEDIOCRE) {</span>
+<span class="fc" id="L78">                        System.out.println(&quot;Nochmal (J/N)?&quot;);</span>
+<span class="fc" id="L79">                        playAgain = &quot;j&quot;.equalsIgnoreCase(nextAnswer());</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">                        if (playAgain) {</span>
+<span class="fc" id="L81">                            engine.reset();</span>
+                        }
+                    }
+                }
+<span class="nc" id="L85">                default -&gt; throw new IllegalStateException(&quot;Game ended without a final state.&quot;);</span>
+            }
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        } while (playAgain);</span>
+<span class="fc" id="L88">        byeByeBanner();</span>
+<span class="fc" id="L89">    }</span>
 
     /**
      * Shows information about the game flow and welcomes the player.
      */
     public void intro() {
-<span class="fc" id="L71">        banner();</span>
-<span class="fc" id="L72">        System.out.println(&quot;Versuchen Sie die antike Stadt &quot; + KaiserEnginePrinter.ANSI_YELLOW + &quot;&gt;SUMERIA&lt;&quot; + KaiserEnginePrinter.ANSI_RESET + &quot; zu regieren!&quot;);</span>
-<span class="fc" id="L73">        System.out.println(&quot;Ihre Regierungszeit beträgt &quot; + MAX_ROUNDS + &quot; Jahre.&quot;);</span>
-<span class="fc" id="L74">        System.out.println(&quot;Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.&quot;);</span>
-<span class="fc" id="L75">        System.out.println(&quot;Dann werden wir weitersehen .......&quot;);</span>
-<span class="fc" id="L76">        System.out.println();</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L95">        banner();</span>
+<span class="fc" id="L96">        System.out.println(&quot;Versuchen Sie die antike Stadt &quot; + KaiserEnginePrinter.ANSI_YELLOW + &quot;&gt;SUMERIA&lt;&quot; + KaiserEnginePrinter.ANSI_RESET + &quot; zu regieren!&quot;);</span>
+<span class="fc" id="L97">        System.out.println(&quot;Ihre Regierungszeit beträgt &quot; + MAX_ROUNDS + &quot; Jahre.&quot;);</span>
+<span class="fc" id="L98">        System.out.println(&quot;Nach jeweils einem Jahr erhalten Sie einen Bericht über die Entwicklung in der Stadt.&quot;);</span>
+<span class="fc" id="L99">        System.out.println(&quot;Dann werden wir weitersehen .......&quot;);</span>
+<span class="fc" id="L100">        System.out.println();</span>
+<span class="fc" id="L101">    }</span>
 
     /**
      * Shows the game's banner.
@@ -82,8 +106,8 @@ public class KaiserGame {
     public void banner() {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
-<span class="fc" id="L85">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
-<span class="fc" id="L86">        System.out.println(&quot;&quot;&quot;</span>
+<span class="fc" id="L109">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
+<span class="fc" id="L110">        System.out.println(&quot;&quot;&quot;</span>
                 #    #                              \s
                 #   #    ##   #  ####  ###### ##### \s
                 #  #    #  #  # #      #      #    #\s
@@ -93,8 +117,8 @@ public class KaiserGame {
                 #    # #    # #  ####  ###### #    #\s
                                                     \s
                 &quot;&quot;&quot;);
-<span class="fc" id="L96">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L120">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L121">    }</span>
 
     /**
      * Shows console banner after the game is over.
@@ -102,8 +126,8 @@ public class KaiserGame {
     public void byeByeBanner() {
         // generated with the help of https://manytools.org/hacker-tools/ascii-banner/
         // font: banner
-<span class="fc" id="L105">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
-<span class="fc" id="L106">        System.out.println(&quot;&quot;&quot;</span>
+<span class="fc" id="L129">        System.out.println(KaiserEnginePrinter.ANSI_RED);</span>
+<span class="fc" id="L130">        System.out.println(&quot;&quot;&quot;</span>
                 ######                  ######                  #    #                              \s
                 #     # #   # ######    #     # #   # ######    #   #    ##   #  ####  ###### ##### \s
                 #     #  # #  #         #     #  # #  #         #  #    #  #  # #      #      #    #\s
@@ -113,16 +137,21 @@ public class KaiserGame {
                 ######    #   ######    ######    #   ######    #    # #    # #  ####  ###### #    #\s
                                                                                                     \n
                 &quot;&quot;&quot;);
-<span class="fc" id="L116">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
-<span class="fc" id="L117">    }</span>
+<span class="fc" id="L140">        System.out.println(KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L141">    }</span>
 
     /**
      * Shows the underlying status of the current round the player is in.
      */
     public void status() {
-<span class="fc" id="L123">        System.out.println(printer.getStatus(round));</span>
-<span class="fc" id="L124">        System.out.println(printer.getYearResult(round));</span>
-<span class="fc" id="L125">    }</span>
+<span class="fc" id="L147">        System.out.println(printer.getYearResult(engine.getYear()));</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (engine.isPlagueOccurred()) {</span>
+<span class="fc" id="L149">            System.out.println(KaiserEnginePrinter.ORANGE</span>
+                    + &quot;Eine fürchterliche Seuche hat die halbe Stadt dahingerafft!&quot;
+                    + KaiserEnginePrinter.ANSI_RESET);
+        }
+<span class="fc" id="L153">        System.out.println(printer.getStatus(engine.getYear()));</span>
+<span class="fc" id="L154">    }</span>
 
     /**
      * Performs user interactions.
@@ -134,26 +163,33 @@ public class KaiserGame {
      * &lt;/ul&gt;
      */
     public void actions() {
-<span class="fc" id="L137">        System.out.println();</span>
-<span class="fc" id="L138">        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;#+#+#+#+ Was möchten Sie tun?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
+<span class="fc" id="L166">        System.out.println();</span>
+<span class="fc" id="L167">        System.out.println(KaiserEnginePrinter.ANSI_PURPLE + &quot;#+#+#+#+ Was möchten Sie tun?&quot; + KaiserEnginePrinter.ANSI_RESET);</span>
 
         // only buy or sell is allowed
-<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (!KaiserActions.buy(this.engine)) {</span>
-<span class="nc" id="L142">            KaiserActions.sell(this.engine);</span>
+<span class="fc bfc" id="L170" title="All 4 branches covered.">        if (!KaiserActions.buy(engine, input) &amp;&amp; !engine.isGameOver()) {</span>
+<span class="fc" id="L171">            KaiserActions.sell(engine, input);</span>
+        }
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (!engine.isGameOver()) {</span>
+<span class="fc" id="L174">            KaiserActions.feed(engine, input);</span>
+        }
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        if (!engine.isGameOver()) {</span>
+<span class="fc" id="L177">            KaiserActions.cultivate(engine, input);</span>
         }
 
-<span class="nc" id="L145">        KaiserActions.feed(this.engine);</span>
-<span class="nc" id="L146">        KaiserActions.cultivate(this.engine);</span>
-
-<span class="nc" id="L148">        System.out.println();</span>
-<span class="nc" id="L149">    }</span>
+<span class="fc" id="L180">        System.out.println();</span>
+<span class="fc" id="L181">    }</span>
 
     /**
      * Shows results after the game is over.
      */
     public void finish() {
-<span class="fc" id="L155">        System.out.println(printer.getResults());</span>
-<span class="fc" id="L156">        System.out.println(printer.evaluateRegency());</span>
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L187">        System.out.println(printer.getResults());</span>
+<span class="fc" id="L188">        System.out.println(printer.evaluateRegency());</span>
+<span class="fc" id="L189">    }</span>
+
+    private String nextAnswer() {
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        return input.hasNext() ? input.next() : &quot;n&quot;;</span>
+    }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.16.202610240946</span></div></body></html>
