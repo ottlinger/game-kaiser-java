@@ -4,7 +4,7 @@ An adaption of the old Kaiser/Sumeria game
 ## Build status
 [![Github Action main branch status](https://github.com/ottlinger/game-kaiser-java/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ottlinger/game-kaiser-java/actions)
 
-[![codecov.io](https://codecov.io/github/ottlinger/game-kaiser-java/coverage.svg?branch=main)](https://codecov.io/github/ottlinger/game-kaiser-java?branch=main)
+[![codecov](https://codecov.io/github/ottlinger/game-kaiser-java/graph/badge.svg?token=PLNFT7G9OR)](https://codecov.io/github/ottlinger/game-kaiser-java)
 
 [![CodeQL](https://github.com/ottlinger/game-kaiser-java/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/ottlinger/game-kaiser-java/actions/workflows/codeql.yml)
 
