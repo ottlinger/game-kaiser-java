@@ -95,4 +95,5 @@ Negative action quantities terminate the game via the equivalent of line 850.
   unexpected draws. Tests cover formulas, strict boundaries, all evaluation
   tiers, input retries/aborts, complete ten-year reigns, final plague and replay.
 
-Run the regression suite with `mvn test`.
+Run the regression suite with the Maven Wrapper: `./mvnw test`
+(or `mvnw.cmd test` on Windows). No separate Maven installation is required.
