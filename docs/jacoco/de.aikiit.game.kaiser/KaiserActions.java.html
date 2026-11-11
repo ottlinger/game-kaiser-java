@@ -57,10 +57,10 @@ public final class KaiserActions {
      * while a negative quantity or exhausted input aborts the game.
      *
      * @param engine game whose stocks and food allocation are updated
-     * @param input shared console scanner; quantities are in DZ of grain
+     * @param input shared console scanner; quantities are in dt of grain
      */
     public static void feed(KaiserEngine engine, Scanner input) {
-<span class="fc" id="L63">        perform(engine, input, &quot;Wieviele DZ wollen Sie an Ihr Volk verteilen?&quot;, engine::feedToPopulation);</span>
+<span class="fc" id="L63">        perform(engine, input, &quot;Wieviele dt wollen Sie an Ihr Volk verteilen?&quot;, engine::feedToPopulation);</span>
 <span class="fc" id="L64">    }</span>
 
     /**

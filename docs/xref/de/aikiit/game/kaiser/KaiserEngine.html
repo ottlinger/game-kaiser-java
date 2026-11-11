@@ -112,8 +112,8 @@
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">     * Restores all resources, annual figures and accumulated statistics to their</em>
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> <em class="jxr_javadoccomment">     * starting values, and makes the game runnable again. The city starts with</em>
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">     * 95 inhabitants, 1000 hectares and 2800 DZ of grain. Its initial report refers</em>
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">     * to a harvest of 3000 DZ at three DZ per hectare, 200 DZ lost to rats and five</em>
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">     * 95 inhabitants, 1000 hectares and 2800 dt of grain. Its initial report refers</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">     * to a harvest of 3000 dt at three dt per hectare, 200 dt lost to rats and five</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">     * immigrants who will arrive at the first year start.</em>
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">     * The supplied random source is retained rather than reseeded, so a replay</em>
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     }
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> 
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * Draws the grain price for one hectare of land, uniformly from 17 through 26 DZ,</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * Draws the grain price for one hectare of land, uniformly from 17 through 26 dt,</em>
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     * and stores it for both buying and selling during the current year. It does not</em>
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">     * replace the previous harvest yield or consume grain.</em>
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
@@ -266,7 +266,7 @@
 <a class="jxr_linenumber" name="L258" href="#L258">258</a> <em class="jxr_javadoccomment">     * checks, deferred starvation calculation and abort handling as</em>
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> <em class="jxr_javadoccomment">     * {@link #feedToPopulation(BigDecimal)}.</em>
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L261" href="#L261">261</a> <em class="jxr_javadoccomment">     * @param grain grain to distribute in DZ; zero is valid and a negative value aborts</em>
+<a class="jxr_linenumber" name="L261" href="#L261">261</a> <em class="jxr_javadoccomment">     * @param grain grain to distribute in dt; zero is valid and a negative value aborts</em>
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the allocation exceeds available grain stocks</em>
 <a class="jxr_linenumber" name="L263" href="#L263">263</a> <em class="jxr_javadoccomment">     * @throws IllegalStateException if the game has already ended</em>
 <a class="jxr_linenumber" name="L264" href="#L264">264</a> <em class="jxr_javadoccomment">     */</em>
@@ -277,7 +277,7 @@
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">     * Removes the requested grain from stocks and remembers it as this year's food</em>
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">     * allocation. Population does not change immediately: at year end, every complete</em>
-<a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     * 20 DZ will support one inhabitant. This separates BASIC's food variable Q from</em>
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     * 20 dt will support one inhabitant. This separates BASIC's food variable Q from</em>
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">     * the later plague roll so that a random event cannot overwrite the allocation.</em>
 <a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">     * Zero is a valid allocation, distributing all available stocks is allowed, and</em>
@@ -285,7 +285,7 @@
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> <em class="jxr_javadoccomment">     * once after trading and before planting. Corresponds to BASIC lines 411–430;</em>
 <a class="jxr_linenumber" name="L278" href="#L278">278</a> <em class="jxr_javadoccomment">     * the stored allocation is evaluated at line 540.</em>
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">     * @param grain grain to distribute in DZ, which may be fractional</em>
+<a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">     * @param grain grain to distribute in dt, which may be fractional</em>
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the allocation exceeds available grain stocks</em>
 <a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_javadoccomment">     * @throws IllegalStateException if the game has already ended</em>
 <a class="jxr_linenumber" name="L283" href="#L283">283</a> <em class="jxr_javadoccomment">     */</em>

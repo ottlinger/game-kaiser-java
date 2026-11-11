@@ -69,9 +69,9 @@ public class KaiserEnginePrinter {
 <span class="fc" id="L69">        status.append(ANSI_GREEN).append(&quot;### STATUS nach Runde &quot;).append(round).append(ANSI_RESET).append(System.lineSeparator());</span>
 <span class="fc" id="L70">        status.append(ANSI_CYAN).append(&quot;Die Einwohnerzahl beträgt jetzt   &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getPopulation()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
 <span class="fc" id="L71">        status.append(ANSI_CYAN).append(&quot;Die Stadt besitzt an Land (Hektar)&quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getLandArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L72">        status.append(ANSI_CYAN).append(&quot;Die Ernte betrug (dzt/Hektar)     &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getHarvestYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L73">        status.append(ANSI_RED).append(&quot;Ratten haben gefressen (dzt)      &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getRatLoss()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
-<span class="fc" id="L74">        status.append(ANSI_RED).append(&quot;Eure Vorräte betragen (dzt)       &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getGrainStocks()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L72">        status.append(ANSI_CYAN).append(&quot;Die Ernte betrug (dt/Hektar)      &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getHarvestYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L73">        status.append(ANSI_RED).append(&quot;Ratten haben gefressen (dt)       &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getRatLoss()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
+<span class="fc" id="L74">        status.append(ANSI_RED).append(&quot;Eure Vorräte betragen (dt)        &quot;).append(StringUtils.leftPad(String.valueOf(this.engine.getGrainStocks()), 10)).append(ANSI_RESET).append(System.lineSeparator());</span>
 <span class="fc" id="L75">        return status.toString();</span>
     }
 

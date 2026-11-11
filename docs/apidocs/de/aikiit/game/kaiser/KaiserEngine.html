@@ -227,7 +227,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#prepareLandTrading()" class="member-name-link">prepareLandTrading</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Draws the grain price for one hectare of land, uniformly from 17 through 26 DZ,
+<div class="block">Draws the grain price for one hectare of land, uniformly from 17 through 26 dt,
  and stores it for both buying and selling during the current year.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>(package private) void</code></div>
@@ -309,8 +309,8 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">reset</span>()</div>
 <div class="block">Restores all resources, annual figures and accumulated statistics to their
  starting values, and makes the game runnable again. The city starts with
- 95 inhabitants, 1000 hectares and 2800 DZ of grain. Its initial report refers
- to a harvest of 3000 DZ at three DZ per hectare, 200 DZ lost to rats and five
+ 95 inhabitants, 1000 hectares and 2800 dt of grain. Its initial report refers
+ to a harvest of 3000 dt at three dt per hectare, 200 dt lost to rats and five
  immigrants who will arrive at the first year start.
  <p>
  The supplied random source is retained rather than reseeded, so a replay
@@ -341,7 +341,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="prepareLandTrading()">
 <h3>prepareLandTrading</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">prepareLandTrading</span>()</div>
-<div class="block">Draws the grain price for one hectare of land, uniformly from 17 through 26 DZ,
+<div class="block">Draws the grain price for one hectare of land, uniformly from 17 through 26 dt,
  and stores it for both buying and selling during the current year. It does not
  replace the previous harvest yield or consume grain.
  <p>
@@ -437,7 +437,7 @@ loadScripts(document, 'script');</script>
  <a href="#feedToPopulation(java.math.BigDecimal)"><code>feedToPopulation(BigDecimal)</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>grain</code> - grain to distribute in DZ; zero is valid and a negative value aborts</dd>
+<dd><code>grain</code> - grain to distribute in dt; zero is valid and a negative value aborts</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if the allocation exceeds available grain stocks</dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalStateException.html" title="class or interface in java.lang" class="external-link">IllegalStateException</a></code> - if the game has already ended</dd>
@@ -450,7 +450,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">feedToPopulation</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/math/BigDecimal.html" title="class or interface in java.math" class="external-link">BigDecimal</a>&nbsp;grain)</span></div>
 <div class="block">Removes the requested grain from stocks and remembers it as this year's food
  allocation. Population does not change immediately: at year end, every complete
- 20 DZ will support one inhabitant. This separates BASIC's food variable Q from
+ 20 dt will support one inhabitant. This separates BASIC's food variable Q from
  the later plague roll so that a random event cannot overwrite the allocation.
  <p>
  Zero is a valid allocation, distributing all available stocks is allowed, and
@@ -459,7 +459,7 @@ loadScripts(document, 'script');</script>
  the stored allocation is evaluated at line 540.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>grain</code> - grain to distribute in DZ, which may be fractional</dd>
+<dd><code>grain</code> - grain to distribute in dt, which may be fractional</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if the allocation exceeds available grain stocks</dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalStateException.html" title="class or interface in java.lang" class="external-link">IllegalStateException</a></code> - if the game has already ended</dd>
