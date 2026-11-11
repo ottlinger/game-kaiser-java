@@ -174,6 +174,43 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>prepare-site-documentation</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- Keep root Markdown files as the single source of truth. -->
+                <copy file="${project.basedir}/README.md"
+                      tofile="${project.build.directory}/generated-site/markdown/index.md"
+                      overwrite="true" encoding="UTF-8"/>
+                <copy todir="${project.build.directory}/generated-site/markdown" overwrite="true" encoding="UTF-8">
+                  <fileset dir="${project.basedir}"
+                           includes="INTRO.md,BASIC-PORT.md,CONTRIBUTING.md,CODE_OF_CONDUCT.md,SECURITY.md"/>
+                </copy>
+                <!-- Rewrite only local Markdown link targets, not the repository sources. -->
+                <replaceregexp match="(\]\(\./)README\.md([)#])" replace="\1index.html\2"
+                               flags="g" encoding="UTF-8">
+                  <fileset dir="${project.build.directory}/generated-site/markdown" includes="*.md"/>
+                </replaceregexp>
+                <replaceregexp match="(\]\(\./[^)#]+)\.md([)#])" replace="\1.html\2"
+                               flags="g" encoding="UTF-8">
+                  <fileset dir="${project.build.directory}/generated-site/markdown" includes="*.md"/>
+                </replaceregexp>
+                <copy file="${project.basedir}/kaiser_basic1992.pdf"
+                      todir="${project.build.directory}/generated-site/resources" overwrite="true"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${checkstyle.version}</version>
         <configuration>

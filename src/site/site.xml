@@ -38,12 +38,18 @@ under the License.
     </poweredBy>
 
     <body>
-        <menu ref="parent" inherit="top"/>
-        <menu ref="reports" inherit="bottom"/>
-        <menu ref="modules" inherit="bottom"/>
-
-        <menu name="Reports" ref="reports">
+        <menu name="Kaiser spielen">
+            <item name="Projektübersicht (README)" href="index.html"/>
+            <item name="Spielanleitung" href="INTRO.html"/>
         </menu>
+        <menu name="Dokumentation">
+            <item name="BASIC-Portierung und Spielregeln" href="BASIC-PORT.html"/>
+            <item name="Original KAISER.BAS (PDF)" href="kaiser_basic1992.pdf"/>
+            <item name="Mitwirken" href="CONTRIBUTING.html"/>
+            <item name="Code of Conduct" href="CODE_OF_CONDUCT.html"/>
+            <item name="Security Policy" href="SECURITY.html"/>
+        </menu>
+        <menu name="Reports" ref="reports" inherit="bottom"/>
     </body>
     <custom>
         <fluidoSkin>

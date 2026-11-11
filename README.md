@@ -37,7 +37,12 @@ Have fun :)
  
 ## Site reports
 
-A Maven-generated site report is also available [here](https://ottlinger.github.io/game-kaiser-java/).
+The [project site](https://ottlinger.github.io/game-kaiser-java/) includes this
+README, the [Spielanleitung](./INTRO.md), [BASIC port notes](./BASIC-PORT.md), the
+original BASIC listing and contribution documentation, alongside the technical
+reports (coverage, Javadoc, tests and more).
+
+`site.sh` publishes the generated site to `docs/`, commits and pushes it.
 
 # DevHints
 
