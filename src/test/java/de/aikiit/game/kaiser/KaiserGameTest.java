@@ -32,7 +32,9 @@ class KaiserGameTest {
         String output = run(engine, "j 0 0 0 0");
         assertThat(engine.getState()).isEqualTo(KaiserEngine.GameState.DISMISSED);
         assertThat(engine.getYear()).isEqualTo(1);
-        assertThat(output).contains("100 Menschen", "Versager des Jahres");
+        assertThat(output).contains("100 Menschen", "Versager des Jahres",
+                "Ein Hektar Land kostet 17 dt Getreide.", "Wieviele dt wollen Sie an Ihr Volk verteilen?");
+        assertThat(output).doesNotContain("DZ", "dzt");
         assertThat(output).doesNotContain("Im Jahr 2", "Bewertung Ihrer Herrschaft", "Nochmal", "Kode-Zahl", "20-53");
         assertThat(random.remaining()).isZero();
     }

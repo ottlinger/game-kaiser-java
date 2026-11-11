@@ -104,8 +104,8 @@ public class KaiserEngine {
     /**
      * Restores all resources, annual figures and accumulated statistics to their
      * starting values, and makes the game runnable again. The city starts with
-     * 95 inhabitants, 1000 hectares and 2800 DZ of grain. Its initial report refers
-     * to a harvest of 3000 DZ at three DZ per hectare, 200 DZ lost to rats and five
+     * 95 inhabitants, 1000 hectares and 2800 dt of grain. Its initial report refers
+     * to a harvest of 3000 dt at three dt per hectare, 200 dt lost to rats and five
      * immigrants who will arrive at the first year start.
      * <p>
      * The supplied random source is retained rather than reseeded, so a replay
@@ -159,7 +159,7 @@ public class KaiserEngine {
     }
 
     /**
-     * Draws the grain price for one hectare of land, uniformly from 17 through 26 DZ,
+     * Draws the grain price for one hectare of land, uniformly from 17 through 26 dt,
      * and stores it for both buying and selling during the current year. It does not
      * replace the previous harvest yield or consume grain.
      * <p>
@@ -258,7 +258,7 @@ public class KaiserEngine {
      * checks, deferred starvation calculation and abort handling as
      * {@link #feedToPopulation(BigDecimal)}.
      *
-     * @param grain grain to distribute in DZ; zero is valid and a negative value aborts
+     * @param grain grain to distribute in dt; zero is valid and a negative value aborts
      * @throws IllegalArgumentException if the allocation exceeds available grain stocks
      * @throws IllegalStateException if the game has already ended
      */
@@ -269,7 +269,7 @@ public class KaiserEngine {
     /**
      * Removes the requested grain from stocks and remembers it as this year's food
      * allocation. Population does not change immediately: at year end, every complete
-     * 20 DZ will support one inhabitant. This separates BASIC's food variable Q from
+     * 20 dt will support one inhabitant. This separates BASIC's food variable Q from
      * the later plague roll so that a random event cannot overwrite the allocation.
      * <p>
      * Zero is a valid allocation, distributing all available stocks is allowed, and
@@ -277,7 +277,7 @@ public class KaiserEngine {
      * once after trading and before planting. Corresponds to BASIC lines 411–430;
      * the stored allocation is evaluated at line 540.
      *
-     * @param grain grain to distribute in DZ, which may be fractional
+     * @param grain grain to distribute in dt, which may be fractional
      * @throws IllegalArgumentException if the allocation exceeds available grain stocks
      * @throws IllegalStateException if the game has already ended
      */

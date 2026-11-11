@@ -12,7 +12,7 @@ branches, rather than silently substituting rules from other Hamurabi variants.
 | `Z` | `year` | Report year, 1 through 11 |
 | `P` | `population` | Current inhabitants |
 | `A` | `landArea` | Owned hectares |
-| `S` | `grainStocks` | Stored grain in DZ |
+| `S` | `grainStocks` | Stored grain in dt (decitonnes, 100 kg) |
 | `Y` | `harvestYield`, `landPrice` | Previous harvest per hectare; later the current trading price |
 | `H` | `totalHarvest` | Harvest quantity, **not humans** |
 | `E` | `ratLoss` | Grain eaten by rats |

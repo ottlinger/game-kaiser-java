@@ -69,9 +69,9 @@ public class KaiserEnginePrinter {
         status.append(ANSI_GREEN).append("### STATUS nach Runde ").append(round).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Einwohnerzahl beträgt jetzt   ").append(StringUtils.leftPad(String.valueOf(this.engine.getPopulation()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         status.append(ANSI_CYAN).append("Die Stadt besitzt an Land (Hektar)").append(StringUtils.leftPad(String.valueOf(this.engine.getLandArea()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_CYAN).append("Die Ernte betrug (dzt/Hektar)     ").append(StringUtils.leftPad(String.valueOf(this.engine.getHarvestYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_RED).append("Ratten haben gefressen (dzt)      ").append(StringUtils.leftPad(String.valueOf(this.engine.getRatLoss()), 10)).append(ANSI_RESET).append(System.lineSeparator());
-        status.append(ANSI_RED).append("Eure Vorräte betragen (dzt)       ").append(StringUtils.leftPad(String.valueOf(this.engine.getGrainStocks()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_CYAN).append("Die Ernte betrug (dt/Hektar)      ").append(StringUtils.leftPad(String.valueOf(this.engine.getHarvestYield()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Ratten haben gefressen (dt)       ").append(StringUtils.leftPad(String.valueOf(this.engine.getRatLoss()), 10)).append(ANSI_RESET).append(System.lineSeparator());
+        status.append(ANSI_RED).append("Eure Vorräte betragen (dt)        ").append(StringUtils.leftPad(String.valueOf(this.engine.getGrainStocks()), 10)).append(ANSI_RESET).append(System.lineSeparator());
         return status.toString();
     }
 

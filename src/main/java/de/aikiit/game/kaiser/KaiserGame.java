@@ -62,7 +62,7 @@ public class KaiserGame {
                     break; // BASIC line 270: final report, but no eleventh action phase.
                 }
                 engine.prepareLandTrading();
-                System.out.println("Ein Hektar Land kostet " + engine.getLandPrice() + " DZ Getreide.");
+                System.out.println("Ein Hektar Land kostet " + engine.getLandPrice() + " dt Getreide.");
                 actions();
                 if (!engine.isGameOver()) {
                     engine.finishRoundAfterActions();

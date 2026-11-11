@@ -13,7 +13,9 @@ class KaiserEnginePrinterTest {
         engine.startNewRound();
         engine.prepareLandTrading();
         KaiserEnginePrinter printer = new KaiserEnginePrinter(engine);
-        assertThat(printer.getStatus(1)).contains("3").doesNotContain("17");
+        assertThat(printer.getStatus(1))
+                .contains("3", "Die Ernte betrug (dt/Hektar)", "Ratten haben gefressen (dt)", "Eure Vorräte betragen (dt)")
+                .doesNotContain("17", "DZ", "dzt");
         assertThat(printer.getYearResult(1)).contains("Im Jahr 1", "5");
         assertThat(printer.getResults()).contains("10-jährigen", "10 Hektar");
     }
