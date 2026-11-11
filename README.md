@@ -17,6 +17,9 @@ It is based on an old [📃 KAISER.BAS](./kaiser_basic1992.pdf) basic listing I 
 
 ## How to run
 
+**Before your first game:** Read the German [Spielanleitung](./INTRO.md) for the
+game's objective, turn order, required quantities and an example first round.
+
 ```
 $ ./run.sh
 ```
